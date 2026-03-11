@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindFlow · Choose Your Remedy</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Additional styles for gateway page */
+        .gateway {
+            max-width: 1200px;
+            margin: 2rem auto;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 3rem;
+            padding: 2.5rem;
+            box-shadow: 0 20px 40px -10px #1f4b57;
+        }
+        .gateway-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+        .gateway-header h1 {
+            font-weight: 400;
+            color: #1b4c5c;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .gateway-header p {
+            color: #2d6575;
+            font-size: 1.2rem;
+        }
+        .gateway-header small {
+            color: #56848f;
+            font-style: italic;
+        }
+        .remedy-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.8rem;
+            margin-top: 2rem;
+        }
+        .remedy-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(5px);
+            border-radius: 2.5rem;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            border: 1px solid white;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        .remedy-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 30px -12px #2d6575;
+        }
+        .remedy-card i {
+            font-size: 3rem;
+            color: #2f7d8f;
+            margin-bottom: 1rem;
+        }
+        .remedy-card h2 {
+            font-weight: 500;
+            color: #194a56;
+            margin-bottom: 0.5rem;
+            font-size: 1.8rem;
+        }
+        .remedy-card p {
+            color: #437682;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+        .remedy-card .badge {
+            background: #e1f2f8;
+            padding: 0.3rem 0.8rem;
+            border-radius: 2rem;
+            font-size: 0.8rem;
+            color: #1f5a68;
+            display: inline-block;
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+            color: #2f7d8f;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="gateway">
+        <div class="gateway-header">
+            <h1><i class="fas fa-leaf" style="color:#2f7d8f;"></i> Choose Your Remedy</h1>
+            <p>What type of support feels right for your current brain state?</p>
+            <small>Select a category to explore personalized recommendations.</small>
+        </div>
+
+        <div class="remedy-grid">
+            <!-- Audio Therapy -->
+            <a href="audio.html" class="remedy-card">
+                <i class="fas fa-headphones"></i>
+                <h2>Audio Therapy</h2>
+                <p>Relaxing sounds, binaural beats and soundscapes to gently guide your brainwaves.</p>
+                <span class="badge">Best for: high Beta or low Alpha</span>
+            </a>
+
+            <!-- Visual Therapy -->
+            <a href="visual.html" class="remedy-card">
+                <i class="fas fa-eye"></i>
+                <h2>Visual Therapy</h2>
+                <p>Calming visual patterns, color therapy and slow animations to ease mental overload.</p>
+                <span class="badge">Best for: high Theta or stress</span>
+            </a>
+
+            <!-- Physical Activity -->
+            <a href="physical.html" class="remedy-card">
+                <i class="fas fa-heartbeat"></i>
+                <h2>Physical Activity</h2>
+                <p>Simple breathing, stretching and movement routines to rebalance your brain and body.</p>
+                <span class="badge">Best for: restless Beta or low energy</span>
+            </a>
+
+            <!-- Lifestyle Suggestions -->
+            <a href="lifestyle.html" class="remedy-card">
+                <i class="fas fa-sun"></i>
+                <h2>Lifestyle Suggestions</h2>
+                <p>Everyday habits that keep your nervous system stable over the long term.</p>
+                <span class="badge">Best for: chronic stress or fatigue</span>
+            </a>
+        </div>
+
+        <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Monitor</a>
+    </div>
+</body>
+</html>
