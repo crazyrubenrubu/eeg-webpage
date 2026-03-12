@@ -1,0 +1,14 @@
+[
+  {
+    "timestamp": "2026-03-12T08:01:20.634Z",
+    "condition": "Relaxed",
+    "bands": {
+      "delta": "0.00",
+      "theta": "0.00",
+      "alpha": "0.00",
+      "beta": "0.00",
+      "gamma": "0.00"
+    },
+    "duration": 32
+  }
+]

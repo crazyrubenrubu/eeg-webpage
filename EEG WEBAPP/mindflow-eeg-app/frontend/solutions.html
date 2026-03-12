@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* Additional styles for gateway page */
+        /* same styles as before */
         .gateway {
             max-width: 1200px;
             margin: 2rem auto;
@@ -140,5 +140,17 @@
 
         <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Monitor</a>
     </div>
+
+    <script>
+        // Optional: if you want to auto-navigate based on a condition parameter, 
+        // you could redirect to a specific remedy page. For now, it's just a gateway.
+        // If you want to highlight a card based on condition, you could do that here.
+        const urlParams = new URLSearchParams(window.location.search);
+        const condition = urlParams.get('condition');
+        if (condition) {
+            // For example, you could scroll to a specific card or show a message
+            console.log(`Suggested condition: ${condition}`);
+        }
+    </script>
 </body>
 </html>

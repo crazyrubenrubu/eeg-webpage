@@ -10,9 +10,484 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
     />
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+      /* Onboarding modal - multi-step */
+      .onboarding-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(8px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
+      }
+      .onboarding-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 3rem;
+        padding: 2.5rem;
+        max-width: 500px;
+        width: 90%;
+        box-shadow: 0 30px 50px -20px #1f4b57;
+        border: 1px solid white;
+        animation: fadeInUp 0.3s;
+        transition: all 0.3s;
+      }
+      .step-indicator {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 2rem;
+      }
+      .step {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: #cde3ea;
+        color: #2d6575;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 500;
+        transition: 0.3s;
+      }
+      .step.active {
+        background: #2f7d8f;
+        color: white;
+        transform: scale(1.1);
+      }
+      .step.completed {
+        background: #8fc9a3;
+        color: white;
+      }
+      .step-title {
+        text-align: center;
+        margin-top: 0.3rem;
+        font-size: 0.8rem;
+        color: #437682;
+      }
+      .step-content {
+        display: none;
+        animation: slideIn 0.3s;
+      }
+      .step-content.active {
+        display: block;
+      }
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateX(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+      .form-group label {
+        display: block;
+        font-weight: 500;
+        color: #194a56;
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
+      }
+      .form-group input,
+      .form-group select {
+        width: 100%;
+        padding: 0.8rem 1.2rem;
+        border-radius: 3rem;
+        border: 1px solid #cde3ea;
+        background: #f0f9ff;
+        font-size: 1rem;
+        color: #1d4b56;
+        outline: none;
+        transition:
+          border-color 0.2s,
+          box-shadow 0.2s;
+      }
+      .form-group input[type="number"] {
+        -moz-appearance: textfield;
+      }
+      .form-group input[type="number"]::-webkit-inner-spin-button,
+      .form-group input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      /* Style for select dropdowns only – custom arrow */
+      .form-group select {
+        appearance: none;
+        -webkit-appearance: none;
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="%232f7d8f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>');
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        background-size: 1.2rem;
+        padding-right: 2.5rem; /* space for arrow */
+        cursor: pointer;
+      }
+
+      /* Focus state for all inputs */
+      .form-group input:focus,
+      .form-group select:focus {
+        border-color: #2f7d8f;
+        box-shadow: 0 0 0 3px rgba(47, 125, 143, 0.2);
+      }
+
+      /* Hover effect for select */
+      .form-group select:hover {
+        background-color: #e6f4fa;
+      }
+      .button-group {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+      }
+      .primary-btn {
+        background: #2f7d8f;
+        color: white;
+        border: none;
+        padding: 0.8rem 2rem;
+        border-radius: 3rem;
+        font-size: 1rem;
+        cursor: pointer;
+        flex: 1;
+        transition: 0.2s;
+      }
+      .primary-btn:hover {
+        background: #3e93a8;
+      }
+      .secondary-btn {
+        background: transparent;
+        color: #2f7d8f;
+        border: 1px solid #2f7d8f;
+        padding: 0.8rem 2rem;
+        border-radius: 3rem;
+        font-size: 1rem;
+        cursor: pointer;
+        flex: 1;
+        transition: 0.2s;
+      }
+      .secondary-btn:hover {
+        background: #e1f2f8;
+      }
+      .skip-btn {
+        background: transparent;
+        border: none;
+        color: #56848f;
+        text-decoration: underline;
+        cursor: pointer;
+        margin-top: 1rem;
+        display: inline-block;
+      }
+      .choice-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-top: 2rem;
+      }
+      .choice-btn {
+        background: #f0f9ff;
+        border: 2px solid #cde3ea;
+        border-radius: 3rem;
+        padding: 1.2rem;
+        text-align: left;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+      .choice-btn:hover {
+        border-color: #2f7d8f;
+        background: #ffffff;
+      }
+      .choice-btn h3 {
+        color: #194a56;
+        margin-bottom: 0.3rem;
+      }
+      .choice-btn p {
+        color: #437682;
+        font-size: 0.9rem;
+      }
+      /* Loading overlay */
+      .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(5px);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 3000;
+      }
+      .loading-spinner {
+        width: 50px;
+        height: 50px;
+        border: 5px solid #cde3ea;
+        border-top-color: #2f7d8f;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 1rem;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      .loading-text {
+        color: #1b4c5c;
+        font-size: 1.2rem;
+        font-weight: 300;
+      }
+    </style>
   </head>
   <body>
+    <!-- Onboarding modal (multi-step) -->
+    <div id="onboardingModal" class="onboarding-modal" style="display: flex">
+      <div class="onboarding-card">
+        <div class="step-indicator">
+          <div class="step active" id="step1">1</div>
+          <div class="step" id="step2">2</div>
+          <div class="step" id="step3">3</div>
+          <div class="step" id="step4">4</div>
+          <div class="step" id="step5">5</div>
+        </div>
+
+        <!-- Step 1: Personal Info (name, age, gender) -->
+        <div id="step1Content" class="step-content active">
+          <h2 style="color: #1b4c5c; margin-bottom: 1.5rem">
+            Tell us about yourself
+          </h2>
+          <div class="form-group">
+            <label>Your name</label>
+            <input
+              type="text"
+              id="userName"
+              placeholder="e.g., Alex"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label>Age *</label>
+            <input
+              type="number"
+              id="userAge"
+              min="1"
+              max="120"
+              placeholder="25"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label>Gender *</label>
+            <select id="userGender" required>
+              <option value="" disabled selected>Select</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other / Prefer not to say</option>
+            </select>
+          </div>
+          <div class="button-group">
+            <button class="primary-btn" onclick="validateAndNext(1)">
+              Next
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 2: Occupation & Relationship -->
+        <div id="step2Content" class="step-content">
+          <h2 style="color: #1b4c5c; margin-bottom: 1.5rem">
+            Your occupation & status
+          </h2>
+          <div class="form-group">
+            <label>Occupation *</label>
+            <select
+              id="occupationMain"
+              required
+              onchange="toggleOccupationSub()"
+            >
+              <option value="" disabled selected>Select</option>
+              <option value="govt">Government</option>
+              <option value="private">Private Sector</option>
+              <option value="self">Self-employed</option>
+              <option value="student">Student</option>
+              <option value="unemployed">Unemployed</option>
+              <option value="retired">Retired</option>
+              <option value="homemaker">Homemaker</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <!-- Sub‑options (hidden initially) -->
+          <div id="occupationSubGroup" style="display: none" class="form-group">
+            <label id="occupationSubLabel">Specify</label>
+            <select id="occupationSub">
+              <!-- options filled by JS -->
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Relationship status *</label>
+            <select id="relationship" required>
+              <option value="" disabled selected>Select</option>
+              <option value="single">Single</option>
+              <option value="relationship">In a relationship</option>
+              <option value="married">Married</option>
+              <option value="divorced">Divorced</option>
+              <option value="widowed">Widowed</option>
+            </select>
+          </div>
+          <div class="button-group">
+            <button class="secondary-btn" onclick="prevStep(2)">Back</button>
+            <button class="primary-btn" onclick="validateAndNext(2)">
+              Next
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 3: Habits & Addictions -->
+        <div id="step3Content" class="step-content">
+          <h2 style="color: #1b4c5c; margin-bottom: 1.5rem">
+            Lifestyle & habits
+          </h2>
+          <div class="form-group">
+            <label>Do you smoke?</label>
+            <select id="habitSmoking">
+              <option value="never">Never</option>
+              <option value="occasional">Occasionally</option>
+              <option value="daily">Daily</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Do you drink alcohol?</label>
+            <select id="habitAlcohol">
+              <option value="never">Never</option>
+              <option value="occasional">Occasionally</option>
+              <option value="weekly">Weekly</option>
+              <option value="daily">Daily</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Gaming (hours per week)</label>
+            <select id="habitGaming">
+              <option value="0">0</option>
+              <option value="1-5">1–5</option>
+              <option value="6-10">6–10</option>
+              <option value="10+">10+</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label
+              >Other habits (e.g., caffeine, energy drinks, meditation)</label
+            >
+            <input
+              type="text"
+              id="habitOther"
+              placeholder="e.g., 3 cups coffee, daily meditation"
+            />
+          </div>
+          <div class="button-group">
+            <button class="secondary-btn" onclick="prevStep(3)">Back</button>
+            <button class="primary-btn" onclick="nextStep(3)">Next</button>
+          </div>
+        </div>
+
+        <!-- Step 4: Problems (symptoms) – same as before -->
+        <div id="step4Content" class="step-content">
+          <h2 style="color: #1b4c5c; margin-bottom: 1.5rem">
+            How often do you experience...
+          </h2>
+          <div class="form-group">
+            <label>Feeling overwhelmed or stressed?</label>
+            <select id="qStress">
+              <option value="1">Rarely</option>
+              <option value="2">Sometimes</option>
+              <option value="3" selected>Often</option>
+              <option value="4">Very Often</option>
+              <option value="5">Constantly</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Feeling nervous, anxious, or on edge?</label>
+            <select id="qAnxiety">
+              <option value="1">Rarely</option>
+              <option value="2">Sometimes</option>
+              <option value="3" selected>Often</option>
+              <option value="4">Very Often</option>
+              <option value="5">Constantly</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Feeling down, depressed, or hopeless?</label>
+            <select id="qDepression">
+              <option value="1">Rarely</option>
+              <option value="2">Sometimes</option>
+              <option value="3" selected>Often</option>
+              <option value="4">Very Often</option>
+              <option value="5">Constantly</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Trouble sleeping or staying asleep?</label>
+            <select id="qSleep">
+              <option value="1">Rarely</option>
+              <option value="2">Sometimes</option>
+              <option value="3" selected>Often</option>
+              <option value="4">Very Often</option>
+              <option value="5">Constantly</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Trouble focusing or staying on task?</label>
+            <select id="qFocus">
+              <option value="1">Rarely</option>
+              <option value="2">Sometimes</option>
+              <option value="3" selected>Often</option>
+              <option value="4">Very Often</option>
+              <option value="5">Constantly</option>
+            </select>
+          </div>
+          <div class="button-group">
+            <button class="secondary-btn" onclick="prevStep(4)">Back</button>
+            <button class="primary-btn" onclick="nextStep(4)">Next</button>
+          </div>
+        </div>
+        <!-- Step 5: Choice -->
+        <div id="step5Content" class="step-content">
+          <h2 style="color: #1b4c5c; margin-bottom: 1.5rem">
+            How would you like to proceed?
+          </h2>
+          <div class="choice-buttons">
+            <div class="choice-btn" onclick="submitAndUseDevice()">
+              <h3><i class="fas fa-microchip"></i> Use EEG device</h3>
+              <p>
+                Connect your EEG sensors for the most accurate, real‑time
+                brainwave analysis.
+              </p>
+            </div>
+            <div class="choice-btn" onclick="submitAndAnalyzeOnly()">
+              <h3>
+                <i class="fas fa-clipboard-list"></i> Analyze based on my
+                answers
+              </h3>
+              <p>
+                Get an immediate assessment using only the information you
+                provided.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main dashboard (unchanged) -->
     <div class="dashboard">
+      <!-- ... (same as before) ... -->
+      <!-- For brevity, include the full dashboard from previous version -->
       <div class="app-header">
         <i class="fas fa-brain" id="brainIcon"></i>
         <h1>MindFlow EEG</h1>
@@ -27,7 +502,6 @@
             <button id="liveBtn" class="toggle-btn active">Live Device</button>
             <button id="simBtn" class="toggle-btn">Simulated Feed</button>
           </div>
-          <!-- WebSocket URL – hidden in simulated mode -->
           <div id="wsUrlBox" class="ws-url">ws://localhost:8080</div>
 
           <div class="timer-block">
@@ -42,7 +516,6 @@
             Start Monitoring
           </button>
 
-          <!-- Band powers (no hover tooltips) -->
           <div class="band-grid" id="bandGrid">
             <div class="band-item" id="deltaItem">
               <div class="band-label">DELTA</div>
@@ -76,7 +549,6 @@
             </div>
           </div>
 
-          <!-- Multi‑band trend chart -->
           <div style="margin-top: 1rem">
             <canvas
               id="bandTrendCanvas"
@@ -86,7 +558,6 @@
             ></canvas>
           </div>
 
-          <!-- Brain State Parameters (live mode only) -->
           <div
             id="brainStateParams"
             class="brain-state-params"
@@ -142,7 +613,7 @@
           </div>
         </div>
 
-        <!-- Right panel: main waveform + diagnostic below it -->
+        <!-- Right panel -->
         <div class="card waveform-card">
           <h3>Live EEG Waveform</h3>
           <div class="status-bar">
@@ -159,19 +630,7 @@
           <div class="canvas-container">
             <canvas id="eegCanvas" width="600" height="250"></canvas>
           </div>
-          <div
-            style="
-              display: flex;
-              justify-content: space-between;
-              margin-top: 0.5rem;
-            "
-          >
-            <button id="exportBtn" class="small-btn">
-              <i class="fas fa-download"></i> Export CSV
-            </button>
-          </div>
 
-          <!-- Diagnostic Output moved below graph -->
           <div class="diagnostic-card" style="margin-top: 1.5rem">
             <h4>🧠 Diagnostic Output</h4>
             <div id="diagnosticText" class="diagnostic-placeholder">
@@ -189,7 +648,6 @@
         </div>
       </div>
 
-      <!-- Recent Sessions row (still at bottom) -->
       <div class="info-row">
         <div class="info-card" style="width: 100%">
           <h4>📋 Recent Sessions</h4>
@@ -205,16 +663,13 @@
       </div>
     </div>
 
-    <!-- Result overlay – no close button, only "View Solutions" -->
+    <!-- Result overlay (unchanged) -->
     <div id="resultOverlay" class="result-overlay">
       <div class="overlay-header">
         <h2>analysis complete</h2>
-        <!-- No minimize icon -->
       </div>
       <div class="result-message" id="overlayCondition">Stress detected</div>
-      <div id="solutionsContent" class="solutions-content">
-        <!-- dynamic solutions appear here -->
-      </div>
+      <div id="solutionsContent" class="solutions-content"></div>
       <div class="overlay-footer">
         <button class="solutions-btn" id="viewSolutionsOverlayBtn">
           View Solutions
@@ -222,7 +677,7 @@
       </div>
     </div>
 
-    <!-- Chatbot -->
+    <!-- Chatbot (unchanged) -->
     <div class="chat-icon" id="chatIcon">
       <i class="fas fa-comment-dots"></i>
     </div>
@@ -242,6 +697,10 @@
     <script src="app.js"></script>
     <script src="chart.js"></script>
     <script src="chatbot.js"></script>
-    <script src="solutions.js"></script>
+    <!-- Loading overlay (hidden by default) -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">Analyzing your responses...</div>
+    </div>
   </body>
 </html>

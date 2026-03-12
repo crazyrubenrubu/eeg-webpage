@@ -1,311 +1,298 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MindFlow · Audio Therapy</title>
-    <link rel="stylesheet" href="style.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-    />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindFlow · Visual Therapy</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-      .detail-page {
-        max-width: 1200px;
-        margin: 2rem auto;
-        background: rgba(255, 255, 255, 0.7);
-        backdrop-filter: blur(10px);
-        border-radius: 3rem;
-        padding: 2rem;
-        box-shadow: 0 20px 40px -10px #1f4b57;
-      }
-      .page-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 2rem;
-        flex-wrap: wrap;
-      }
-      .page-header h1 {
-        font-weight: 400;
-        color: #1b4c5c;
-        font-size: 2.2rem;
-      }
-      .back-btn {
-        background: #2f7d8f;
-        color: white;
-        border: none;
-        padding: 0.8rem 2rem;
-        border-radius: 3rem;
-        font-size: 1rem;
-        cursor: pointer;
-        transition: 0.2s;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-      }
-      .back-btn:hover {
-        background: #3e93a8;
-      }
-      .tab-container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-        margin-bottom: 2rem;
-        border-bottom: 2px solid #cde3ea;
-        padding-bottom: 0.5rem;
-      }
-      .tab {
-        background: transparent;
-        border: none;
-        padding: 0.8rem 1.8rem;
-        border-radius: 3rem 3rem 0 0;
-        font-weight: 500;
-        color: #386e7c;
-        cursor: pointer;
-        transition: 0.2s;
-        font-size: 1rem;
-      }
-      .tab.active {
-        background: #ffffffd0;
-        color: #1f5969;
-        box-shadow: 0 -4px 8px #b0d3de;
-      }
-      .tab:hover {
-        background: #e1f2f8;
-      }
-      .condition-content {
-        display: none;
-        animation: fade 0.3s;
-      }
-      .condition-content.active {
-        display: block;
-      }
-      @keyframes fade {
-        from {
-          opacity: 0;
+        .detail-page {
+            max-width: 1200px;
+            margin: 2rem auto;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 3rem;
+            padding: 2rem;
+            box-shadow: 0 20px 40px -10px #1f4b57;
         }
-        to {
-          opacity: 1;
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
         }
-      }
-      .item-list {
-        list-style: none;
-      }
-      .item-list li {
-        margin-bottom: 1.5rem;
-        padding-bottom: 1rem;
-        border-bottom: 1px dashed #bed7e0;
-      }
-      .item-title {
-        font-weight: 600;
-        color: #1d4b56;
-        font-size: 1.1rem;
-      }
-      .item-desc {
-        font-size: 0.9rem;
-        color: #437682;
-        margin: 0.3rem 0;
-      }
-      .video-link {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.3rem;
-        background: #e1f2f8;
-        padding: 0.3rem 1rem;
-        border-radius: 2rem;
-        color: #1f5a68;
-        text-decoration: none;
-        font-size: 0.85rem;
-        margin-top: 0.3rem;
-        transition: 0.2s;
-      }
-      .video-link:hover {
-        background: #c5e3ef;
-      }
+        .page-header h1 {
+            font-weight: 400;
+            color: #1b4c5c;
+            font-size: 2.2rem;
+        }
+        .back-btn {
+            background: #2f7d8f;
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 3rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .back-btn:hover {
+            background: #3e93a8;
+        }
+        .tab-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #cde3ea;
+            padding-bottom: 0.5rem;
+        }
+        .tab {
+            background: transparent;
+            border: none;
+            padding: 0.8rem 1.8rem;
+            border-radius: 3rem 3rem 0 0;
+            font-weight: 500;
+            color: #386e7c;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 1rem;
+        }
+        .tab.active {
+            background: #ffffffd0;
+            color: #1f5969;
+            box-shadow: 0 -4px 8px #b0d3de;
+        }
+        .tab:hover {
+            background: #e1f2f8;
+        }
+        .condition-content {
+            display: none;
+            animation: fade 0.3s;
+        }
+        .condition-content.active {
+            display: block;
+        }
+        @keyframes fade {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .item-list {
+            list-style: none;
+        }
+        .item-list li {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px dashed #bed7e0;
+        }
+        .item-title {
+            font-weight: 600;
+            color: #1d4b56;
+            font-size: 1.1rem;
+        }
+        .item-desc {
+            font-size: 0.9rem;
+            color: #437682;
+            margin: 0.3rem 0;
+        }
+        .video-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            background: #e1f2f8;
+            padding: 0.3rem 1rem;
+            border-radius: 2rem;
+            color: #1f5a68;
+            text-decoration: none;
+            font-size: 0.85rem;
+            margin-top: 0.3rem;
+            transition: 0.2s;
+        }
+        .video-link:hover {
+            background: #c5e3ef;
+        }
     </style>
-  </head>
-  <body>
+</head>
+<body>
     <div class="detail-page">
-      <div class="page-header">
-        <h1>
-          <i class="fas fa-headphones" style="color: #2f7d8f"></i> Audio Therapy
-        </h1>
-        <a href="solutions.html" class="back-btn"
-          ><i class="fas fa-arrow-left"></i> Back to Remedies</a
-        >
-      </div>
+        <div class="page-header">
+            <h1><i class="fas fa-eye" style="color:#2f7d8f;"></i> Visual Therapy</h1>
+            <a href="solutions.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Remedies</a>
+        </div>
 
-      <!-- Tabs for conditions -->
-      <div class="tab-container" id="tabContainer">
-        <button class="tab active" data-condition="stress">Stress</button>
-        <button class="tab" data-condition="anxiety">Anxiety</button>
-        <button class="tab" data-condition="depression">Depression</button>
-        <button class="tab" data-condition="sleep">Sleep Deprivation</button>
-        <button class="tab" data-condition="distraction">Distraction</button>
-      </div>
+        <!-- Tabs for conditions -->
+        <div class="tab-container" id="tabContainer">
+            <button class="tab active" data-condition="stress">Stress</button>
+            <button class="tab" data-condition="anxiety">Anxiety</button>
+            <button class="tab" data-condition="depression">Depression</button>
+            <button class="tab" data-condition="sleep">Sleep Deprivation</button>
+            <button class="tab" data-condition="distraction">Distraction</button>
+        </div>
 
-      <!-- Content containers (populated by JS) -->
-      <div id="stress" class="condition-content active"></div>
-      <div id="anxiety" class="condition-content"></div>
-      <div id="depression" class="condition-content"></div>
-      <div id="sleep" class="condition-content"></div>
-      <div id="distraction" class="condition-content"></div>
+        <!-- Content containers -->
+        <div id="stress" class="condition-content active"></div>
+        <div id="anxiety" class="condition-content"></div>
+        <div id="depression" class="condition-content"></div>
+        <div id="sleep" class="condition-content"></div>
+        <div id="distraction" class="condition-content"></div>
     </div>
 
     <script>
-      // Data from your original solutions (audio only)
-      const visualData = {
-        stress: [
-          {
-            title: "Blue Light Relaxation Therapy",
-            desc: "Soft blue light visuals help calm the nervous system and reduce mental tension.",
-            url: "https://www.youtube.com/watch?v=1ZYbU82GVz4",
-          },
-          {
-            title: "Nature Visual Therapy (Forest / Water Scenes)",
-            desc: "Watching nature scenes reduces stress and lowers heart rate.",
-            url: "https://www.youtube.com/watch?v=OdIJ2x3nxzQ",
-          },
-          {
-            title: "Color Therapy (Green Relaxation Screen)",
-            desc: "Green color visuals are associated with balance and calmness.",
-            url: "https://www.youtube.com/watch?v=8n9G9FQpH2Q",
-          },
-          {
-            title: "Slow Moving Mandala / Visual Meditation",
-            desc: "Watching slow moving symmetrical patterns can calm the mind.",
-            url: "https://www.youtube.com/watch?v=5X1h6D9s5nY",
-          },
-        ],
-        anxiety: [
-          {
-            title: "Calm Ocean Waves Visual Therapy",
-            desc: "Slow ocean waves encourage the brain to enter a relaxed state.",
-            url: "https://www.youtube.com/watch?v=V1RPi2MYptM",
-          },
-          {
-            title: "Soft Warm Light / Sunset Therapy",
-            desc: "Warm tones create a comforting atmosphere.",
-            url: "https://www.youtube.com/watch?v=V7yqW64Dx7c",
-          },
-          {
-            title: "Slow Breathing Visual Guide",
-            desc: "Visual breathing animation helps synchronize breath.",
-            url: "https://www.youtube.com/watch?v=tybOi4hjZFQ",
-          },
-          {
-            title: "Space / Starfield Relaxation Visual",
-            desc: "Slow-moving stars help shift attention away from anxious thinking.",
-            url: "https://www.youtube.com/watch?v=FjHGZj2IjBk",
-          },
-        ],
-        depression: [
-          {
-            title: "Morning Sunlight / Bright Light Therapy",
-            desc: "Bright light stimulates serotonin production.",
-            url: "https://www.youtube.com/watch?v=6H8E6k5V2qA",
-          },
-          {
-            title: "Nature Landscape Therapy (Mountains / Green Fields)",
-            desc: "Peaceful landscapes improve mood.",
-            url: "https://www.youtube.com/watch?v=1ZYbU82GVz4",
-          },
-          {
-            title: "Motivational Sunrise Visual",
-            desc: "Sunrise imagery promotes optimism.",
-            url: "https://www.youtube.com/watch?v=UfcAVejslrU",
-          },
-          {
-            title: "Flowing Water / River Visual Therapy",
-            desc: "Continuous motion reduces rumination.",
-            url: "https://www.youtube.com/watch?v=OdIJ2x3nxzQ",
-          },
-        ],
-        sleep: [
-          {
-            title: "Night Sky / Starfield Relaxation Visual",
-            desc: "Calm night sky helps prepare the brain for rest.",
-            url: "https://www.youtube.com/watch?v=6LT3gZt0e6o",
-          },
-          {
-            title: "Warm Light / Night Mode Therapy",
-            desc: "Warm dim lighting supports natural circadian rhythms.",
-            url: "https://www.youtube.com/watch?v=V7yqW64Dx7c",
-          },
-          {
-            title: "Slow Ocean Waves Visual",
-            desc: "Gentle ocean waves create a relaxing rhythm.",
-            url: "https://www.youtube.com/watch?v=V1RPi2MYptM",
-          },
-          {
-            title: "Candle Flame Relaxation Visual",
-            desc: "Soft flickering light encourages relaxation.",
-            url: "https://www.youtube.com/watch?v=LXb3EKWsInQ",
-          },
-        ],
-        distraction: [
-          {
-            title: "Focus Timer / Pomodoro Visual",
-            desc: "Structured timer helps brain stay engaged.",
-            url: "https://www.youtube.com/watch?v=3FjIuPMQzxo",
-          },
-          {
-            title: "Minimalist Focus Screen",
-            desc: "Reduces visual clutter to lower cognitive overload.",
-            url: "https://www.youtube.com/watch?v=DWcJFNfaw9c",
-          },
-          {
-            title: "Focus Animation / Breathing Dot",
-            desc: "Following motion trains attention on a single stimulus.",
-            url: "https://www.youtube.com/watch?v=bF_1ZiFta-E",
-          },
-          {
-            title: "Study Environment Visual (Library)",
-            desc: "Environmental cues signal it's time to focus.",
-            url: "https://www.youtube.com/watch?v=lFcSrYw-ARY",
-          },
-        ],
-      };
+        // Visual therapy data (from your provided content)
+        const visualData = {
+            stress: [
+                { 
+                    title: "Blue Light Relaxation Therapy", 
+                    desc: "Soft blue light visuals help calm the nervous system and reduce mental tension. Blue tones can promote a peaceful mental state and reduce overstimulation.", 
+                    url: "https://www.youtube.com/watch?v=1ZYbU82GVz4" 
+                },
+                { 
+                    title: "Nature Visual Therapy (Forest / Water Scenes)", 
+                    desc: "Watching nature scenes reduces stress and lowers heart rate. Natural environments trigger relaxation responses in the brain.", 
+                    url: "https://www.youtube.com/watch?v=OdIJ2x3nxzQ" 
+                },
+                { 
+                    title: "Color Therapy (Green Relaxation Screen)", 
+                    desc: "Green color visuals are associated with balance and calmness. Helps reduce anxiety and promotes mental relaxation.", 
+                    url: "https://www.youtube.com/watch?v=8n9G9FQpH2Q" 
+                },
+                { 
+                    title: "Slow Moving Mandala / Visual Meditation", 
+                    desc: "Watching slow moving symmetrical patterns can calm the mind. Helps the brain shift into a relaxed Alpha wave state often seen in Electroencephalography (EEG) recordings.", 
+                    url: "https://www.youtube.com/watch?v=5X1h6D9s5nY" 
+                }
+            ],
+            anxiety: [
+                { 
+                    title: "Calm Ocean Waves Visual Therapy", 
+                    desc: "Watching slow ocean waves and water movement helps calm the brain and reduce anxious thoughts. The repetitive movement of waves encourages the brain to enter a relaxed state.", 
+                    url: "https://www.youtube.com/watch?v=V1RPi2MYptM" 
+                },
+                { 
+                    title: "Soft Warm Light / Sunset Therapy", 
+                    desc: "Warm sunset lighting visuals create a calm and comforting atmosphere. Warm tones such as orange and yellow reduce visual stimulation and help the brain feel safe.", 
+                    url: "https://www.youtube.com/watch?v=V7yqW64Dx7c" 
+                },
+                { 
+                    title: "Slow Breathing Visual Guide", 
+                    desc: "A visual breathing animation helps users follow a slow breathing rhythm. Synchronizing breathing with the visual guide reduces anxiety and stabilizes the nervous system.", 
+                    url: "https://www.youtube.com/watch?v=tybOi4hjZFQ" 
+                },
+                { 
+                    title: "Space / Starfield Relaxation Visual", 
+                    desc: "Watching slow-moving stars or space visuals helps clear racing thoughts. The vast and slow movement visuals help the brain shift attention away from anxious thinking.", 
+                    url: "https://www.youtube.com/watch?v=FjHGZj2IjBk" 
+                }
+            ],
+            depression: [
+                { 
+                    title: "Morning Sunlight / Bright Light Therapy", 
+                    desc: "Exposure to bright light visuals that simulate natural sunlight. Bright light stimulates serotonin production and helps regulate mood and the body’s circadian rhythm.", 
+                    url: "https://www.youtube.com/watch?v=6H8E6k5V2qA" 
+                },
+                { 
+                    title: "Nature Landscape Therapy (Mountains / Green Fields)", 
+                    desc: "Viewing peaceful landscapes like mountains, meadows, and open nature. Nature visuals can improve mood, reduce negative thinking, and create a sense of openness.", 
+                    url: "https://www.youtube.com/watch?v=1ZYbU82GVz4" 
+                },
+                { 
+                    title: "Motivational Sunrise Visual", 
+                    desc: "Watching sunrise visuals that symbolize a fresh start and positive energy. Warm light colors and sunrise imagery help promote optimism and emotional upliftment.", 
+                    url: "https://www.youtube.com/watch?v=UfcAVejslrU" 
+                },
+                { 
+                    title: "Flowing Water / River Visual Therapy", 
+                    desc: "Watching slow moving rivers or waterfalls. Continuous natural motion helps reduce rumination and creates a calming mental rhythm.", 
+                    url: "https://www.youtube.com/watch?v=OdIJ2x3nxzQ" 
+                }
+            ],
+            sleep: [
+                { 
+                    title: "Night Sky / Starfield Relaxation Visual", 
+                    desc: "Watching calm night sky visuals helps prepare the brain for rest. Slow-moving stars and dark tones reduce visual stimulation and encourage relaxation before sleep.", 
+                    url: "https://www.youtube.com/watch?v=6LT3gZt0e6o" 
+                },
+                { 
+                    title: "Warm Light / Night Mode Therapy", 
+                    desc: "Warm dim lighting visuals simulate evening light conditions. Warm tones reduce blue light exposure and help the brain prepare for sleep by supporting natural circadian rhythms.", 
+                    url: "https://www.youtube.com/watch?v=V7yqW64Dx7c" 
+                },
+                { 
+                    title: "Slow Ocean Waves Visual", 
+                    desc: "Watching gentle ocean waves helps calm the mind and prepare the body for rest. The repetitive motion creates a relaxing rhythm that reduces mental stimulation.", 
+                    url: "https://www.youtube.com/watch?v=V1RPi2MYptM" 
+                },
+                { 
+                    title: "Candle Flame Relaxation Visual", 
+                    desc: "Watching a slow candle flame creates a calming and meditative environment. Soft flickering light encourages relaxation and reduces mental activity before sleep.", 
+                    url: "https://www.youtube.com/watch?v=LXb3EKWsInQ" 
+                }
+            ],
+            distraction: [
+                { 
+                    title: "Focus Timer / Pomodoro Visual", 
+                    desc: "A visual timer that divides work into focused intervals (usually 25 minutes). The structured timer helps the brain stay engaged in a task and reduces distractions.", 
+                    url: "https://www.youtube.com/watch?v=3FjIuPMQzxo" 
+                },
+                { 
+                    title: "Minimalist Focus Screen (Dark Background with Subtle Motion)", 
+                    desc: "A simple, clutter-free screen with minimal visual elements. Reducing visual clutter lowers cognitive overload and helps maintain concentration.", 
+                    url: "https://www.youtube.com/watch?v=DWcJFNfaw9c" 
+                },
+                { 
+                    title: "Focus Animation / Breathing Dot", 
+                    desc: "A moving dot or small animation that guides breathing and attention. Following the motion helps train the brain to stay focused on a single stimulus.", 
+                    url: "https://www.youtube.com/watch?v=bF_1ZiFta-E" 
+                },
+                { 
+                    title: "Study Environment Visual (Library / Workspace)", 
+                    desc: "Watching calm study environments creates a productive atmosphere. Environmental cues signal the brain that it is time to focus and work.", 
+                    url: "https://www.youtube.com/watch?v=lFcSrYw-ARY" 
+                }
+            ]
+        };
 
-      function renderCondition(containerId, items) {
-        const container = document.getElementById(containerId);
-        if (!container) return;
-        let html = '<ul class="item-list">';
-        items.forEach((item) => {
-          html += `
+        function renderCondition(containerId, items) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            let html = '<ul class="item-list">';
+            items.forEach(item => {
+                html += `
                     <li>
                         <div class="item-title">${item.title}</div>
                         <div class="item-desc">${item.desc}</div>
-                        <a href="${item.url}" target="_blank" class="video-link"><i class="fab fa-youtube"></i> Listen</a>
+                        <a href="${item.url}" target="_blank" class="video-link"><i class="fab fa-youtube"></i> Watch</a>
                     </li>
                 `;
-        });
-        html += "</ul>";
-        container.innerHTML = html;
-      }
+            });
+            html += '</ul>';
+            container.innerHTML = html;
+        }
 
-      // Render all
-      renderCondition("stress", audioData.stress);
-      renderCondition("anxiety", audioData.anxiety);
-      renderCondition("depression", audioData.depression);
-      renderCondition("sleep", audioData.sleep);
-      renderCondition("distraction", audioData.distraction);
+        // Render all conditions
+        renderCondition('stress', visualData.stress);
+        renderCondition('anxiety', visualData.anxiety);
+        renderCondition('depression', visualData.depression);
+        renderCondition('sleep', visualData.sleep);
+        renderCondition('distraction', visualData.distraction);
 
-      // Tab switching
-      const tabs = document.querySelectorAll(".tab");
-      const contents = document.querySelectorAll(".condition-content");
-      tabs.forEach((tab) => {
-        tab.addEventListener("click", () => {
-          tabs.forEach((t) => t.classList.remove("active"));
-          contents.forEach((c) => c.classList.remove("active"));
-          tab.classList.add("active");
-          document
-            .getElementById(tab.dataset.condition)
-            .classList.add("active");
+        // Tab switching
+        const tabs = document.querySelectorAll('.tab');
+        const contents = document.querySelectorAll('.condition-content');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                contents.forEach(c => c.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.condition).classList.add('active');
+            });
         });
-      });
     </script>
-  </body>
+</body>
 </html>
