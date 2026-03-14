@@ -1,73 +1,37 @@
 const { SerialPort } = require('serialport');
+const { ReadlineParser } = require('@serialport/parser-readline');
 const { WebSocketServer } = require('ws');
 const { processEEG } = require('./eegProcessor');
 const { detectMentalState } = require('./mentalState');
 const fs = require('fs');
 const path = require('path');
 
-const SERIAL_PORT = 'COM3';          // Change to your Arduino port
-const BAUD_RATE = 115200;
 const WS_PORT = 8080;
-const SAMPLE_RATE = 100;             // Hz, must match Arduino delay
-const SAMPLES_PER_WINDOW = 256;       // FFT window size
+const SAMPLE_RATE = 100; // Hz, must match Arduino delay
+const SAMPLES_PER_WINDOW = 256;
 
 let rawBuffer = [];
 let latestBands = { delta: 0, theta: 0, alpha: 0, beta: 0, gamma: 0 };
 let latestState = 'Unknown';
 let sessions = [];
+let port = null;
+let currentComPort = 'Not connected';
 
-// Load previous sessions from file
+// Load previous sessions
 const SESSIONS_FILE = path.join(__dirname, 'sessions.json');
 if (fs.existsSync(SESSIONS_FILE)) {
   try {
     sessions = JSON.parse(fs.readFileSync(SESSIONS_FILE));
-  } catch (e) { console.error('Could not load sessions'); }
+  } catch (e) {
+    console.error('Could not load sessions', e);
+  }
 }
 
 function saveSessions() {
   fs.writeFileSync(SESSIONS_FILE, JSON.stringify(sessions.slice(-50), null, 2));
 }
 
-// ---------- Serial Port ----------
-let port;
-try {
-  port = new SerialPort({ path: SERIAL_PORT, baudRate: BAUD_RATE });
-  console.log(`Serial port ${SERIAL_PORT} opened`);
-} catch (e) {
-  console.error('Failed to open serial port:', e.message);
-  process.exit(1);
-}
-
-port.on('data', (line) => {
-  const value = parseInt(line.toString().trim());
-  if (isNaN(value)) return;
-
-  rawBuffer.push(value);
-  if (rawBuffer.length >= SAMPLES_PER_WINDOW) {
-    // Process window with FFT
-    const bands = processEEG(rawBuffer, SAMPLE_RATE);
-    latestBands = bands;
-    latestState = detectMentalState(bands);
-
-    // Keep half for overlapping windows (optional)
-    rawBuffer = rawBuffer.slice(-SAMPLES_PER_WINDOW / 2);
-
-    broadcast({
-      type: 'eeg',
-      bands: latestBands,
-      state: latestState,
-      rawSample: value
-    });
-  } else {
-    broadcast({ type: 'raw', sample: value });
-  }
-});
-
-port.on('error', (err) => {
-  console.error('Serial error:', err.message);
-});
-
-// ---------- WebSocket Server ----------
+// WebSocket server
 const wss = new WebSocketServer({ port: WS_PORT });
 console.log(`WebSocket server on ws://localhost:${WS_PORT}`);
 
@@ -77,8 +41,93 @@ function broadcast(data) {
   });
 }
 
-// Handle incoming messages from frontend (e.g., save session, request sessions)
+// Auto‑detect Arduino
+async function findArduinoPort() {
+  const ports = await SerialPort.list();
+  // Look for typical Arduino vendor IDs or manufacturer name
+  const arduinoPort = ports.find(p => 
+    (p.vendorId && p.vendorId.toLowerCase().includes('2341')) || // Arduino
+    (p.vendorId && p.vendorId.toLowerCase().includes('1a86')) || // CH340
+    (p.manufacturer && p.manufacturer.toLowerCase().includes('arduino'))
+  );
+  return arduinoPort ? arduinoPort.path : null;
+}
+
+async function connectToArduino() {
+  if (port) {
+    try { port.close(); } catch (e) {}
+  }
+  const comPath = await findArduinoPort();
+  if (!comPath) {
+    console.log('No Arduino found. Retrying in 5 seconds...');
+    setTimeout(connectToArduino, 5000);
+    return;
+  }
+  console.log(`Connecting to Arduino on ${comPath}`);
+  currentComPort = comPath;
+  broadcast({ type: 'comPort', port: comPath });
+
+  try {
+    port = new SerialPort({ path: comPath, baudRate: 115200, autoOpen: false });
+    const parser = port.pipe(new ReadlineParser({ delimiter: '\r\n' }));
+
+    port.open((err) => {
+      if (err) {
+        console.error('Error opening port:', err.message);
+        setTimeout(connectToArduino, 5000);
+        return;
+      }
+      console.log('Serial port opened');
+    });
+
+    parser.on('data', (line) => {
+      const value = parseInt(line.trim());
+      if (isNaN(value)) return;
+
+      rawBuffer.push(value);
+      if (rawBuffer.length >= SAMPLES_PER_WINDOW) {
+        const bands = processEEG(rawBuffer, SAMPLE_RATE);
+        latestBands = bands;
+        latestState = detectMentalState(bands);
+        rawBuffer = rawBuffer.slice(-SAMPLES_PER_WINDOW / 2);
+
+        broadcast({
+          type: 'eeg',
+          bands: latestBands,
+          state: latestState,
+          rawSample: value
+        });
+      } else {
+        // Throttle raw samples to reduce graph speed (send only every 2nd)
+        if (rawBuffer.length % 2 === 0) {
+          broadcast({ type: 'raw', sample: value });
+        }
+      }
+    });
+
+    port.on('close', () => {
+      console.log('Serial port closed. Reconnecting...');
+      currentComPort = 'Not connected';
+      broadcast({ type: 'comPort', port: null });
+      setTimeout(connectToArduino, 3000);
+    });
+
+    port.on('error', (err) => {
+      console.error('Serial error:', err.message);
+      currentComPort = 'Not connected';
+      broadcast({ type: 'comPort', port: null });
+    });
+  } catch (e) {
+    console.error('Failed to open serial port:', e.message);
+    setTimeout(connectToArduino, 5000);
+  }
+}
+
+// Handle WebSocket messages
 wss.on('connection', (ws) => {
+  // Send current COM port on connection
+  ws.send(JSON.stringify({ type: 'comPort', port: currentComPort }));
+
   ws.on('message', (msg) => {
     try {
       const data = JSON.parse(msg);
@@ -95,6 +144,11 @@ wss.on('connection', (ws) => {
       } else if (data.type === 'getSessions') {
         ws.send(JSON.stringify({ type: 'sessions', sessions: sessions.slice(-10) }));
       }
-    } catch (e) {}
+    } catch (e) {
+      console.error('Invalid message:', e.message);
+    }
   });
 });
+
+// Start auto‑connect
+connectToArduino();

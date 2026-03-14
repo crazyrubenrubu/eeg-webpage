@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindFlow · EEG Monitor</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        /* Make heading clickable and remove default underline */
+        .clickable-heading {
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .clickable-heading:hover {
+            opacity: 0.8;
+        }
+
+        .result-overlay {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 420px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(14px);
+    border-radius: 3rem;
+    padding: 2rem 1.8rem;
+    box-shadow: 0 30px 50px -20px #1f4b57;
+    border: 1px solid #ffffff;
+    z-index: 1000;
+    display: none;
+}
+
+.overlay-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(0, 0, 0, 0.08);
+    border: none;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    color: #1b4c5c;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.overlay-close:hover {
+    background: rgba(47, 125, 143, 0.2);
+    color: #2f7d8f;
+}
+        /* No extra header/footer needed */
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- App header with clickable heading -->
+        <div class="app-header">
+            <a href="index.html" class="clickable-heading">
+                <i class="fas fa-brain" id="brainIcon"></i>
+                <h1>MindFlow EEG</h1>
+            </a>
+            <span id="connectionStatus">Disconnected</span>
+        </div>
+
+        <!-- Main content (unchanged) -->
+        <div class="grid-main">
+            <!-- Left panel -->
+            <div class="card session-card">
+                <h3><i class="fas fa-sliders-h"></i> EEG Session Controls</h3>
+                <div class="toggle-row">
+                    <button id="liveBtn" class="toggle-btn active">Live Device</button>
+                    <button id="simBtn" class="toggle-btn">Simulated Feed</button>
+                </div>
+                <div id="wsUrlBox" class="ws-url">ws://localhost:8080</div>
+
+                <div class="timer-block">
+                    <div class="timer-digits" id="timerDisplay">00:00</div>
+                    <div class="timer-label">SESSION TIMER</div>
+                    <div class="min-30-note">Minimum 30 seconds required for diagnosis.</div>
+                </div>
+
+                <button class="action-btn" id="mainActionBtn">Start Monitoring</button>
+
+                <!-- Band powers -->
+                <div class="band-grid" id="bandGrid">
+                    <div class="band-item" id="deltaItem"><div class="band-label">DELTA</div><div class="band-value" id="deltaVal">0.00</div><span class="band-unit">μV</span></div>
+                    <div class="band-item" id="thetaItem"><div class="band-label">THETA</div><div class="band-value" id="thetaVal">0.00</div><span class="band-unit">μV</span></div>
+                    <div class="band-item" id="alphaItem"><div class="band-label">ALPHA</div><div class="band-value" id="alphaVal">0.00</div><span class="band-unit">μV</span></div>
+                    <div class="band-item" id="betaItem"><div class="band-label">BETA</div><div class="band-value" id="betaVal">0.00</div><span class="band-unit">μV</span></div>
+                    <div class="band-item" id="gammaItem"><div class="band-label">GAMMA</div><div class="band-value" id="gammaVal">0.00</div><span class="band-unit">μV</span></div>
+                    <div class="band-item"><div class="band-label">QUALITY</div><div class="band-value" id="signalQuality">70.0</div><span class="band-unit">%</span></div>
+                </div>
+
+                <!-- Brain State Parameters (live mode only) -->
+                <div id="brainStateParams" class="brain-state-params" style="display: none; margin-top: 1.5rem;">
+                    <h4>Brain State Parameters</h4>
+                    <div class="param-item">
+                        <span class="param-label">Delta Wave (0.5–4 Hz)</span>
+                        <span class="param-value" id="deltaPercent">0.0%</span>
+                        <p class="param-desc">Measures depth of rest and body recovery.</p>
+                    </div>
+                    <div class="param-item">
+                        <span class="param-label">Theta Wave (4–8 Hz)</span>
+                        <span class="param-value" id="thetaPercent">0.0%</span>
+                        <p class="param-desc">Measures imagination and subconscious activity.</p>
+                    </div>
+                    <div class="param-item">
+                        <span class="param-label">Alpha Wave (8–13 Hz)</span>
+                        <span class="param-value" id="alphaPercent">0.0%</span>
+                        <p class="param-desc">Measures calmness and mental balance.</p>
+                    </div>
+                    <div class="param-item">
+                        <span class="param-label">Beta Wave (13–30 Hz)</span>
+                        <span class="param-value" id="betaPercent">0.0%</span>
+                        <p class="param-desc">Measures mental pressure and overthinking.</p>
+                    </div>
+                    <div class="param-item">
+                        <span class="param-label">Gamma Wave (30–100 Hz)</span>
+                        <span class="param-value" id="gammaPercent">0.0%</span>
+                        <p class="param-desc">Measures high-level thinking and learning.</p>
+                    </div>
+                    <div class="param-summary">
+                        <span id="dominantBand">Dominant Brainwave Detected: <strong>DELTA</strong></span><br>
+                        <span id="detectedStateParam">Detected State: <strong>Waiting for data...</strong></span>
+                    </div>
+                </div>
+
+                <div class="signal-quality">
+                    <span><i class="fas fa-wave-square"></i> Signal consistency</span>
+                    <span id="qualityText">70.0% estimated</span>
+                </div>
+            </div>
+
+            <!-- Right panel: waveform + diagnostic -->
+            <div class="card waveform-card">
+                <h3>Live EEG Waveform</h3>
+                <div class="status-bar">
+                    <span>STREAM STATUS <span id="streamStatus" class="status-badge">DISCONNECTED</span></span>
+                    <span class="sample-info" id="sampleInfo">Samples: 0 · latest: 0.00</span>
+                </div>
+                <div class="canvas-container">
+                    <canvas id="eegCanvas" width="600" height="250"></canvas>
+                </div>
+
+                <!-- Diagnostic Output below graph -->
+                <div class="diagnostic-card" style="margin-top: 1.5rem;">
+                    <h4>🧠 Diagnostic Output</h4>
+                    <div id="diagnosticText" class="diagnostic-placeholder">
+                        Session insights will appear here once at least 30 seconds of EEG data are recorded.
+                    </div>
+                    <button id="diagnosticSolutionsBtn" class="small-btn" style="margin-top: 0.8rem; display: none;">View Solutions</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Sessions row -->
+        <div class="info-row">
+            <div class="info-card" style="width:100%;">
+                <h4>📋 Recent Sessions</h4>
+                <ul class="recent-list" id="recentList">
+                    <li>No previous sessions yet.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Result overlay (with close button) -->
+<div id="resultOverlay" class="result-overlay">
+    <button class="overlay-close" onclick="document.getElementById('resultOverlay').style.display='none'">
+        <i class="fas fa-times"></i>
+    </button>
+    <div class="overlay-header">
+        <h2>analysis complete</h2>
+    </div>
+    <div class="result-message" id="overlayCondition">Stress detected</div>
+    <div id="solutionsContent" class="solutions-content"></div>
+    <div class="overlay-footer">
+        <button class="solutions-btn" id="viewSolutionsOverlayBtn">View Solutions</button>
+    </div>
+</div>
+    <!-- Loading overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Analyzing your EEG data...</div>
+    </div>
+
+    <!-- Chatbot -->
+    <div class="chat-icon" id="chatIcon">
+        <i class="fas fa-comment-dots"></i>
+    </div>
+    <div class="chat-window" id="chatWindow">
+        <div class="chat-header">AI assistant <i class="fas fa-robot"></i></div>
+        <div class="chat-messages" id="chatMessages"></div>
+        <div class="chat-input-area">
+            <input type="text" id="chatInput" placeholder="Ask about EEG or wellness..." />
+            <button id="sendChat"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <script src="dashboard.js"></script>
+    <script src="chart.js"></script>
+    <script src="chatbot.js"></script>
+</body>
+</html>

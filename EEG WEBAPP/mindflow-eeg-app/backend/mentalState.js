@@ -1,3 +1,4 @@
+// mentalState.js
 function detectMentalState(bands) {
   const d = parseFloat(bands.delta);
   const t = parseFloat(bands.theta);
@@ -5,7 +6,6 @@ function detectMentalState(bands) {
   const b = parseFloat(bands.beta);
   const g = parseFloat(bands.gamma);
 
-  // Enhanced rule-based detection (you can replace with ML later)
   if (b > 1.5 && a > 1.2) return 'Anxiety';
   if (d > 2.0 && t > 1.8) return 'Fatigue';
   if (a < 0.8 && b < 0.6) return 'Distraction';

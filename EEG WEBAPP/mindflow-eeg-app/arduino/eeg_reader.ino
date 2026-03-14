@@ -1,14 +1,16 @@
-// eeg_reader.ino – Read amplified EEG signal and send via Serial
-
-const int analogPin = A0;   // BioAmp EXG Pill output connected to A0
-int rawValue = 0;
+#define ANALOG_PIN    A0
+#define BAUD_RATE     115200
+#define SAMPLE_DELAY_MS  4   // ~250 Hz (adjust if your app uses different FS_HZ)
 
 void setup() {
-  Serial.begin(115200);     // Match baud rate in Node.js server
+  Serial.begin(BAUD_RATE);
+  analogReference(DEFAULT);  // 5V reference on Uno
+  while (!Serial) { ; }      // Wait for serial on Leonardo/Micro; Uno will skip
 }
 
 void loop() {
-  rawValue = analogRead(analogPin);   // 0–1023
-  Serial.println(rawValue);
-  delay(10);                          // ~100 Hz sampling rate (adjust as needed)
+  int raw = analogRead(ANALOG_PIN);  // 0-1023 for 0-5V
+  Serial.println(raw);
+
+  delay(SAMPLE_DELAY_MS);
 }

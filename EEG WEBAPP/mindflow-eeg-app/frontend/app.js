@@ -1,4 +1,4 @@
-// app.js – with adaptive model, loading animation, and polished errors
+// app.js – Full version with onboarding close button and session persistence
 const wsUrl = 'ws://localhost:8080';
 let socket = null;
 let monitoring = false;
@@ -39,6 +39,7 @@ const wsUrlBox = document.getElementById('wsUrlBox');
 const diagnosticSolutionsBtn = document.getElementById('diagnosticSolutionsBtn');
 const liveBtn = document.getElementById('liveBtn');
 const simBtn = document.getElementById('simBtn');
+const canvas = document.getElementById('eegCanvas'); // for visual feedback
 
 // Onboarding elements
 const onboardingModal = document.getElementById('onboardingModal');
@@ -54,7 +55,7 @@ const gammaPercent = document.getElementById('gammaPercent');
 const dominantBandSpan = document.getElementById('dominantBand').querySelector('strong');
 const detectedStateParam = document.getElementById('detectedStateParam').querySelector('strong');
 
-// Band items
+// Band items for highlight
 const bandItems = {
     delta: document.getElementById('deltaItem'),
     theta: document.getElementById('thetaItem'),
@@ -64,30 +65,104 @@ const bandItems = {
 };
 
 // Multi‑band trend chart
+// Multi‑band trend chart – fixed and robust
 let bandTrendCtx = document.getElementById('bandTrendCanvas').getContext('2d');
-let bandTrendChart = new Chart(bandTrendCtx, {
-    type: 'line',
-    data: {
-        labels: [],
-        datasets: [
-            { label: 'Delta', data: [], borderColor: '#1f77b4', pointRadius: 0, tension: 0.2 },
-            { label: 'Theta', data: [], borderColor: '#ff7f0e', pointRadius: 0, tension: 0.2 },
-            { label: 'Alpha', data: [], borderColor: '#2ca02c', pointRadius: 0, tension: 0.2 },
-            { label: 'Beta',  data: [], borderColor: '#d62728', pointRadius: 0, tension: 0.2 },
-            { label: 'Gamma', data: [], borderColor: '#9467bd', pointRadius: 0, tension: 0.2 }
-        ]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: { x: { display: false }, y: { beginAtZero: true, grid: { color: '#cde3ea' } } },
-        plugins: { legend: { display: false } }
+let bandTrendChart;
+
+function initBandTrendChart() {
+    // Destroy existing chart if any (to prevent canvas corruption)
+    if (bandTrendChart) {
+        bandTrendChart.destroy();
     }
+    bandTrendChart = new Chart(bandTrendCtx, {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [
+                { label: 'Delta', data: [], borderColor: '#1f77b4', backgroundColor: 'rgba(31,119,180,0.1)', pointRadius: 0, tension: 0.2, fill: false },
+                { label: 'Theta', data: [], borderColor: '#ff7f0e', backgroundColor: 'rgba(255,127,14,0.1)', pointRadius: 0, tension: 0.2, fill: false },
+                { label: 'Alpha', data: [], borderColor: '#2ca02c', backgroundColor: 'rgba(44,160,44,0.1)', pointRadius: 0, tension: 0.2, fill: false },
+                { label: 'Beta',  data: [], borderColor: '#d62728', backgroundColor: 'rgba(214,39,40,0.1)', pointRadius: 0, tension: 0.2, fill: false },
+                { label: 'Gamma', data: [], borderColor: '#9467bd', backgroundColor: 'rgba(148,103,189,0.1)', pointRadius: 0, tension: 0.2, fill: false }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: false,
+            scales: {
+                x: { display: false },
+                y: { 
+                    beginAtZero: true,
+                    grid: { color: '#cde3ea' },
+                    // Dynamically adjust max based on data, but cap at a reasonable value
+                    suggestedMin: 0,
+                    suggestedMax: 10, // adjust if your typical values are higher
+                    ticks: {
+                        callback: function(value) {
+                            return value.toFixed(1); // show one decimal
+                        }
+                    }
+                }
+            },
+            plugins: { legend: { display: false } }
+        }
+    });
+}
+
+// Call this on page load
+initBandTrendChart();
+
+// Also reinit on window resize to maintain proper dimensions
+window.addEventListener('resize', () => {
+    initBandTrendChart();
 });
+
+function updateBandTrend(bands) {
+    if (!bandTrendChart) return;
+
+    // Convert to numbers and clamp to avoid extreme values (optional)
+    const delta = Math.min(parseFloat(bands.delta) || 0, 50);
+    const theta = Math.min(parseFloat(bands.theta) || 0, 50);
+    const alpha = Math.min(parseFloat(bands.alpha) || 0, 50);
+    const beta  = Math.min(parseFloat(bands.beta)  || 0, 50);
+    const gamma = Math.min(parseFloat(bands.gamma) || 0, 50);
+
+    // Add new data point
+    bandTrendChart.data.labels.push('');
+    bandTrendChart.data.datasets[0].data.push(delta);
+    bandTrendChart.data.datasets[1].data.push(theta);
+    bandTrendChart.data.datasets[2].data.push(alpha);
+    bandTrendChart.data.datasets[3].data.push(beta);
+    bandTrendChart.data.datasets[4].data.push(gamma);
+
+    // Keep only last 30 points
+    if (bandTrendChart.data.labels.length > 30) {
+        bandTrendChart.data.labels.shift();
+        bandTrendChart.data.datasets.forEach(ds => ds.data.shift());
+    }
+
+    // Update chart
+    bandTrendChart.update();
+}
 
 let recentSessions = [];
 
-// ---------- WebSocket (unchanged) ----------
+// ---------- Onboarding modal close handling ----------
+// Check if user has already closed the modal in this session
+if (!sessionStorage.getItem('onboardingClosed')) {
+    onboardingModal.style.display = 'flex';
+} else {
+    onboardingModal.style.display = 'none';
+}
+
+// Make close function globally accessible
+window.closeOnboarding = function() {
+    onboardingModal.style.display = 'none';
+    sessionStorage.setItem('onboardingClosed', 'true');
+};
+
+// ---------- WebSocket with auto‑detect COM port ----------
 function connectWebSocket() {
     if (socket && socket.readyState === WebSocket.OPEN) return;
     socket = new WebSocket(wsUrl);
@@ -100,9 +175,7 @@ function connectWebSocket() {
             streamStatus.innerText = 'CONNECTED';
             streamStatus.style.background = '#3c879a';
             brainStateParams.style.display = 'block';
-            wsUrlBox.style.display = 'block';
         }
-        socket.send(JSON.stringify({ type: 'getSessions' }));
     };
     socket.onclose = () => {
         isConnected = false;
@@ -112,7 +185,7 @@ function connectWebSocket() {
             streamStatus.innerText = 'DISCONNECTED';
             streamStatus.style.background = '#a3c1ca';
             brainStateParams.style.display = 'none';
-            wsUrlBox.style.display = 'block';
+            wsUrlBox.innerText = 'No device connected';
         }
         if (reconnectAttempts < maxReconnect) {
             reconnectAttempts++;
@@ -122,6 +195,16 @@ function connectWebSocket() {
     socket.onmessage = (event) => {
         if (useSimulated) return;
         const data = JSON.parse(event.data);
+        // Handle COM port messages first
+        if (data.type === 'comPort') {
+            if (data.port) {
+                wsUrlBox.innerText = `Device on ${data.port}`;
+            } else {
+                wsUrlBox.innerText = 'No device connected';
+            }
+            return;
+        }
+        // Otherwise, it's EEG data
         dataReceived = true;
         handleIncomingData(data);
     };
@@ -165,7 +248,7 @@ function handleIncomingData(data) {
     }
 }
 
-// Helper functions (unchanged) – include them all
+// Helper functions
 function highlightDominantBand(bands) {
     Object.values(bandItems).forEach(el => el.classList.remove('dominant'));
     const values = {
@@ -227,10 +310,10 @@ function setBrainColor(state) {
     brainIcon.style.color = colors[state] || '#2f6e7a';
 }
 
-// Simulated data (unchanged)
+// Simulated data
 function startSimulatedData() {
     brainStateParams.style.display = 'none';
-    wsUrlBox.style.display = 'none';
+    wsUrlBox.innerText = 'Simulated mode (no device)';
     if (simInterval) clearInterval(simInterval);
     simInterval = setInterval(() => {
         const delta = (1 + Math.random()*0.5).toFixed(2);
@@ -273,6 +356,7 @@ function startSimulatedData() {
 
 function stopSimulatedData() {
     if (simInterval) clearInterval(simInterval);
+    wsUrlBox.innerText = 'Simulated mode stopped';
 }
 
 // Timer functions
@@ -442,11 +526,8 @@ async function sendToGoogleSheets(data) {
     }
 }
 
-// ---------- Adaptive model (simulated) ----------
-// We store previous user data in localStorage and average symptom scores per condition.
-// This is a simple demonstration – in a real system you'd have a backend.
+// Adaptive model (simulated)
 function getAdaptiveCondition(userData) {
-    // Convert symptom answers to numeric scores
     const scores = {
         stress: parseInt(userData.stress),
         anxiety: parseInt(userData.anxiety),
@@ -455,7 +536,6 @@ function getAdaptiveCondition(userData) {
         focus: parseInt(userData.focus)
     };
 
-    // Load existing knowledge base from localStorage
     let knowledge = JSON.parse(localStorage.getItem('mindflow_knowledge')) || {
         Stress: { count: 0, total: 0 },
         Anxiety: { count: 0, total: 0 },
@@ -466,7 +546,6 @@ function getAdaptiveCondition(userData) {
         Focused: { count: 0, total: 0 }
     };
 
-    // First, compute a simple rule-based condition as baseline
     let baselineCondition = 'Neutral';
     if (scores.anxiety >= 4) baselineCondition = 'Anxiety';
     else if (scores.stress >= 4) baselineCondition = 'Stress';
@@ -476,22 +555,14 @@ function getAdaptiveCondition(userData) {
     else if (scores.stress <= 2 && scores.anxiety <= 2 && scores.depression <= 2) baselineCondition = 'Relaxed';
     else if (scores.focus <= 2 && scores.stress <= 2) baselineCondition = 'Focused';
 
-    // Update knowledge base with this new user (we'll use the baseline as ground truth for now)
     if (knowledge[baselineCondition]) {
         knowledge[baselineCondition].count += 1;
-        // Average of symptom scores for this condition
-        knowledge[baselineCondition].total = (knowledge[baselineCondition].total || 0) + (scores.stress + scores.anxiety + scores.depression + scores.sleep + scores.focus) / 5;
+        knowledge[baselineCondition].total += (scores.stress + scores.anxiety + scores.depression + scores.sleep + scores.focus) / 5;
     }
-
-    // Save updated knowledge
     localStorage.setItem('mindflow_knowledge', JSON.stringify(knowledge));
 
-    // Now, to determine the final condition, we can use a weighted combination:
-    // For each possible condition, compute how close the user's scores are to the historical average of that condition.
-    // This simulates a model that becomes more accurate with more data.
     let bestCondition = baselineCondition;
     let bestScore = Infinity;
-
     for (let [cond, data] of Object.entries(knowledge)) {
         if (data.count === 0) continue;
         const avgSymptomScore = data.total / data.count;
@@ -502,15 +573,15 @@ function getAdaptiveCondition(userData) {
             bestCondition = cond;
         }
     }
-
     return bestCondition;
 }
 
-// ---------- Form submission handlers ----------
+// Form submission handlers
 window.submitAndUseDevice = async function() {
     const userData = collectUserData();
     await sendToGoogleSheets(userData);
     onboardingModal.style.display = 'none';
+    sessionStorage.setItem('onboardingClosed', 'true'); // remember close
     showToast('Data saved. You can now start EEG monitoring.');
 };
 
@@ -518,11 +589,10 @@ window.submitAndAnalyzeOnly = async function() {
     const userData = collectUserData();
     await sendToGoogleSheets(userData);
 
-    // Show loading overlay
     loadingOverlay.style.display = 'flex';
     onboardingModal.style.display = 'none';
+    sessionStorage.setItem('onboardingClosed', 'true'); // remember close
 
-    // Simulate analysis delay (2 seconds)
     setTimeout(() => {
         const condition = getAdaptiveCondition(userData);
         loadingOverlay.style.display = 'none';
@@ -530,7 +600,7 @@ window.submitAndAnalyzeOnly = async function() {
     }, 2000);
 };
 
-// ---------- Analysis from EEG (unchanged) ----------
+// Analysis from EEG
 function performAnalysis() {
     if (bandHistory.length === 0) {
         console.warn('No band history, using random');
@@ -663,7 +733,7 @@ function updateRecentList() {
     }
 }
 
-// ---------- Enhanced error toasts ----------
+// Enhanced error toasts
 function showError(message, type = 'error') {
     const toast = document.createElement('div');
     toast.className = `error-toast ${type}`;
@@ -680,7 +750,7 @@ function showToast(message) {
     setTimeout(() => toast.remove(), 3000);
 }
 
-// Add CSS for error variants (append to style or include in <style>)
+// Add CSS for error variants (if not already in style)
 const style = document.createElement('style');
 style.innerHTML = `
     .error-toast.warning {
@@ -698,7 +768,7 @@ style.innerHTML = `
 `;
 document.head.appendChild(style);
 
-// ---------- Event listeners (EEG controls) ----------
+// ---------- Event listeners ----------
 liveBtn.addEventListener('click', () => {
     if (monitoring) return;
     liveBtn.classList.add('active');
@@ -706,7 +776,6 @@ liveBtn.addEventListener('click', () => {
     useSimulated = false;
     streamStatus.innerText = isConnected ? 'CONNECTED' : 'DISCONNECTED';
     streamStatus.style.background = isConnected ? '#3c879a' : '#a3c1ca';
-    wsUrlBox.style.display = 'block';
     if (isConnected) brainStateParams.style.display = 'block';
     else brainStateParams.style.display = 'none';
 });
@@ -718,14 +787,15 @@ simBtn.addEventListener('click', () => {
     useSimulated = true;
     streamStatus.innerText = 'SIMULATED';
     streamStatus.style.background = '#8a9aa0';
-    wsUrlBox.style.display = 'none';
     brainStateParams.style.display = 'none';
+    wsUrlBox.innerText = 'Simulated mode';
 });
 
 mainAction.addEventListener('click', (e) => {
     e.stopPropagation();
 
     if (!monitoring) {
+        // START
         if (!useSimulated && !isConnected) {
             showError('❌ No device connected. Please connect to live device or switch to simulated feed.', 'error');
             return;
@@ -739,7 +809,12 @@ mainAction.addEventListener('click', (e) => {
         mainAction.innerText = 'Stop';
         mainAction.classList.add('stop');
         if (useSimulated) startSimulatedData();
+
+        // Visual feedback: green border on graph
+        canvas.style.border = '3px solid #6b8e4c';
+        canvas.style.boxShadow = '0 0 15px #6b8e4c';
     } else {
+        // STOP
         monitoring = false;
         stopTimer();
         stopSimulatedData();
@@ -747,6 +822,10 @@ mainAction.addEventListener('click', (e) => {
         simBtn.disabled = false;
         mainAction.innerText = 'Start Monitoring';
         mainAction.classList.remove('stop', 'ready');
+
+        // Remove visual feedback
+        canvas.style.border = 'none';
+        canvas.style.boxShadow = 'none';
 
         if (!useSimulated) {
             streamStatus.innerText = isConnected ? 'CONNECTED' : 'DISCONNECTED';
@@ -775,16 +854,10 @@ document.getElementById('viewSolutionsOverlayBtn').addEventListener('click', () 
     window.location.href = `solutions.html?condition=${condition}`;
 });
 
-// Click outside to close overlay
-document.addEventListener('click', (e) => {
-    if (overlay.style.display === 'block' && !overlay.contains(e.target) && e.target !== diagnosticSolutionsBtn && e.target !== document.getElementById('viewSolutionsOverlayBtn')) {
-        overlay.style.display = 'none';
-    }
-});
-
+// Prevent overlay from closing when clicking inside it
 overlay.addEventListener('click', (e) => e.stopPropagation());
 
-// Initialize WebSocket
-connectWebSocket();
+// **NO** click‑outside listener for overlay – it stays open until user clicks button
 
-// Show onboarding modal on page load (already visible)
+// Start WebSocket
+connectWebSocket();
