@@ -4,315 +4,305 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MindFlow · Questionnaire</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        body {
-            background: linear-gradient(145deg, #e9f2f5 0%, #dde9f0 100%);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+        .page-wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
             padding: 1rem;
         }
+        .header-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 1rem 0;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
         .back-arrow {
-            position: absolute;
-            top: 1.5rem;
-            left: 1.5rem;
-            font-size: 1.8rem;
-            color: #2f7d8f;
-            cursor: pointer;
-            z-index: 10;
+            font-size: 1.2rem;
+            color: var(--text-primary);
             text-decoration: none;
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--pill-bg);
+            border: 1px solid var(--border-light);
+            transition: all 0.2s;
         }
         .back-arrow:hover {
-            color: #1b4c5c;
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+            transform: translateX(-3px);
         }
         .clickable-heading {
             cursor: pointer;
             text-decoration: none;
-            color: inherit;
+            color: var(--text-primary);
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
-            margin: 0 auto 1.5rem auto;
-            width: fit-content;
+            gap: 0.8rem;
+        }
+        .clickable-heading h1 {
+            font-weight: 700;
+            font-size: 1.8rem;
+            letter-spacing: -0.02em;
+            margin: 0;
         }
         .clickable-heading:hover {
             opacity: 0.8;
         }
         .questionnaire-container {
-            max-width: 700px;
-            margin: 3rem auto 2rem auto;
-            background: rgba(255,255,255,0.7);
-            backdrop-filter: blur(10px);
-            border-radius: 3rem;
-            padding: 2rem;
-            box-shadow: 0 20px 40px -10px #1f4b57;
+            background: var(--overlay-bg);
+            backdrop-filter: blur(14px);
+            border-radius: 2.5rem;
+            padding: 3rem;
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.2);
+            border: 1px solid var(--card-border);
             position: relative;
+            transition: background 0.3s, border-color 0.3s;
         }
-        /* Rest of the styles unchanged */
-        .step-indicator { display: flex; justify-content: space-between; margin-bottom: 2rem; }
-        .step { width: 30px; height: 30px; border-radius: 50%; background: #cde3ea; color: #2d6575; display: flex; align-items: center; justify-content: center; font-weight: 500; transition: 0.3s; }
-        .step.active { background: #2f7d8f; color: white; transform: scale(1.1); }
-        .step.completed { background: #8fc9a3; color: white; }
-        .step-content { display: none; animation: slideIn 0.3s; }
-        .step-content.active { display: block; }
-        @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
-        .form-group { margin-bottom: 1.5rem; }
-        .form-group label { display: block; font-weight: 500; color: #194a56; margin-bottom: 0.5rem; }
-        .form-group input, .form-group select {
-            width: 100%; padding: 0.8rem 1.2rem; border-radius: 3rem; border: 1px solid #cde3ea;
-            background: #f0f9ff; font-size: 1rem; color: #1d4b56; outline: none; transition: 0.2s;
+        .questionnaire-container h2 {
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            font-weight: 650;
+            font-size: 1.5rem;
         }
-        .form-group input:focus, .form-group select:focus { border-color: #2f7d8f; box-shadow: 0 0 0 3px rgba(47,125,143,0.2); }
-        .button-group { display: flex; gap: 1rem; margin-top: 2rem; }
-        .primary-btn { background: #2f7d8f; color: white; border: none; padding: 0.8rem 2rem; border-radius: 3rem; font-size: 1rem; cursor: pointer; flex: 1; transition: 0.2s; }
-        .primary-btn:hover { background: #3e93a8; }
-        .secondary-btn { background: transparent; color: #2f7d8f; border: 1px solid #2f7d8f; padding: 0.8rem 2rem; border-radius: 3rem; font-size: 1rem; cursor: pointer; flex: 1; transition: 0.2s; }
-        .secondary-btn:hover { background: #e1f2f8; }
-        .skip-link { background: transparent; border: none; color: #56848f; text-decoration: underline; cursor: pointer; font-size: 0.9rem; margin-top: 1rem; }
-
-        .result-overlay {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 90%;
-    max-width: 420px;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(14px);
-    border-radius: 3rem;
-    padding: 2rem 1.8rem;
-    box-shadow: 0 30px 50px -20px #1f4b57;
-    border: 1px solid #ffffff;
-    z-index: 1000;
-    display: none;
-}
-
-.overlay-close {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background: rgba(0, 0, 0, 0.08);
-    border: none;
-    width: 2.5rem;
-    height: 2.5rem;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.3rem;
-    color: #1b4c5c;
-    cursor: pointer;
-    transition: background 0.2s, color 0.2s;
-}
-
-.overlay-close:hover {
-    background: rgba(47, 125, 143, 0.2);
-    color: #2f7d8f;
-}
+        .completion-text {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+        
+        @media (max-width: 600px) {
+            .questionnaire-container {
+                padding: 1.5rem;
+                border-radius: 1.5rem;
+            }
+            .header-nav {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+            .theme-toggle {
+                align-self: flex-end;
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- Back arrow in top-left corner -->
-    <a href="index.html" class="back-arrow"><i class="fas fa-arrow-left"></i></a>
-
-    <!-- Clickable heading (MindFlow) -->
-    <a href="index.html" class="clickable-heading">
-        <i class="fas fa-brain" style="color:#2f7d8f; font-size:2rem;"></i>
-        <h1 style="font-weight:400; color:#1b4c5c;">MindFlow</h1>
-    </a>
-
-    <div class="questionnaire-container">
-        <div class="step-indicator">
-            <div class="step active" id="step1">1</div>
-            <div class="step" id="step2">2</div>
-            <div class="step" id="step3">3</div>
-            <div class="step" id="step4">4</div>
-            <div class="step" id="step5">5</div>
+    <div class="page-wrapper">
+        <div class="header-nav">
+            <div class="header-left">
+                <a href="index.html" class="back-arrow"><i class="fas fa-arrow-left"></i></a>
+                <a href="index.html" class="clickable-heading">
+                    <i class="fas fa-brain" style="color:var(--accent); font-size: 2rem;"></i>
+                    <h1>MindFlow</h1>
+                </a>
+            </div>
+            <button id="themeToggle" class="pill theme-toggle" onclick="toggleTheme()">🌓 Theme</button>
         </div>
 
-        <!-- Step 1: Personal Info -->
-        <div id="step1Content" class="step-content active">
-            <h2 style="color:#1b4c5c; margin-bottom:1.5rem;">Tell us about yourself</h2>
-            <div class="form-group">
-                <label>Your name</label>
-                <input type="text" id="userName" placeholder="e.g., Alex" required>
+        <div class="questionnaire-container">
+            <div class="step-indicator">
+                <div class="step active" id="step1">1</div>
+                <div class="step" id="step2">2</div>
+                <div class="step" id="step3">3</div>
+                <div class="step" id="step4">4</div>
+                <div class="step" id="step5">5</div>
             </div>
-            <div class="form-group">
-                <label>Age *</label>
-                <input type="number" id="userAge" min="1" max="120" placeholder="25" required>
-            </div>
-            <div class="form-group">
-                <label>Gender *</label>
-                <select id="userGender" required>
-                    <option value="" disabled selected>Select</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other / Prefer not to say</option>
-                </select>
-            </div>
-            <div class="button-group">
-                <button class="primary-btn" onclick="validateAndNext(1)">Next</button>
-            </div>
-        </div>
 
-        <!-- Step 2: Occupation & Relationship -->
-        <div id="step2Content" class="step-content">
-            <h2 style="color:#1b4c5c; margin-bottom:1.5rem;">Your occupation & status</h2>
-            <div class="form-group">
-                <label>Occupation *</label>
-                <select id="occupationMain" required onchange="toggleOccupationSub()">
-                    <option value="" disabled selected>Select</option>
-                    <option value="govt">Government</option>
-                    <option value="private">Private Sector</option>
-                    <option value="self">Self-employed</option>
-                    <option value="student">Student</option>
-                    <option value="unemployed">Unemployed</option>
-                    <option value="retired">Retired</option>
-                    <option value="homemaker">Homemaker</option>
-                    <option value="other">Other</option>
-                </select>
+            <div id="step1Content" class="step-content active">
+                <h2>Tell us about yourself</h2>
+                <div class="form-group">
+                    <label>Your name</label>
+                    <input type="text" id="userName" placeholder="e.g., Alex" required>
+                </div>
+                <div class="form-group">
+                    <label>Age *</label>
+                    <input type="number" id="userAge" min="1" max="120" placeholder="25" required>
+                </div>
+                <div class="form-group">
+                    <label>Gender *</label>
+                    <select id="userGender" required>
+                        <option value="" disabled selected>Select</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other / Prefer not to say</option>
+                    </select>
+                </div>
+                <div class="button-group" style="justify-content: flex-end;">
+    <button class="primary-btn" onclick="validateAndNext(1)">Next</button>
+</div>
             </div>
-            <div id="occupationSubGroup" style="display:none;" class="form-group">
-                <label id="occupationSubLabel">Specify</label>
-                <select id="occupationSub"></select>
-            </div>
-            <div class="form-group">
-                <label>Relationship status *</label>
-                <select id="relationship" required>
-                    <option value="" disabled selected>Select</option>
-                    <option value="single">Single</option>
-                    <option value="relationship">In a relationship</option>
-                    <option value="married">Married</option>
-                    <option value="divorced">Divorced</option>
-                    <option value="widowed">Widowed</option>
-                </select>
-            </div>
-            <div class="button-group">
-                <button class="secondary-btn" onclick="prevStep(2)">Back</button>
-                <button class="primary-btn" onclick="validateAndNext(2)">Next</button>
-            </div>
-        </div>
 
-        <!-- Step 3: Habits -->
-        <div id="step3Content" class="step-content">
-            <h2 style="color:#1b4c5c; margin-bottom:1.5rem;">Lifestyle & habits</h2>
-            <div class="form-group">
-                <label>Do you smoke?</label>
-                <select id="habitSmoking">
-                    <option value="never">Never</option>
-                    <option value="occasional">Occasionally</option>
-                    <option value="daily">Daily</option>
-                </select>
+            <div id="step2Content" class="step-content">
+                <h2>Your occupation & status</h2>
+                <div class="form-group">
+                    <label>Occupation *</label>
+                    <select id="occupationMain" required onchange="toggleOccupationSub()">
+                        <option value="" disabled selected>Select</option>
+                        <option value="govt">Government</option>
+                        <option value="private">Private Sector</option>
+                        <option value="self">Self-employed</option>
+                        <option value="student">Student</option>
+                        <option value="unemployed">Unemployed</option>
+                        <option value="retired">Retired</option>
+                        <option value="homemaker">Homemaker</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div id="occupationSubGroup" style="display:none;" class="form-group">
+                    <label id="occupationSubLabel">Specify</label>
+                    <select id="occupationSub"></select>
+                </div>
+                <div class="form-group">
+                    <label>Relationship status *</label>
+                    <select id="relationship" required>
+                        <option value="" disabled selected>Select</option>
+                        <option value="single">Single</option>
+                        <option value="relationship">In a relationship</option>
+                        <option value="married">Married</option>
+                        <option value="divorced">Divorced</option>
+                        <option value="widowed">Widowed</option>
+                    </select>
+                </div>
+                <div class="button-group">
+                    <button class="secondary-btn" onclick="prevStep(2)">Back</button>
+                    <button class="primary-btn" onclick="validateAndNext(2)">Next</button>
+                </div>
             </div>
-            <div class="form-group">
-                <label>Do you drink alcohol?</label>
-                <select id="habitAlcohol">
-                    <option value="never">Never</option>
-                    <option value="occasional">Occasionally</option>
-                    <option value="weekly">Weekly</option>
-                    <option value="daily">Daily</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Gaming (hours per week)</label>
-                <select id="habitGaming">
-                    <option value="0">0</option>
-                    <option value="1-5">1–5</option>
-                    <option value="6-10">6–10</option>
-                    <option value="10+">10+</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Other habits (e.g., caffeine, energy drinks, meditation)</label>
-                <input type="text" id="habitOther" placeholder="e.g., 3 cups coffee, daily meditation">
-            </div>
-            <div class="button-group">
-                <button class="secondary-btn" onclick="prevStep(3)">Back</button>
-                <button class="primary-btn" onclick="nextStep(3)">Next</button>
-            </div>
-        </div>
 
-        <!-- Step 4: Problems -->
-        <div id="step4Content" class="step-content">
-            <h2 style="color:#1b4c5c; margin-bottom:1.5rem;">How often do you experience...</h2>
-            <div class="form-group">
-                <label>Feeling overwhelmed or stressed?</label>
-                <select id="qStress">
-                    <option value="1">Rarely</option>
-                    <option value="2">Sometimes</option>
-                    <option value="3" selected>Often</option>
-                    <option value="4">Very Often</option>
-                    <option value="5">Constantly</option>
-                </select>
+            <div id="step3Content" class="step-content">
+                <h2>Lifestyle & habits</h2>
+                <div class="form-group">
+                    <label>Do you smoke?</label>
+                    <select id="habitSmoking">
+                        <option value="never">Never</option>
+                        <option value="occasional">Occasionally</option>
+                        <option value="daily">Daily</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Do you drink alcohol?</label>
+                    <select id="habitAlcohol">
+                        <option value="never">Never</option>
+                        <option value="occasional">Occasionally</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="daily">Daily</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Gaming (hours per week)</label>
+                    <select id="habitGaming">
+                        <option value="0">0</option>
+                        <option value="1-5">1–5</option>
+                        <option value="6-10">6–10</option>
+                        <option value="10+">10+</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Other habits (e.g., caffeine, energy drinks, meditation)</label>
+                    <input type="text" id="habitOther" placeholder="e.g., 3 cups coffee, daily meditation">
+                </div>
+                <div class="button-group">
+                    <button class="secondary-btn" onclick="prevStep(3)">Back</button>
+                    <button class="primary-btn" onclick="nextStep(3)">Next</button>
+                </div>
             </div>
-            <div class="form-group">
-                <label>Feeling nervous, anxious, or on edge?</label>
-                <select id="qAnxiety">
-                    <option value="1">Rarely</option>
-                    <option value="2">Sometimes</option>
-                    <option value="3" selected>Often</option>
-                    <option value="4">Very Often</option>
-                    <option value="5">Constantly</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Feeling down, depressed, or hopeless?</label>
-                <select id="qDepression">
-                    <option value="1">Rarely</option>
-                    <option value="2">Sometimes</option>
-                    <option value="3" selected>Often</option>
-                    <option value="4">Very Often</option>
-                    <option value="5">Constantly</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Trouble sleeping or staying asleep?</label>
-                <select id="qSleep">
-                    <option value="1">Rarely</option>
-                    <option value="2">Sometimes</option>
-                    <option value="3" selected>Often</option>
-                    <option value="4">Very Often</option>
-                    <option value="5">Constantly</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Trouble focusing or staying on task?</label>
-                <select id="qFocus">
-                    <option value="1">Rarely</option>
-                    <option value="2">Sometimes</option>
-                    <option value="3" selected>Often</option>
-                    <option value="4">Very Often</option>
-                    <option value="5">Constantly</option>
-                </select>
-            </div>
-            <div class="button-group">
-                <button class="secondary-btn" onclick="prevStep(4)">Back</button>
-                <button class="primary-btn" onclick="nextStep(4)">Next</button>
-            </div>
-        </div>
 
-        <!-- Step 5: Review & Submit -->
-        <div id="step5Content" class="step-content">
-            <h2 style="color:#1b4c5c; margin-bottom:1.5rem;">Ready to see your results</h2>
-            <p style="color:#2d6575; margin-bottom:2rem;">We'll analyze your answers and provide personalized recommendations.</p>
-            <div class="button-group">
-                <button class="secondary-btn" onclick="prevStep(5)">Back</button>
-                <button class="primary-btn" onclick="submitQuestionnaire()">Get My Assessment</button>
+            <div id="step4Content" class="step-content">
+                <h2>How often do you experience...</h2>
+                <div class="form-group">
+                    <label>Feeling overwhelmed or stressed?</label>
+                    <select id="qStress">
+                        <option value="1">Rarely</option>
+                        <option value="2">Sometimes</option>
+                        <option value="3" selected>Often</option>
+                        <option value="4">Very Often</option>
+                        <option value="5">Constantly</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Feeling nervous, anxious, or on edge?</label>
+                    <select id="qAnxiety">
+                        <option value="1">Rarely</option>
+                        <option value="2">Sometimes</option>
+                        <option value="3" selected>Often</option>
+                        <option value="4">Very Often</option>
+                        <option value="5">Constantly</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Feeling down, depressed, or hopeless?</label>
+                    <select id="qDepression">
+                        <option value="1">Rarely</option>
+                        <option value="2">Sometimes</option>
+                        <option value="3" selected>Often</option>
+                        <option value="4">Very Often</option>
+                        <option value="5">Constantly</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Trouble sleeping or staying asleep?</label>
+                    <select id="qSleep">
+                        <option value="1">Rarely</option>
+                        <option value="2">Sometimes</option>
+                        <option value="3" selected>Often</option>
+                        <option value="4">Very Often</option>
+                        <option value="5">Constantly</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Trouble focusing or staying on task?</label>
+                    <select id="qFocus">
+                        <option value="1">Rarely</option>
+                        <option value="2">Sometimes</option>
+                        <option value="3" selected>Often</option>
+                        <option value="4">Very Often</option>
+                        <option value="5">Constantly</option>
+                    </select>
+                </div>
+                <div class="button-group">
+                    <button class="secondary-btn" onclick="prevStep(4)">Back</button>
+                    <button class="primary-btn" onclick="nextStep(4)">Next</button>
+                </div>
+            </div>
+
+            <div id="step5Content" class="step-content">
+                <h2>Ready to see your results</h2>
+                <p class="completion-text">We'll analyze your answers using our adaptive model and provide personalized recommendations for your mental wellness.</p>
+                <div class="button-group">
+                    <button class="secondary-btn" onclick="prevStep(5)">Back</button>
+                    <button class="primary-btn" onclick="submitQuestionnaire()">Get My Assessment</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Loading overlay -->
     <div id="loadingOverlay" class="loading-overlay" style="display: none;">
         <div class="loading-spinner"></div>
         <div class="loading-text">Analyzing your responses...</div>
     </div>
 
-    <!-- Result overlay (same as dashboard) -->
     <div id="resultOverlay" class="result-overlay">
-        <button class="overlay-close" onclick="document.getElementById('resultOverlay').style.display='none'">&times;</button>
+        <button class="overlay-close" onclick="document.getElementById('resultOverlay').style.display='none'">
+            <i class="fas fa-times"></i>
+        </button>
         <div class="overlay-header">
             <h2>analysis complete</h2>
         </div>
@@ -323,7 +313,6 @@
         </div>
     </div>
 
-    <!-- Chatbot -->
     <div class="chat-icon" id="chatIcon">
         <i class="fas fa-comment-dots"></i>
     </div>
@@ -338,5 +327,16 @@
 
     <script src="questions.js"></script>
     <script src="chatbot.js"></script>
+    <script>
+        // Theme toggle function
+        window.toggleTheme = function() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+        };
+        // Load saved theme
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+        }
+    </script>
 </body>
 </html>
