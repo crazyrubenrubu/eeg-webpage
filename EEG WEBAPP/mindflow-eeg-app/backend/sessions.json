@@ -178,5 +178,17 @@
       "gamma": "10%"
     },
     "duration": 35
+  },
+  {
+    "timestamp": "2026-03-14T17:53:22.899Z",
+    "condition": "Distraction",
+    "bands": {
+      "delta": "58%",
+      "theta": "17%",
+      "alpha": "10%",
+      "beta": "11%",
+      "gamma": "4%"
+    },
+    "duration": 33
   }
 ]

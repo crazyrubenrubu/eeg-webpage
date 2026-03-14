@@ -213,12 +213,12 @@ function connectWebSocket() {
 
 function handleIncomingData(data) {
     if (data.type === 'raw') {
-        // Update the colored bar backgrounds
-        if (document.getElementById('fillDelta')) document.getElementById('fillDelta').style.width = deltaPct + '%';
-        if (document.getElementById('fillTheta')) document.getElementById('fillTheta').style.width = thetaPct + '%';
-        if (document.getElementById('fillAlpha')) document.getElementById('fillAlpha').style.width = alphaPct + '%';
-        if (document.getElementById('fillBeta')) document.getElementById('fillBeta').style.width = betaPct + '%';
-        if (document.getElementById('fillGamma')) document.getElementById('fillGamma').style.width = gammaPct + '%';
+        if (sampleInfo) sampleInfo.innerText = `Value: ${data.sample.toFixed(2)}`;
+        // Update merged waveform with raw sample (or use average of bands later)
+        if (window.updateMergedWaveform) window.updateMergedWaveform(data.sample);
+        let qual = (70 + Math.random() * 20).toFixed(1);
+        if (signalQuality) signalQuality.innerText = qual;
+        if (qualityText) qualityText.innerText = qual + '%';
     } else if (data.type === 'eeg') {
         const b = data.bands;
         const total = parseFloat(b.delta) + parseFloat(b.theta) + parseFloat(b.alpha) + parseFloat(b.beta) + parseFloat(b.gamma);
@@ -238,11 +238,12 @@ function handleIncomingData(data) {
             ];
             bwPieChart.update();
         }
-            if (deltaVal) deltaVal.innerText = deltaPct + '%';
-            if (thetaVal) thetaVal.innerText = thetaPct + '%';
-            if (alphaVal) alphaVal.innerText = alphaPct + '%';
-            if (betaVal) betaVal.innerText = betaPct + '%';
-            if (gammaVal) gammaVal.innerText = gammaPct + '%';
+           // Update the colored bar backgrounds
+        if (document.getElementById('fillDelta')) document.getElementById('fillDelta').style.width = deltaPct + '%';
+        if (document.getElementById('fillTheta')) document.getElementById('fillTheta').style.width = thetaPct + '%';
+        if (document.getElementById('fillAlpha')) document.getElementById('fillAlpha').style.width = alphaPct + '%';
+        if (document.getElementById('fillBeta')) document.getElementById('fillBeta').style.width = betaPct + '%';
+        if (document.getElementById('fillGamma')) document.getElementById('fillGamma').style.width = gammaPct + '%';
         }
 
         // Use average of bands for merged waveform
@@ -493,48 +494,53 @@ function performAnalysis() {
     }, 1000);
 }
 
-function showResult(condition) {
-    if (overlayCondition) overlayCondition.innerText = condition;
-    if (solutionsContent) solutionsContent.innerHTML = getSolutions(condition);
-    if (overlay) overlay.style.display = 'block';
-
-    if (diagnosticText) diagnosticText.innerHTML = `<strong style="color:#1a5768;">Detected: ${condition}</strong> · based on 30s EEG analysis.`;
-
-    if (diagnosticSolutionsBtn) {
-        diagnosticSolutionsBtn.style.display = 'inline-block';
-        diagnosticSolutionsBtn.onclick = () => {
-            window.location.href = `solutions.html?condition=${condition.toLowerCase()}`;
-        };
+function showResult(condition, duration) {
+    // Safely grab elements dynamically so it NEVER crashes
+    const resultOverlay = document.getElementById('resultOverlay');
+    const overlayCond = document.getElementById('overlayCondition');
+    const solContent = document.getElementById('solutionsContent');
+    
+    if (overlayCond) overlayCond.innerText = condition;
+    if (solContent) solContent.innerHTML = getSolutions(condition);
+    
+    // Force the popup to display on top of everything
+    if (resultOverlay) {
+        resultOverlay.style.display = 'block';
+        resultOverlay.style.zIndex = '5000';
     }
 
-    if (socket && socket.readyState === WebSocket.OPEN) {
+    // Save session safely
+    if (typeof socket !== 'undefined' && socket && socket.readyState === WebSocket.OPEN) {
         socket.send(JSON.stringify({
             type: 'saveSession',
             condition: condition,
             bands: {
-                delta: deltaVal ? deltaVal.innerText : '0',
-                theta: thetaVal ? thetaVal.innerText : '0',
-                alpha: alphaVal ? alphaVal.innerText : '0',
-                beta: betaVal ? betaVal.innerText : '0',
-                gamma: gammaVal ? gammaVal.innerText : '0'
+                delta: document.getElementById('bwDelta') ? document.getElementById('bwDelta').innerText : '0',
+                theta: document.getElementById('bwTheta') ? document.getElementById('bwTheta').innerText : '0',
+                alpha: document.getElementById('bwAlpha') ? document.getElementById('bwAlpha').innerText : '0',
+                beta: document.getElementById('bwBeta') ? document.getElementById('bwBeta').innerText : '0',
+                gamma: document.getElementById('bwGamma') ? document.getElementById('bwGamma').innerText : '0'
             },
-            duration: secondsElapsed
+            duration: duration || 30 
         }));
     }
 
-    const timestamp = new Date().toLocaleTimeString();
-    recentSessions.unshift({ 
-        time: timestamp, 
-        condition: condition, 
-        bands: {
-            delta: deltaVal ? deltaVal.innerText : '0',
-            theta: thetaVal ? thetaVal.innerText : '0',
-            alpha: alphaVal ? alphaVal.innerText : '0',
-            beta: betaVal ? betaVal.innerText : '0',
-            gamma: gammaVal ? gammaVal.innerText : '0'
-        }
-    });
-    updateRecentList();
+    // Update the recent list safely
+    if (typeof recentSessions !== 'undefined') {
+        const timestamp = new Date().toLocaleTimeString();
+        recentSessions.unshift({ 
+            time: timestamp, 
+            condition: condition, 
+            bands: {
+                delta: document.getElementById('bwDelta') ? document.getElementById('bwDelta').innerText : '0',
+                theta: document.getElementById('bwTheta') ? document.getElementById('bwTheta').innerText : '0',
+                alpha: document.getElementById('bwAlpha') ? document.getElementById('bwAlpha').innerText : '0',
+                beta: document.getElementById('bwBeta') ? document.getElementById('bwBeta').innerText : '0',
+                gamma: document.getElementById('bwGamma') ? document.getElementById('bwGamma').innerText : '0'
+            }
+        });
+        if (typeof updateRecentList === 'function') updateRecentList();
+    }
 }
 
 function getSolutions(condition) {
