@@ -1338,6 +1338,36 @@ body.dark-mode .main-logo-img {
   filter: invert(1) sepia(1) hue-rotate(220deg) saturate(5) brightness(1.2);
 }
 
+/* Symptoms Grid for Questionnaire */
+.symptoms-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.symptom-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.symptom-item label {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+.symptom-item select {
+  width: 100%;
+}
+
+@media (max-width: 600px) {
+  .symptoms-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
 body.dark-mode .chat-icon {
   background: var(--chat-bg);
   border: 1px solid var(--border-light);

@@ -65,48 +65,110 @@ const bandItems = {
 };
 
 let recentSessions = [];
-let bwPieChart = null;
+let bwRadarChart = null;
 
-function initPieChart() {
-    const ctx = document.getElementById('bwPie');
+function getChartColors() {
+    const isDark = document.body.classList.contains('dark-mode');
+    if (isDark) {
+        // Professional Purple Gradient for Dark Mode
+        return ['#7c3aed', '#9333ea', '#a855f7', '#c084fc', '#e9d5ff'];
+    } else {
+        // Professional Teal Gradient for Light Mode
+        return ['#2f7d8f', '#459ba4', '#70b7bf', '#99d3d9', '#c2eff3'];
+    }
+}
+function initRadarChart() {
+    const ctx = document.getElementById('bwPie'); // Keeping the ID for simplicity, but treat as Radar
     if (!ctx) return;
     
-    bwPieChart = new Chart(ctx.getContext('2d'), {
-        type: 'pie', // Changed from 'doughnut' to make it solid
+    const colors = getChartColors();
+    const isDark = document.body.classList.contains('dark-mode');
+    
+    bwRadarChart = new Chart(ctx.getContext('2d'), {
+        type: 'radar',
         data: {
             labels: ['Delta', 'Theta', 'Alpha', 'Beta', 'Gamma'],
             datasets: [{
-                data: [20, 20, 20, 20, 20], // Default equal distribution
-                backgroundColor: [
-                    '#3e93a8', // Delta
-                    '#8fc9a3', // Theta
-                    '#f0ad4e', // Alpha
-                    '#bc8f8f', // Beta
-                    '#a855f7'  // Gamma
-                ],
-                borderWidth: 0,
-                hoverOffset: 4
+                label: 'Current State',
+                data: [0, 0, 0, 0, 0],
+                backgroundColor: isDark ? 'rgba(124, 58, 237, 0.4)' : 'rgba(47, 125, 143, 0.4)',
+                borderColor: isDark ? '#7c3aed' : '#2f7d8f',
+                borderWidth: 3,
+                pointBackgroundColor: colors,
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: colors,
+                pointRadius: 4,
+                fill: true
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            radius: '75%', // Scales the pie down to make it a bit smaller
+            scales: {
+                r: {
+                    angleLines: {
+                        color: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'
+                    },
+                    grid: {
+                        color: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'
+                    },
+                    pointLabels: {
+                        color: isDark ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.7)',
+                        font: {
+                            size: 13,
+                            weight: '600',
+                            family: 'Inter'
+                        }
+                    },
+                    ticks: {
+                        display: false,
+                        maxTicksLimit: 5
+                    },
+                    suggestedMin: 0,
+                    suggestedMax: 50
+                }
+            },
             plugins: {
-                legend: { display: false }, 
+                legend: { display: false },
                 tooltip: {
+                    backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                    titleFont: { size: 14, weight: 'bold' },
+                    bodyFont: { size: 13 },
+                    padding: 12,
+                    cornerRadius: 10,
                     callbacks: {
                         label: function(context) {
                             return ` ${context.label}: ${context.raw.toFixed(1)}%`;
                         }
                     }
                 }
+            },
+            animation: {
+                duration: 800,
+                easing: 'easeOutQuart'
             }
         }
     });
-}
-document.addEventListener('DOMContentLoaded', initPieChart);
 
+    // Listen for theme changes to update radar colors live
+    const observer = new MutationObserver(() => {
+        if (bwRadarChart) {
+            const isDarkNow = document.body.classList.contains('dark-mode');
+            const newColors = getChartColors();
+            bwRadarChart.data.datasets[0].backgroundColor = isDarkNow ? 'rgba(124, 58, 237, 0.4)' : 'rgba(47, 125, 143, 0.4)';
+            bwRadarChart.data.datasets[0].borderColor = isDarkNow ? '#7c3aed' : '#2f7d8f';
+            bwRadarChart.data.datasets[0].pointBackgroundColor = newColors;
+            bwRadarChart.options.scales.r.angleLines.color = isDarkNow ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
+            bwRadarChart.options.scales.r.grid.color = isDarkNow ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
+            bwRadarChart.options.scales.r.pointLabels.color = isDarkNow ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.7)';
+            bwRadarChart.update('none');
+        }
+    });
+    observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+}
+
+document.addEventListener('DOMContentLoaded', initRadarChart);
 
 // ---------- Reset UI on disconnect ----------
 function resetUI() {
@@ -136,7 +198,7 @@ function resetUI() {
     if (window.resetMergedWaveform) window.resetMergedWaveform();
     if (window.resetDominantChart) window.resetDominantChart();
 
-    if (brainIcon) brainIcon.style.color = 'var(--accent)'; // reset to default
+    if (brainIcon) brainIcon.style.color = 'var(--accent)'; 
 
     bandHistory = [];
     dataReceived = false;
@@ -228,15 +290,15 @@ function handleIncomingData(data) {
             const alphaPct = ((parseFloat(b.alpha) / total) * 100).toFixed(0);
             const betaPct = ((parseFloat(b.beta) / total) * 100).toFixed(0);
             const gammaPct = ((parseFloat(b.gamma) / total) * 100).toFixed(0);
-            if (bwPieChart) {
-            bwPieChart.data.datasets[0].data = [
+            if (bwRadarChart) {
+            bwRadarChart.data.datasets[0].data = [
                 parseFloat(deltaPct),
                 parseFloat(thetaPct),
                 parseFloat(alphaPct),
                 parseFloat(betaPct),
                 parseFloat(gammaPct)
             ];
-            bwPieChart.update();
+            bwRadarChart.update();
         }
            // Update the colored bar backgrounds
         if (document.getElementById('fillDelta')) document.getElementById('fillDelta').style.width = deltaPct + '%';

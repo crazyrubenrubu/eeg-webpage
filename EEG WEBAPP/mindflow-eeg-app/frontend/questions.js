@@ -141,11 +141,16 @@ function collectUserData() {
         alcohol: document.getElementById('habitAlcohol').value,
         gaming: document.getElementById('habitGaming').value,
         other_habits: document.getElementById('habitOther').value,
-        stress: document.getElementById('qStress').value,
-        anxiety: document.getElementById('qAnxiety').value,
-        depression: document.getElementById('qDepression').value,
-        sleep_issue: document.getElementById('qSleep').value,
-        focus: document.getElementById('qFocus').value,
+        stress_overwhelmed: document.getElementById('qStressOverwhelmed').value,
+        stress_irritability: document.getElementById('qStressIrritability').value,
+        anxiety_worry: document.getElementById('qAnxietyWorry').value,
+        anxiety_physical: document.getElementById('qAnxietyPhysical').value,
+        depression_mood: document.getElementById('qDepressionMood').value,
+        depression_interest: document.getElementById('qDepressionInterest').value,
+        sleep_issue: document.getElementById('qSleepIssue').value,
+        sleep_fatigue: document.getElementById('qSleepFatigue').value,
+        focus_task: document.getElementById('qFocusTask').value,
+        focus_mind: document.getElementById('qFocusMind').value,
         timestamp: new Date().toISOString()
     };
 }
@@ -168,11 +173,11 @@ async function sendToGoogleSheets(data) {
 // Adaptive model (same as before)
 function getAdaptiveCondition(userData) {
     const scores = {
-        stress: parseInt(userData.stress),
-        anxiety: parseInt(userData.anxiety),
-        depression: parseInt(userData.depression),
-        sleep: parseInt(userData.sleep_issue),
-        focus: parseInt(userData.focus)
+        stress: (parseInt(userData.stress_overwhelmed) + parseInt(userData.stress_irritability)) / 2,
+        anxiety: (parseInt(userData.anxiety_worry) + parseInt(userData.anxiety_physical)) / 2,
+        depression: (parseInt(userData.depression_mood) + parseInt(userData.depression_interest)) / 2,
+        sleep: (parseInt(userData.sleep_issue) + parseInt(userData.sleep_fatigue)) / 2,
+        focus: (parseInt(userData.focus_task) + parseInt(userData.focus_mind)) / 2
     };
 
     let knowledge = JSON.parse(localStorage.getItem('mindflow_knowledge')) || {
@@ -186,11 +191,11 @@ function getAdaptiveCondition(userData) {
     };
 
     let baselineCondition = 'Neutral';
-    if (scores.anxiety >= 4) baselineCondition = 'Anxiety';
-    else if (scores.stress >= 4) baselineCondition = 'Stress';
-    else if (scores.depression >= 4) baselineCondition = 'Mild Depression';
-    else if (scores.sleep >= 4) baselineCondition = 'Fatigue';
-    else if (scores.focus >= 4) baselineCondition = 'Distraction';
+    if (scores.anxiety >= 3.5) baselineCondition = 'Anxiety';
+    else if (scores.stress >= 3.5) baselineCondition = 'Stress';
+    else if (scores.depression >= 3.5) baselineCondition = 'Mild Depression';
+    else if (scores.sleep >= 3.5) baselineCondition = 'Fatigue';
+    else if (scores.focus >= 3.5) baselineCondition = 'Distraction';
     else if (scores.stress <= 2 && scores.anxiety <= 2 && scores.depression <= 2) baselineCondition = 'Relaxed';
     else if (scores.focus <= 2 && scores.stress <= 2) baselineCondition = 'Focused';
 

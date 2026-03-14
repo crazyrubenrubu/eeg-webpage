@@ -227,55 +227,107 @@
 
             <div id="step4Content" class="step-content">
                 <h2>How often do you experience...</h2>
-                <div class="form-group">
-                    <label>Feeling overwhelmed or stressed?</label>
-                    <select id="qStress">
-                        <option value="1">Rarely</option>
-                        <option value="2">Sometimes</option>
-                        <option value="3" selected>Often</option>
-                        <option value="4">Very Often</option>
-                        <option value="5">Constantly</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Feeling nervous, anxious, or on edge?</label>
-                    <select id="qAnxiety">
-                        <option value="1">Rarely</option>
-                        <option value="2">Sometimes</option>
-                        <option value="3" selected>Often</option>
-                        <option value="4">Very Often</option>
-                        <option value="5">Constantly</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Feeling down, depressed, or hopeless?</label>
-                    <select id="qDepression">
-                        <option value="1">Rarely</option>
-                        <option value="2">Sometimes</option>
-                        <option value="3" selected>Often</option>
-                        <option value="4">Very Often</option>
-                        <option value="5">Constantly</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Trouble sleeping or staying asleep?</label>
-                    <select id="qSleep">
-                        <option value="1">Rarely</option>
-                        <option value="2">Sometimes</option>
-                        <option value="3" selected>Often</option>
-                        <option value="4">Very Often</option>
-                        <option value="5">Constantly</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Trouble focusing or staying on task?</label>
-                    <select id="qFocus">
-                        <option value="1">Rarely</option>
-                        <option value="2">Sometimes</option>
-                        <option value="3" selected>Often</option>
-                        <option value="4">Very Often</option>
-                        <option value="5">Constantly</option>
-                    </select>
+                <div class="form-group symptoms-grid">
+                    <div class="symptom-item">
+                        <label>Feeling overwhelmed at work or home?</label>
+                        <select id="qStressOverwhelmed">
+                            <option value="1">Rarely</option>
+                            <option value="2">Sometimes</option>
+                            <option value="3" selected>Often</option>
+                            <option value="4">Very Often</option>
+                            <option value="5">Constantly</option>
+                        </select>
+                    </div>
+                    <div class="symptom-item">
+                        <label>Irritability or quick temper?</label>
+                        <select id="qStressIrritability">
+                            <option value="1">Rarely</option>
+                            <option value="2">Sometimes</option>
+                            <option value="3">Often</option>
+                            <option value="4">Very Often</option>
+                            <option value="5">Constantly</option>
+                        </select>
+                    </div>
+                    <div class="symptom-item">
+                        <label>Racing thoughts or mental worry?</label>
+                        <select id="qAnxietyWorry">
+                            <option value="1">Rarely</option>
+                            <option value="2">Sometimes</option>
+                            <option value="3" selected>Often</option>
+                            <option value="4">Very Often</option>
+                            <option value="5">Constantly</option>
+                        </select>
+                    </div>
+                    <div class="symptom-item">
+                        <label>Physical symptoms (fast heart, shaky hands)?</label>
+                        <select id="qAnxietyPhysical">
+                            <option value="1">Rarely</option>
+                            <option value="2">Sometimes</option>
+                            <option value="3">Often</option>
+                            <option value="4">Very Often</option>
+                            <option value="5">Constantly</option>
+                        </select>
+                    </div>
+                    <div class="symptom-item">
+                        <label>Feeling down or hopeless?</label>
+                        <select id="qDepressionMood">
+                            <option value="1">Rarely</option>
+                            <option value="2">Sometimes</option>
+                            <option value="3" selected>Often</option>
+                            <option value="4">Very Often</option>
+                            <option value="5">Constantly</option>
+                        </select>
+                    </div>
+                    <div class="symptom-item">
+                        <label>Loss of interest in normal activities?</label>
+                        <select id="qDepressionInterest">
+                            <option value="1">Rarely</option>
+                            <option value="2">Sometimes</option>
+                            <option value="3">Often</option>
+                            <option value="4">Very Often</option>
+                            <option value="5">Constantly</option>
+                        </select>
+                    </div>
+                    <div class="symptom-item">
+                        <label>Trouble falling or staying asleep?</label>
+                        <select id="qSleepIssue">
+                            <option value="1">Rarely</option>
+                            <option value="2">Sometimes</option>
+                            <option value="3" selected>Often</option>
+                            <option value="4">Very Often</option>
+                            <option value="5">Constantly</option>
+                        </select>
+                    </div>
+                    <div class="symptom-item">
+                        <label>Feeling tired despite rest?</label>
+                        <select id="qSleepFatigue">
+                            <option value="1">Rarely</option>
+                            <option value="2">Sometimes</option>
+                            <option value="3">Often</option>
+                            <option value="4">Very Often</option>
+                            <option value="5">Constantly</option>
+                        </select>
+                    </div>
+                    <div class="symptom-item">
+                        <label>Difficulty focusing on one task?</label>
+                        <select id="qFocusTask">
+                            <option value="1">Rarely</option>
+                            <option value="2">Sometimes</option>
+                            <option value="3" selected>Often</option>
+                            <option value="4">Very Often</option>
+                            <option value="5">Constantly</option>
+                        </select>
+                    </div>
+                    <div class="symptom-item">
+                        <label>Mind wandering or daydreaming?</label>
+                        <select id="qFocusMind">
+                            <option value="1">Rarely</option>
+                            <option value="2">Sometimes</option>
+                            <option value="3">Often</option>
+                            <option value="4">Very Often</option>
+                            <option value="5">Constantly</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="button-group">
                     <button class="secondary-btn" onclick="prevStep(4)">Back</button>
