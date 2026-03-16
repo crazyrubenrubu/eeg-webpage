@@ -1,0 +1,182 @@
+[
+  {
+    "timestamp": "2026-03-12T08:01:20.634Z",
+    "condition": "Relaxed",
+    "bands": {
+      "delta": "0.00",
+      "theta": "0.00",
+      "alpha": "0.00",
+      "beta": "0.00",
+      "gamma": "0.00"
+    },
+    "duration": 32
+  },
+  {
+    "timestamp": "2026-03-14T05:37:15.611Z",
+    "condition": "Fatigue",
+    "bands": {
+      "delta": "5409.97",
+      "theta": "1934.28",
+      "alpha": "733.76",
+      "beta": "2618.1",
+      "gamma": "1297.69"
+    },
+    "duration": 31
+  },
+  {
+    "timestamp": "2026-03-14T06:02:26.584Z",
+    "condition": "Distraction",
+    "bands": {
+      "delta": "0.94",
+      "theta": "0.85",
+      "alpha": "1.01",
+      "beta": "0.57",
+      "gamma": "0.3"
+    },
+    "duration": 77
+  },
+  {
+    "timestamp": "2026-03-14T08:48:33.763Z",
+    "condition": "Fatigue",
+    "bands": {
+      "delta": "1.41",
+      "theta": "1.12",
+      "alpha": "1.17",
+      "beta": "0.46",
+      "gamma": "0.30"
+    },
+    "duration": 50
+  },
+  {
+    "timestamp": "2026-03-14T08:53:40.731Z",
+    "condition": "Distraction",
+    "bands": {
+      "delta": "0.42",
+      "theta": "0.26",
+      "alpha": "0.25",
+      "beta": "0.19",
+      "gamma": "0.17"
+    },
+    "duration": 31
+  },
+  {
+    "timestamp": "2026-03-14T08:55:33.403Z",
+    "condition": "Fatigue",
+    "bands": {
+      "delta": "1.29",
+      "theta": "0.95",
+      "alpha": "0.72",
+      "beta": "0.52",
+      "gamma": "0.30"
+    },
+    "duration": 75
+  },
+  {
+    "timestamp": "2026-03-14T09:51:29.439Z",
+    "condition": "Focused",
+    "bands": {
+      "delta": "1.97",
+      "theta": "2.6",
+      "alpha": "1.09",
+      "beta": "6.77",
+      "gamma": "2.64"
+    },
+    "duration": 46
+  },
+  {
+    "timestamp": "2026-03-14T09:52:22.520Z",
+    "condition": "Fatigue",
+    "bands": {
+      "delta": "1.06",
+      "theta": "0.83",
+      "alpha": "1.08",
+      "beta": "0.41",
+      "gamma": "0.40"
+    },
+    "duration": 31
+  },
+  {
+    "timestamp": "2026-03-14T10:58:34.333Z",
+    "condition": "Distraction",
+    "bands": {
+      "delta": "32%",
+      "theta": "26%",
+      "alpha": "16%",
+      "beta": "15%",
+      "gamma": "10%"
+    },
+    "duration": 66
+  },
+  {
+    "timestamp": "2026-03-14T11:01:17.173Z",
+    "condition": "Fatigue",
+    "bands": {
+      "delta": "30%",
+      "theta": "7%",
+      "alpha": "10%",
+      "beta": "41%",
+      "gamma": "12%"
+    },
+    "duration": 48
+  },
+  {
+    "timestamp": "2026-03-14T16:43:47.516Z",
+    "condition": "Fatigue",
+    "bands": {
+      "delta": "60%",
+      "theta": "14%",
+      "alpha": "9%",
+      "beta": "12%",
+      "gamma": "5%"
+    },
+    "duration": 36
+  },
+  {
+    "timestamp": "2026-03-14T16:54:44.284Z",
+    "condition": "Fatigue",
+    "bands": {
+      "delta": "16%",
+      "theta": "16%",
+      "alpha": "12%",
+      "beta": "41%",
+      "gamma": "14%"
+    },
+    "duration": 46
+  },
+  {
+    "timestamp": "2026-03-14T17:08:16.370Z",
+    "condition": "Distraction",
+    "bands": {
+      "delta": "20%",
+      "theta": "20%",
+      "alpha": "20%",
+      "beta": "20%",
+      "gamma": "20%"
+    },
+    "duration": 0
+  },
+  {
+    "timestamp": "2026-03-14T17:21:11.665Z",
+    "condition": "Distraction",
+    "bands": {
+      "delta": "74%",
+      "theta": "17%",
+      "alpha": "7%",
+      "beta": "2%",
+      "gamma": "0%"
+    },
+    "duration": 0
+  },
+  {
+    "timestamp": "2026-03-14T17:30:06.870Z",
+    "condition": "Distraction",
+    "bands": {
+      "delta": "32%",
+      "theta": "19%",
+      "alpha": "20%",
+      "beta": "18%",
+      "gamma": "10%"
+    },
+    "duration": 35
+  }
+]

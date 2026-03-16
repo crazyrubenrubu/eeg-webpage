@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindFlow · Questionnaire</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .page-wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 1rem;
+        }
+        .header-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 1rem 0;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        .back-arrow {
+            font-size: 1.2rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--pill-bg);
+            border: 1px solid var(--border-light);
+            transition: all 0.2s;
+        }
+        .back-arrow:hover {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+            transform: translateX(-3px);
+        }
+        .clickable-heading {
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--text-primary);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        .clickable-heading h1 {
+            font-weight: 700;
+            font-size: 1.8rem;
+            letter-spacing: -0.02em;
+            margin: 0;
+        }
+        .clickable-heading:hover {
+            opacity: 0.8;
+        }
+        .questionnaire-container {
+            background: var(--overlay-bg);
+            backdrop-filter: blur(14px);
+            border-radius: 2.5rem;
+            padding: 3rem;
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.2);
+            border: 1px solid var(--card-border);
+            position: relative;
+            transition: background 0.3s, border-color 0.3s;
+        }
+        .questionnaire-container h2 {
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            font-weight: 650;
+            font-size: 1.5rem;
+        }
+        .completion-text {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+        
+        @media (max-width: 600px) {
+            .questionnaire-container {
+                padding: 1.5rem;
+                border-radius: 1.5rem;
+            }
+            .header-nav {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+            .theme-toggle {
+                align-self: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <div class="header-nav">
+            <div class="header-left">
+                <a href="index.html" class="back-arrow"><i class="fas fa-arrow-left"></i></a>
+                <a href="index.html" class="clickable-heading">
+                    <i class="fas fa-brain" style="color:var(--accent); font-size: 2rem;"></i>
+                    <h1>MindFlow</h1>
+                </a>
+            </div>
+            <button id="themeToggle" class="pill theme-toggle" onclick="toggleTheme()">🌓 Theme</button>
+        </div>
+
+        <div class="questionnaire-container">
+            <div class="step-indicator">
+                <div class="step active" id="step1">1</div>
+                <div class="step" id="step2">2</div>
+                <div class="step" id="step3">3</div>
+                <div class="step" id="step4">4</div>
+                <div class="step" id="step5">5</div>
+            </div>
+
+            <div id="step1Content" class="step-content active">
+                <h2>Tell us about yourself</h2>
+                <div class="form-group">
+                    <label>Your name</label>
+                    <input type="text" id="userName" placeholder="e.g., Alex" required>
+                </div>
+                <div class="form-group">
+                    <label>Age *</label>
+                    <input type="number" id="userAge" min="1" max="120" placeholder="25" required>
+                </div>
+                <div class="form-group">
+                    <label>Gender *</label>
+                    <select id="userGender" required>
+                        <option value="" disabled selected>Select</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other / Prefer not to say</option>
+                    </select>
+                </div>
+                <div class="button-group" style="justify-content: flex-end;">
+    <button class="primary-btn" onclick="validateAndNext(1)">Next</button>
+</div>
+            </div>
+
+            <div id="step2Content" class="step-content">
+                <h2>Your occupation & status</h2>
+                <div class="form-group">
+                    <label>Occupation *</label>
+                    <select id="occupationMain" required onchange="toggleOccupationSub()">
+                        <option value="" disabled selected>Select</option>
+                        <option value="govt">Government</option>
+                        <option value="private">Private Sector</option>
+                        <option value="self">Self-employed</option>
+                        <option value="student">Student</option>
+                        <option value="unemployed">Unemployed</option>
+                        <option value="retired">Retired</option>
+                        <option value="homemaker">Homemaker</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div id="occupationSubGroup" style="display:none;" class="form-group">
+                    <label id="occupationSubLabel">Specify</label>
+                    <select id="occupationSub"></select>
+                </div>
+                <div class="form-group">
+                    <label>Relationship status *</label>
+                    <select id="relationship" required>
+                        <option value="" disabled selected>Select</option>
+                        <option value="single">Single</option>
+                        <option value="relationship">In a relationship</option>
+                        <option value="married">Married</option>
+                        <option value="divorced">Divorced</option>
+                        <option value="widowed">Widowed</option>
+                    </select>
+                </div>
+                <div class="button-group">
+                    <button class="secondary-btn" onclick="prevStep(2)">Back</button>
+                    <button class="primary-btn" onclick="validateAndNext(2)">Next</button>
+                </div>
+            </div>
+
+            <div id="step3Content" class="step-content">
+                <h2>Lifestyle & habits</h2>
+                <div class="form-group">
+                    <label>Do you smoke?</label>
+                    <select id="habitSmoking">
+                        <option value="never">Never</option>
+                        <option value="occasional">Occasionally</option>
+                        <option value="daily">Daily</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Do you drink alcohol?</label>
+                    <select id="habitAlcohol">
+                        <option value="never">Never</option>
+                        <option value="occasional">Occasionally</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="daily">Daily</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Gaming (hours per week)</label>
+                    <select id="habitGaming">
+                        <option value="0">0</option>
+                        <option value="1-5">1–5</option>
+                        <option value="6-10">6–10</option>
+                        <option value="10+">10+</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Other habits (e.g., caffeine, energy drinks, meditation)</label>
+                    <input type="text" id="habitOther" placeholder="e.g., 3 cups coffee, daily meditation">
+                </div>
+                <div class="button-group">
+                    <button class="secondary-btn" onclick="prevStep(3)">Back</button>
+                    <button class="primary-btn" onclick="nextStep(3)">Next</button>
+                </div>
+            </div>
+
+            <div id="step4Content" class="step-content">
+                <h2>How often do you experience...</h2>
+                <div class="form-group">
+                    <label>Feeling overwhelmed or stressed?</label>
+                    <select id="qStress">
+                        <option value="1">Rarely</option>
+                        <option value="2">Sometimes</option>
+                        <option value="3" selected>Often</option>
+                        <option value="4">Very Often</option>
+                        <option value="5">Constantly</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Feeling nervous, anxious, or on edge?</label>
+                    <select id="qAnxiety">
+                        <option value="1">Rarely</option>
+                        <option value="2">Sometimes</option>
+                        <option value="3" selected>Often</option>
+                        <option value="4">Very Often</option>
+                        <option value="5">Constantly</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Feeling down, depressed, or hopeless?</label>
+                    <select id="qDepression">
+                        <option value="1">Rarely</option>
+                        <option value="2">Sometimes</option>
+                        <option value="3" selected>Often</option>
+                        <option value="4">Very Often</option>
+                        <option value="5">Constantly</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Trouble sleeping or staying asleep?</label>
+                    <select id="qSleep">
+                        <option value="1">Rarely</option>
+                        <option value="2">Sometimes</option>
+                        <option value="3" selected>Often</option>
+                        <option value="4">Very Often</option>
+                        <option value="5">Constantly</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Trouble focusing or staying on task?</label>
+                    <select id="qFocus">
+                        <option value="1">Rarely</option>
+                        <option value="2">Sometimes</option>
+                        <option value="3" selected>Often</option>
+                        <option value="4">Very Often</option>
+                        <option value="5">Constantly</option>
+                    </select>
+                </div>
+                <div class="button-group">
+                    <button class="secondary-btn" onclick="prevStep(4)">Back</button>
+                    <button class="primary-btn" onclick="nextStep(4)">Next</button>
+                </div>
+            </div>
+
+            <div id="step5Content" class="step-content">
+                <h2>Ready to see your results</h2>
+                <p class="completion-text">We'll analyze your answers using our adaptive model and provide personalized recommendations for your mental wellness.</p>
+                <div class="button-group">
+                    <button class="secondary-btn" onclick="prevStep(5)">Back</button>
+                    <button class="primary-btn" onclick="submitQuestionnaire()">Get My Assessment</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Analyzing your responses...</div>
+    </div>
+
+    <div id="resultOverlay" class="result-overlay">
+        <button class="overlay-close" onclick="document.getElementById('resultOverlay').style.display='none'">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="overlay-header">
+            <h2>analysis complete</h2>
+        </div>
+        <div class="result-message" id="overlayCondition">Stress detected</div>
+        <div id="solutionsContent" class="solutions-content"></div>
+        <div class="overlay-footer">
+            <button class="solutions-btn" id="viewSolutionsOverlayBtn">View Solutions</button>
+        </div>
+    </div>
+
+    <div class="chat-icon" id="chatIcon">
+        <i class="fas fa-comment-dots"></i>
+    </div>
+    <div class="chat-window" id="chatWindow">
+        <div class="chat-header">AI assistant <i class="fas fa-robot"></i></div>
+        <div class="chat-messages" id="chatMessages"></div>
+        <div class="chat-input-area">
+            <input type="text" id="chatInput" placeholder="Ask about EEG or wellness..." />
+            <button id="sendChat"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <script src="questions.js"></script>
+    <script src="chatbot.js"></script>
+    <script>
+        // Theme toggle function
+        window.toggleTheme = function() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+        };
+        // Load saved theme
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+        }
+    </script>
+</body>
+</html>

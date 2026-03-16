@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MindFlow · EEG Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css?v=1773565600" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+        /* Force the app to utilize the full screen width */
+        .app {
+            max-width: 1800px !important; 
+            width: 100%;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Styles for the new Discover card */
+        .explore-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+        }
+        .explore-text {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-top: 10px;
+        }
+        .explore-icon-wrap {
+            text-align: center;
+            margin: 2rem 0;
+        }
+        .explore-icon-wrap i {
+            font-size: 4rem;
+            color: var(--accent);
+            opacity: 0.7;
+            transition: transform 0.3s, opacity 0.3s;
+        }
+        .explore-card:hover .explore-icon-wrap i {
+            transform: scale(1.1) rotate(15deg);
+            opacity: 1;
+        }
+        .explore-btn {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 0.8rem 2rem;
+            border-radius: 3rem;
+            border: none;
+            background: var(--accent);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .explore-btn:hover {
+            background: var(--accent-light);
+            transform: translateY(-2px);
+        }
+        .fa-brain {
+            font-size: 2rem;
+            color: var(--accent);
+            transition: color 0.3s;
+        }
+        
+        /* Quality Badges */
+        .q-poor { background: rgba(239, 68, 68, 0.1) !important; color: #ef4444 !important; border: 1px solid #ef4444; }
+        .q-good { background: rgba(245, 158, 11, 0.1) !important; color: #f59e0b !important; border: 1px solid #f59e0b; }
+        .q-great { background: rgba(34, 197, 94, 0.1) !important; color: #22c55e !important; border: 1px solid #22c55e; }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <header class="topbar">
+            <div>
+                <a href="index.html" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-brain" style="font-size: 2rem; color: var(--accent);"></i>
+                    <h1>MindFlow · EEG Dashboard</h1>
+                </a>
+                <p class="sub">
+                    Live EEG via Serial · Real‑time brainwave analysis · Futuristic neurofeedback interface
+                </p>
+            </div>
+            <div class="status">
+                <button id="themeToggle" class="pill theme-toggle" onclick="toggleTheme()">🌓</button>
+                <div class="pill" id="connectionStatus">Disconnected</div>
+                <div class="pill muted" id="bufferInfo">Buffer: 0 / 0</div>
+            </div>
+        </header>
+
+        <main class="grid">
+            <section class="card span-2">
+                <div class="card-head">
+                    <h2>Live EEG Signal</h2>
+                    <div class="small" id="liveValue">Value: —</div>
+                </div>
+                <div class="chart-wrap">
+                    <canvas id="eegCanvas"></canvas>
+                </div>
+                <div class="card-foot small live-foot" style="display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;">
+                    <div class="noise-indicator" title="Based on signal variability (standard deviation)">
+                        <span>Noise:</span>
+                        <div class="noise-bar"><div class="noise-fill" id="noiseFill"></div></div>
+                        <span class="noise-value" id="noiseValue">0%</span>
+                    </div>
+                    <div class="noise-indicator" id="signalQualityWrap" style="margin-right: 0;">
+                        <span>Quality:</span>
+                        <div class="pill" id="signalQualityBadge" style="padding: 2px 8px; font-size: 0.75rem; text-transform: uppercase;">Waiting</div>
+                    </div>
+                    <span>30s buffer</span>
+                    <div style="display: flex; align-items: center; gap: 1.5rem;">
+                        <div id="timerDisplay" style="font-size: 1.4rem; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--text-primary);">00:00</div>
+                        <button class="action-btn" id="mainActionBtn">Start Monitoring</button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card">
+                <div class="card-head">
+                    <h2>Brainwave Distribution</h2>
+                    <div class="small" id="bwUpdated">Live</div>
+                </div>
+                <div class="bw-list" id="bwList">
+                    <div class="bw-item" style="position: relative; overflow: hidden; display: flex; justify-content: space-between; padding: 0.6rem 1rem; margin-bottom: 0.5rem; border-radius: 6px; background: rgba(128, 128, 128, 0.1); z-index: 1;">
+                        <div id="fillDelta" style="position: absolute; left: 0; top: 0; height: 100%; width: 0%; background: #3e93a8; opacity: 0.3; z-index: -1; transition: width 0.3s ease;"></div>
+                        <span style="font-weight: 500;">Delta</span><span id="bwDelta" style="font-weight: 600;">0%</span>
+                    </div>
+                    <div class="bw-item" style="position: relative; overflow: hidden; display: flex; justify-content: space-between; padding: 0.6rem 1rem; margin-bottom: 0.5rem; border-radius: 6px; background: rgba(128, 128, 128, 0.1); z-index: 1;">
+                        <div id="fillTheta" style="position: absolute; left: 0; top: 0; height: 100%; width: 0%; background: #8fc9a3; opacity: 0.3; z-index: -1; transition: width 0.3s ease;"></div>
+                        <span style="font-weight: 500;">Theta</span><span id="bwTheta" style="font-weight: 600;">0%</span>
+                    </div>
+                    <div class="bw-item" style="position: relative; overflow: hidden; display: flex; justify-content: space-between; padding: 0.6rem 1rem; margin-bottom: 0.5rem; border-radius: 6px; background: rgba(128, 128, 128, 0.1); z-index: 1;">
+                        <div id="fillAlpha" style="position: absolute; left: 0; top: 0; height: 100%; width: 0%; background: #f0ad4e; opacity: 0.3; z-index: -1; transition: width 0.3s ease;"></div>
+                        <span style="font-weight: 500;">Alpha</span><span id="bwAlpha" style="font-weight: 600;">0%</span>
+                    </div>
+                    <div class="bw-item" style="position: relative; overflow: hidden; display: flex; justify-content: space-between; padding: 0.6rem 1rem; margin-bottom: 0.5rem; border-radius: 6px; background: rgba(128, 128, 128, 0.1); z-index: 1;">
+                        <div id="fillBeta" style="position: absolute; left: 0; top: 0; height: 100%; width: 0%; background: #bc8f8f; opacity: 0.3; z-index: -1; transition: width 0.3s ease;"></div>
+                        <span style="font-weight: 500;">Beta</span><span id="bwBeta" style="font-weight: 600;">0%</span>
+                    </div>
+                    <div class="bw-item" style="position: relative; overflow: hidden; display: flex; justify-content: space-between; padding: 0.6rem 1rem; margin-bottom: 0.5rem; border-radius: 6px; background: rgba(128, 128, 128, 0.1); z-index: 1;">
+                        <div id="fillGamma" style="position: absolute; left: 0; top: 0; height: 100%; width: 0%; background: #a855f7; opacity: 0.3; z-index: -1; transition: width 0.3s ease;"></div>
+                        <span style="font-weight: 500;">Gamma</span><span id="bwGamma" style="font-weight: 600;">0%</span>
+                    </div>
+                </div>
+                <div class="chart-wrap small-chart" style="margin-top: 1rem;">
+                    <canvas id="bwPie"></canvas>
+                </div>
+            </section>
+
+            <section class="card span-3">
+                <div class="card-head">
+                    <h2>Brain State Parameters</h2>
+                    <div class="small">Each parameter is mapped to a dominant brainwave band.</div>
+                </div>
+                <div class="param-grid">
+                    <div class="param-card" id="cardDelta">
+                        <div class="param-title">Stress</div>
+                        <div class="param-sub">High Beta (13–30 Hz)</div>
+                        <div class="param-circle"><span class="param-pct" id="paramDeltaPct">0%</span></div>
+                        <div class="param-bar"><div class="param-bar-fill" id="paramDeltaBar" style="width:0%"></div></div>
+                    </div>
+                    <div class="param-card" id="cardTheta">
+                        <div class="param-title">Anxiety</div>
+                        <div class="param-sub">High Beta + Alpha</div>
+                        <div class="param-circle"><span class="param-pct" id="paramThetaPct">0%</span></div>
+                        <div class="param-bar"><div class="param-bar-fill" id="paramThetaBar" style="width:0%"></div></div>
+                    </div>
+                    <div class="param-card" id="cardAlpha">
+                        <div class="param-title">Depression</div>
+                        <div class="param-sub">Low Alpha (8–13 Hz)</div>
+                        <div class="param-circle"><span class="param-pct" id="paramAlphaPct">0%</span></div>
+                        <div class="param-bar"><div class="param-bar-fill" id="paramAlphaBar" style="width:0%"></div></div>
+                    </div>
+                    <div class="param-card" id="cardBeta">
+                        <div class="param-title">Fatigue</div>
+                        <div class="param-sub">High Theta (4–8 Hz)</div>
+                        <div class="param-circle"><span class="param-pct" id="paramBetaPct">0%</span></div>
+                        <div class="param-bar"><div class="param-bar-fill" id="paramBetaBar" style="width:0%"></div></div>
+                    </div>
+                    <div class="param-card" id="cardGamma">
+                        <div class="param-title">Distraction</div>
+                        <div class="param-sub">Low Beta + High Theta</div>
+                        <div class="param-circle"><span class="param-pct" id="paramGammaPct">0%</span></div>
+                        <div class="param-bar"><div class="param-bar-fill" id="paramGammaBar" style="width:0%"></div></div>
+                    </div>
+                </div>
+                <div class="param-summary small">
+                    <div>Dominant Brainwave: <span class="param-summary-value" id="paramDominantWave">—</span></div>
+                    <div>Detected State: <span class="param-summary-value" id="paramDetectedState">Waiting for data…</span></div>
+                </div>
+            </section>
+
+
+            <section class="card span-3">
+                <div class="card-head">
+                    <h2>Dominant Brainwave Over Time</h2>
+                    <div class="small">Time series of the band that is strongest at each moment.</div>
+                </div>
+                <div class="chart-wrap small-chart">
+                    <canvas id="dominantChart"></canvas>
+                </div>
+            </section>
+
+            <section class="card span-2">
+                <div class="card-head">
+                    <h2>Personalized Recommendations</h2>
+                    <div class="small">Click on a condition to view specific recommendations.</div>
+                </div>
+                <div class="mental-state-selector" id="mentalStateSelector">
+                    <div class="mental-state-card" data-state="Stress" onclick="selectMentalState('Stress', this)">
+                        <div class="ms-title">Stress</div>
+                        <div class="ms-indicator">High Beta</div>
+                    </div>
+                    <div class="mental-state-card" data-state="Anxiety" onclick="selectMentalState('Anxiety', this)">
+                        <div class="ms-title">Anxiety</div>
+                        <div class="ms-indicator">High Beta + Alpha</div>
+                    </div>
+                    <div class="mental-state-card" data-state="Depression" onclick="selectMentalState('Depression', this)">
+                        <div class="ms-title">Depression</div>
+                        <div class="ms-indicator">Low Alpha</div>
+                    </div>
+                    <div class="mental-state-card" data-state="Sleep Deprivation" onclick="selectMentalState('Sleep Deprivation', this)">
+                        <div class="ms-title">Fatigue</div>
+                        <div class="ms-indicator">High Theta</div>
+                    </div>
+                    <div class="mental-state-card" data-state="Distraction" onclick="selectMentalState('Distraction', this)">
+                        <div class="ms-title">Distraction</div>
+                        <div class="ms-indicator">Low Beta + Theta</div>
+                    </div>
+                </div>
+                <ul class="recs" id="recs">
+                    <li>Select a condition to view recommendations…</li>
+                </ul>
+                <div class="recs-foot" style="margin-top: 2rem;">
+                    <button class="secondary-btn" id="viewRemediesBtn" onclick="viewRemediesForState()" style="width: auto;">
+                        View Full Remedies
+                    </button>
+                </div>
+            </section>
+
+            <section class="card explore-card">
+                <div>
+                    <div class="card-head">
+                        <h2>Discover More</h2>
+                    </div>
+                    <p class="explore-text">
+                        Dive deeper into your long-term neuro-trends, access guided meditation audio, and explore advanced analytics.
+                    </p>
+                    <div class="explore-icon-wrap">
+                        <i class="fas fa-compass"></i>
+                    </div>
+                </div>
+                <div class="card-foot" style="border-top: none; padding-top: 0;">
+                    <a href="explore.html" style="text-decoration: none;">
+                        <button class="explore-btn">
+                            Explore Dashboard <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </a>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer small">
+            Tips: Make sure your device is connected and the backend server is running.
+        </footer>
+    </div>
+
+    <div id="resultOverlay" class="result-overlay">
+        <button class="overlay-close" onclick="document.getElementById('resultOverlay').style.display='none'">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="overlay-header">
+            <h2>analysis complete</h2>
+        </div>
+        <div class="result-message" id="overlayCondition">Stress detected</div>
+        <div id="solutionsContent" class="solutions-content"></div>
+        <div class="overlay-footer">
+            <button class="solutions-btn" id="viewSolutionsOverlayBtn">View Solutions</button>
+        </div>
+    </div>
+
+    <div id="confirmOverlay" class="result-overlay" style="display: none; z-index: 4000;">  
+        <div class="overlay-header">
+            <h2>Stop Monitoring?</h2>
+        </div>
+        <div class="result-message" style="font-size: 1.2rem; margin-bottom: 2rem;">
+            Are you sure you want to stop the current EEG monitoring session?
+        </div>
+        <div class="button-group" style="display: flex; gap: 1rem; margin-top: 1rem;">
+            <button type="button" class="secondary-btn" id="cancelStopBtn" style="flex: 1; min-width: 0;">Cancel</button>
+            <button type="button" class="primary-btn" id="confirmStopBtn" style="flex: 1; min-width: 0; background: var(--bad); box-shadow: 0 8px 20px -6px var(--bad);">Stop</button>
+        </div>
+    </div>
+
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Analyzing your EEG data...</div>
+    </div>
+
+    <div class="chat-icon" id="chatIcon">
+        <i class="fas fa-comment-dots"></i>
+    </div>
+    <div class="chat-window" id="chatWindow">
+        <div class="chat-header">AI assistant <i class="fas fa-robot"></i></div>
+        <div class="chat-messages" id="chatMessages"></div>
+        <div class="chat-input-area">
+            <input type="text" id="chatInput" placeholder="Ask about EEG or wellness..." />
+            <button id="sendChat"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <script>
+        // Theme toggle function
+        window.toggleTheme = function() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+        };
+        // Load saved theme
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+        }
+    </script>
+    <script src="dashboard.js"></script>
+    <script src="chart.js"></script>
+    <script src="chatbot.js"></script>
+</body>
+</html>

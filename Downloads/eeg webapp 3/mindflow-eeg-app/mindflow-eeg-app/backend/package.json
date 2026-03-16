@@ -1,0 +1,17 @@
+{
+  "name": "mindflow-eeg-backend",
+  "version": "1.2.0",
+  "description": "Real EEG processing server with FFT and session storage",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "bufferutil": "^4.0.7",
+    "fft-js": "^0.0.12",
+    "fs": "0.0.1-security",
+    "serialport": "^12.0.0",
+    "websocket": "^1.0.35",
+    "ws": "^8.19.0"
+  }
+}
