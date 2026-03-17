@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindFlow · Audio Therapy</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .detail-page {
+            max-width: 1200px;
+            margin: 2rem auto;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 3rem;
+            padding: 2rem;
+            box-shadow: 0 20px 40px -10px #1f4b57;
+        }
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        .page-header h1 {
+            font-weight: 400;
+            color: #1b4c5c;
+            font-size: 2.2rem;
+        }
+        .back-btn {
+            background: #2f7d8f;
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 3rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .back-btn:hover {
+            background: #3e93a8;
+        }
+        .tab-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #cde3ea;
+            padding-bottom: 0.5rem;
+        }
+        .tab {
+            background: transparent;
+            border: none;
+            padding: 0.8rem 1.8rem;
+            border-radius: 3rem 3rem 0 0;
+            font-weight: 500;
+            color: #386e7c;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 1rem;
+        }
+        .tab.active {
+            background: #ffffffd0;
+            color: #1f5969;
+            box-shadow: 0 -4px 8px #b0d3de;
+        }
+        .tab:hover {
+            background: #e1f2f8;
+        }
+        .condition-content {
+            display: none;
+            animation: fade 0.3s;
+        }
+        .condition-content.active {
+            display: block;
+        }
+        @keyframes fade {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .item-list {
+            list-style: none;
+        }
+        .item-list li {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px dashed #bed7e0;
+        }
+        .item-title {
+            font-weight: 600;
+            color: #1d4b56;
+            font-size: 1.1rem;
+        }
+        .item-desc {
+            font-size: 0.9rem;
+            color: #437682;
+            margin: 0.3rem 0;
+        }
+        .video-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            background: #e1f2f8;
+            padding: 0.3rem 1rem;
+            border-radius: 2rem;
+            color: #1f5a68;
+            text-decoration: none;
+            font-size: 0.85rem;
+            margin-top: 0.3rem;
+            transition: 0.2s;
+        }
+        .video-link:hover {
+            background: #c5e3ef;
+        }
+    </style>
+</head>
+<body>
+    <div class="detail-page">
+        <div class="page-header">
+            <h1><i class="fas fa-headphones" style="color:#2f7d8f;"></i> Audio Therapy</h1>
+            <a href="solutions.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Remedies</a>
+        </div>
+
+        <!-- Tabs for conditions -->
+        <div class="tab-container" id="tabContainer">
+            <button class="tab active" data-condition="stress">Stress</button>
+            <button class="tab" data-condition="anxiety">Anxiety</button>
+            <button class="tab" data-condition="depression">Depression</button>
+            <button class="tab" data-condition="sleep">Sleep Deprivation</button>
+            <button class="tab" data-condition="distraction">Distraction</button>
+        </div>
+
+        <!-- Content containers (populated by JS) -->
+        <div id="stress" class="condition-content active"></div>
+        <div id="anxiety" class="condition-content"></div>
+        <div id="depression" class="condition-content"></div>
+        <div id="sleep" class="condition-content"></div>
+        <div id="distraction" class="condition-content"></div>
+    </div>
+
+    <script>
+        // Data from your original solutions (audio only)
+        const visualData = {
+    stress: [
+        { title: "Blue Light Relaxation Therapy", desc: "Soft blue light visuals help calm the nervous system and reduce mental tension.", url: "https://www.youtube.com/watch?v=1ZYbU82GVz4" },
+        { title: "Nature Visual Therapy (Forest / Water Scenes)", desc: "Watching nature scenes reduces stress and lowers heart rate.", url: "https://www.youtube.com/watch?v=OdIJ2x3nxzQ" },
+        { title: "Color Therapy (Green Relaxation Screen)", desc: "Green color visuals are associated with balance and calmness.", url: "https://www.youtube.com/watch?v=8n9G9FQpH2Q" },
+        { title: "Slow Moving Mandala / Visual Meditation", desc: "Watching slow moving symmetrical patterns can calm the mind.", url: "https://www.youtube.com/watch?v=5X1h6D9s5nY" }
+    ],
+    anxiety: [
+        { title: "Calm Ocean Waves Visual Therapy", desc: "Slow ocean waves encourage the brain to enter a relaxed state.", url: "https://www.youtube.com/watch?v=V1RPi2MYptM" },
+        { title: "Soft Warm Light / Sunset Therapy", desc: "Warm tones create a comforting atmosphere.", url: "https://www.youtube.com/watch?v=V7yqW64Dx7c" },
+        { title: "Slow Breathing Visual Guide", desc: "Visual breathing animation helps synchronize breath.", url: "https://www.youtube.com/watch?v=tybOi4hjZFQ" },
+        { title: "Space / Starfield Relaxation Visual", desc: "Slow-moving stars help shift attention away from anxious thinking.", url: "https://www.youtube.com/watch?v=FjHGZj2IjBk" }
+    ],
+    depression: [
+        { title: "Morning Sunlight / Bright Light Therapy", desc: "Bright light stimulates serotonin production.", url: "https://www.youtube.com/watch?v=6H8E6k5V2qA" },
+        { title: "Nature Landscape Therapy (Mountains / Green Fields)", desc: "Peaceful landscapes improve mood.", url: "https://www.youtube.com/watch?v=1ZYbU82GVz4" },
+        { title: "Motivational Sunrise Visual", desc: "Sunrise imagery promotes optimism.", url: "https://www.youtube.com/watch?v=UfcAVejslrU" },
+        { title: "Flowing Water / River Visual Therapy", desc: "Continuous motion reduces rumination.", url: "https://www.youtube.com/watch?v=OdIJ2x3nxzQ" }
+    ],
+    sleep: [
+        { title: "Night Sky / Starfield Relaxation Visual", desc: "Calm night sky helps prepare the brain for rest.", url: "https://www.youtube.com/watch?v=6LT3gZt0e6o" },
+        { title: "Warm Light / Night Mode Therapy", desc: "Warm dim lighting supports natural circadian rhythms.", url: "https://www.youtube.com/watch?v=V7yqW64Dx7c" },
+        { title: "Slow Ocean Waves Visual", desc: "Gentle ocean waves create a relaxing rhythm.", url: "https://www.youtube.com/watch?v=V1RPi2MYptM" },
+        { title: "Candle Flame Relaxation Visual", desc: "Soft flickering light encourages relaxation.", url: "https://www.youtube.com/watch?v=LXb3EKWsInQ" }
+    ],
+    distraction: [
+        { title: "Focus Timer / Pomodoro Visual", desc: "Structured timer helps brain stay engaged.", url: "https://www.youtube.com/watch?v=3FjIuPMQzxo" },
+        { title: "Minimalist Focus Screen", desc: "Reduces visual clutter to lower cognitive overload.", url: "https://www.youtube.com/watch?v=DWcJFNfaw9c" },
+        { title: "Focus Animation / Breathing Dot", desc: "Following motion trains attention on a single stimulus.", url: "https://www.youtube.com/watch?v=bF_1ZiFta-E" },
+        { title: "Study Environment Visual (Library)", desc: "Environmental cues signal it's time to focus.", url: "https://www.youtube.com/watch?v=lFcSrYw-ARY" }
+    ]
+};
+
+        function renderCondition(containerId, items) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            let html = '<ul class="item-list">';
+            items.forEach(item => {
+                html += `
+                    <li>
+                        <div class="item-title">${item.title}</div>
+                        <div class="item-desc">${item.desc}</div>
+                        <a href="${item.url}" target="_blank" class="video-link"><i class="fab fa-youtube"></i> Listen</a>
+                    </li>
+                `;
+            });
+            html += '</ul>';
+            container.innerHTML = html;
+        }
+
+        // Render all
+        renderCondition('stress', audioData.stress);
+        renderCondition('anxiety', audioData.anxiety);
+        renderCondition('depression', audioData.depression);
+        renderCondition('sleep', audioData.sleep);
+        renderCondition('distraction', audioData.distraction);
+
+        // Tab switching
+        const tabs = document.querySelectorAll('.tab');
+        const contents = document.querySelectorAll('.condition-content');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                contents.forEach(c => c.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.condition).classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
