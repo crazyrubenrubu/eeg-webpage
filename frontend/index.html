@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindFlow · Choose Your Path</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        /* --- Perfect Split Layout --- */
+        .landing-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1400px; /* Utilizes large screens beautifully */
+            width: 100%;
+            gap: 4rem; /* Perfect breathing room between image and text */
+            padding: 2rem 4rem;
+            margin: 0 auto;
+        }
+
+        /* --- Left Side: Image --- */
+        .hero-image-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-image {
+            width: 100%;
+            max-width: 650px; /* Large, prominent, but contained */
+            height: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 20px 30px rgba(0,0,0,0.1));
+            animation: floatImage 6s ease-in-out infinite; /* Gentle calming motion */
+        }
+
+        @keyframes floatImage {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+
+        /* --- Right Side: Content --- */
+        .hero-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            max-width: 600px;
+        }
+
+        /* Header / Logo Area */
+        .hero-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2.5rem;
+            width: 100%;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            text-decoration: none;
+        }
+
+        /* Perfect fit for the custom brain logo in header */
+        .logo-area img {
+            width: 55px;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .logo-text h1 {
+            font-weight: 700;
+            font-size: 2.8rem;
+            color: var(--text-primary);
+            letter-spacing: -0.03em;
+            margin: 0 0 0.2rem 0;
+            line-height: 1;
+        }
+
+        .logo-text span {
+            color: var(--text-muted);
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .theme-toggle {
+            padding: 0.6rem 1.2rem;
+            font-size: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Main Choices */
+        .hero-main h2 {
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 1.6rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.3;
+        }
+
+        .choice-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Side-by-side buttons */
+            gap: 1.5rem;
+            width: 100%;
+        }
+
+        .choice-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 1.5rem;
+            padding: 2.5rem 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 10px 25px -12px rgba(0,0,0,0.15);
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .choice-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px -12px rgba(0,0,0,0.25);
+            border-color: var(--accent);
+        }
+
+        .choice-card i {
+            font-size: 3.5rem;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s;
+        }
+
+        .choice-card:hover i {
+            transform: scale(1.1);
+        }
+
+        .choice-card h3 {
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            margin-bottom: 0.8rem;
+            font-weight: 650;
+        }
+
+        .choice-card p {
+            color: var(--text-muted);
+            line-height: 1.5;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .hero-footer {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-light);
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            text-align: left;
+        }
+        /* --- Mobile Responsiveness --- */
+        @media (max-width: 1024px) {
+            body {
+                align-items: flex-start;
+            }
+            .landing-wrapper {
+                flex-direction: column;
+                gap: 2rem;
+                padding: 2rem 1.5rem;
+                margin-top: 2rem;
+            }
+            .hero-content {
+                align-items: center;
+                text-align: center;
+            }
+            .hero-header {
+                flex-direction: column;
+                align-items: center;
+                gap: 1.5rem;
+            }
+            .logo-area {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            .logo-text h1 {
+                font-size: 2.5rem;
+            }
+            .choice-grid {
+                grid-template-columns: 1fr; /* Stacks buttons on small screens */
+            }
+            .hero-footer {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="landing-wrapper">
+        
+        <div class="hero-image-container">
+            <img src="index_clipart_girl.png" alt="Relaxing MindFlow Illustration" class="hero-image">
+        </div>
+
+        <div class="hero-content">
+            <header class="hero-header">
+                <a href="index.html" class="logo-area">
+                    <img src="custom-brain.png" alt="brain logo">
+                    <div class="logo-text">
+                        <h1>MindFlow</h1>
+                        <span>Your personal wellness companion</span>
+                    </div>
+                </a>
+                <button id="themeToggle" class="pill theme-toggle" onclick="toggleTheme()">🌓</button>
+            </header>
+
+            <main class="hero-main">
+                <h2>How would you like to assess your mental state?</h2>
+                <div class="choice-grid">
+                    <a href="dashboard.html" class="choice-card">
+                        <i class="fas fa-microchip"></i>
+                        <h3>Use EEG Device</h3>
+                        <p>Connect your EEG sensors for real‑time brainwave analysis and accuracy.</p>
+                    </a>
+                    <a href="questions.html" class="choice-card">
+                        <i class="fas fa-clipboard-list"></i>
+                        <h3>Answer Questions</h3>
+                        <p>Get an immediate assessment based on your lifestyle and feelings.</p>
+                    </a>
+                </div>
+            </main>
+
+            <footer class="hero-footer">
+                <p>&copy; 2026 MindFlow · Empowering mental wellness through technology</p>
+            </footer>
+        </div>
+
+    </div> 
+
+    <div class="chat-icon" id="chatIcon">
+        <img src="custom-brain.png" alt="Chat" class="chat-custom-img">
+    </div>
+    <div class="chat-window" id="chatWindow">
+        <div class="chat-header">AI assistant <i class="fas fa-robot"></i></div>
+        <div class="chat-messages" id="chatMessages"></div>
+        <div class="chat-input-area">
+            <input type="text" id="chatInput" placeholder="Ask about EEG or wellness..." />
+            <button id="sendChat"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <script src="chatbot.js"></script>
+    <script>
+        // Theme toggle function
+        window.toggleTheme = function() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+        };
+        // Load saved theme
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+        }
+    </script>
+</body>
+</html>

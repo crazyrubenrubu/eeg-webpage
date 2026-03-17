@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neck & Shoulder Relax</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1>Neck & Shoulder Routine</h1>
+            <p>Take 5 minutes to relieve your stress.</p>
+        </header>
+
+        <div class="main-content">
+            <div class="image-container">
+                <img id="exercise-image" src="1st.png" alt="Normal Position">
+            </div>
+
+            <div class="timer-container">
+                <div id="timer-display">05:00</div>
+            </div>
+
+            <div class="controls">
+                <button id="start-btn" class="btn primary">Start</button>
+                <button id="pause-btn" class="btn secondary" disabled>Pause</button>
+                <button id="reset-btn" class="btn secondary" disabled>Reset</button>
+            </div>
+
+            <div class="music-controls">
+                <h3>Music:</h3>
+                <button id="music-play-btn" class="btn small">Start</button>
+                <button id="music-stop-btn" class="btn small">Stop</button>
+            </div>
+            <audio id="bg-music" src="bg.mp3" loop></audio>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

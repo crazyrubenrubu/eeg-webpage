@@ -1,0 +1,160 @@
+body {
+margin:0;
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background-image:url('bg.jpg');
+background-size:cover;
+background-position:center;
+background-repeat:no-repeat;
+font-family:Arial;
+color:white;
+position:relative;
+}
+
+.container {
+text-align:center;
+display:flex;
+flex-direction:column;
+align-items:center;
+gap:70px; /* Forces distance between circles and text */
+}
+
+/* ...rest remains same till end except adding gap/changing #text... */
+/* Using script regex inside the replacement chunk... to make it easier, let's just properly rewrite the file */
+
+.circle-container{
+position:relative;
+height:450px;
+width:450px;
+display:flex;
+justify-content:center;
+align-items:center;
+margin-top:60px; /* moves everything down */
+}
+
+.girl-img {
+position:absolute;
+z-index:10;
+width:400px; /* Increased size */
+height:auto;
+}
+
+.ring {
+position:absolute;
+border-radius:50%;
+animation:breatheRings 10s infinite ease-in-out;
+animation-play-state: paused;
+}
+
+.ring-1 {
+width:250px;
+height:250px;
+background:rgba(255, 255, 255, 0.6);
+z-index:3;
+}
+
+.ring-2 {
+width:320px;
+height:320px;
+background:rgba(255, 255, 255, 0.4);
+z-index:2;
+}
+
+.ring-3 {
+width:400px;
+height:400px;
+background:rgba(255, 255, 255, 0.2);
+z-index:1;
+}
+
+@keyframes breatheRings {
+0% {
+transform:scale(1);
+}
+40% {
+transform:scale(1.5);
+}
+60% {
+transform:scale(1.5);
+}
+100% {
+transform:scale(1);
+}
+}
+
+#text{
+margin-top:20px;
+font-size:48px;
+font-weight:bold;
+font-family:'Comic Sans MS', cursive, sans-serif;
+z-index:20;
+letter-spacing:2px;
+}
+
+.stopwatch-container {
+position:absolute;
+left:100px;
+display:flex;
+flex-direction:column;
+align-items:center;
+gap:20px;
+font-family:'Comic Sans MS', cursive, sans-serif;
+}
+
+#time-display {
+font-size:60px;
+font-weight:bold;
+letter-spacing:4px;
+}
+
+.controls button {
+background:rgba(255, 255, 255, 0.2);
+border:2px solid white;
+color:white;
+padding:15px 30px;
+font-family:'Comic Sans MS', cursive, sans-serif;
+font-size:24px;
+font-weight:bold;
+border-radius:35px;
+cursor:pointer;
+transition:background 0.3s ease;
+margin:0 10px;
+}
+
+.controls button:hover {
+background:rgba(255, 255, 255, 0.4);
+}
+
+/* Layout for breathing + affirmations */
+.main-layout{
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+/* Affirmation column on right side */
+.affirmations-container{
+position:absolute;
+right:80px;   /* decrease this value to move it more right */
+top:50%;
+transform:translateY(-50%);
+width:300px;
+
+display:flex;
+flex-direction:column-reverse;
+
+font-family:'Comic Sans MS', cursive, sans-serif;
+font-size:26px;
+line-height:1.6;
+}
+
+/* Individual affirmation */
+#affirmation{
+background:rgba(255,255,255,0.2);
+padding:25px 25px;
+border-radius:25px;
+backdrop-filter:blur(6px);
+text-align:left;
+}

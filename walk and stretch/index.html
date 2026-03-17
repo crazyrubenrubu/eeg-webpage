@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Walk & Stretch</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        
+        <!-- HOME VIEW -->
+        <main id="home-view" class="view active">
+            <header>
+                <div class="header-top">
+                    <button class="theme-toggle-btn" id="theme-toggle" onclick="app.toggleTheme()">
+                        <i class="fas fa-sun" id="theme-icon"></i>
+                    </button>
+                </div>
+                <h1>Wellness <span>Break</span></h1>
+                <p>Take a moment for yourself.</p>
+            </header>
+            
+            <div class="cards-container">
+                <button class="action-card" onclick="app.switchView('walk-view')">
+                    <div class="card-icon blue-gradient">
+                        <i class="fas fa-walking"></i>
+                    </div>
+                    <h2>Go for a Walk</h2>
+                    <p>Clear your mind with a timed walking break.</p>
+                </button>
+
+                <button class="action-card" onclick="app.switchView('stretch-view')">
+                    <div class="card-icon purple-gradient">
+                        <i class="fas fa-child"></i>
+                    </div>
+                    <h2>Stretching Routine</h2>
+                    <p>Relieve tension with a guided stretch.</p>
+                </button>
+            </div>
+        </main>
+
+        <!-- WALK TIMER VIEW -->
+        <section id="walk-view" class="view">
+            <nav>
+                <button class="back-btn" onclick="app.switchView('home-view')">
+                    <i class="fas fa-chevron-left"></i> Back
+                </button>
+            </nav>
+            <div class="view-content">
+                <h2>Walk Timer</h2>
+                
+                <div class="timer-display">
+                    <svg class="progress-ring" width="250" height="250">
+                        <circle class="progress-ring__circle-bg" stroke="rgba(255,255,255,0.1)" stroke-width="8" fill="transparent" r="110" cx="125" cy="125"/>
+                        <circle id="walk-progress" class="progress-ring__circle" stroke="#2dd4bf" stroke-width="8" fill="transparent" r="110" cx="125" cy="125"/>
+                    </svg>
+                    <div class="time-text" id="walk-time-display">05:00</div>
+                </div>
+
+                <div class="preset-buttons">
+                    <button class="preset-btn active" onclick="app.setWalkTime(5, this)">5 min</button>
+                    <button class="preset-btn" onclick="app.setWalkTime(10, this)">10 min</button>
+                    <button class="preset-btn" onclick="app.setWalkTime(15, this)">15 min</button>
+                </div>
+
+                <div class="controls">
+                    <button class="control-btn primary" id="walk-start-btn" onclick="app.toggleWalkTimer()">
+                        <i class="fas fa-play"></i> Start
+                    </button>
+                    <button class="control-btn secondary" onclick="app.resetWalkTimer()">
+                        <i class="fas fa-redo"></i> Reset
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- STRETCH ROUTINE VIEW -->
+        <section id="stretch-view" class="view">
+            <nav>
+                <button class="back-btn" onclick="app.switchView('home-view')">
+                    <i class="fas fa-chevron-left"></i> Back
+                </button>
+            </nav>
+            <div class="view-content">
+                <h2>Stretching Routine</h2>
+                
+                <div class="stretch-card" id="stretch-info-card">
+                    <div class="stretch-left">
+                        <i class="fas fa-spa stretch-icon" id="stretch-icon-display"></i>
+                        <img id="stretch-image-display" style="display: none;" alt="Stretch diagram">
+                    </div>
+                    <div class="stretch-right">
+                        <h3 id="stretch-name">Ready to relax?</h3>
+                        <p id="stretch-desc">Follow the instructions for each stretch.</p>
+                    </div>
+                </div>
+
+                <div class="timer-display small">
+                    <div class="time-text" id="stretch-time-display">00:30</div>
+                </div>
+                
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="stretch-progress-bar"></div>
+                </div>
+
+                <div class="stretch-status" id="stretch-status-text">
+                    Press Start to begin
+                </div>
+
+                <div class="controls">
+                    <button class="control-btn primary purple" id="stretch-start-btn" onclick="app.toggleStretchRoutine()">
+                        <i class="fas fa-play"></i> Start Routine
+                    </button>
+                    <button class="control-btn secondary" onclick="app.resetStretchRoutine()">
+                        <i class="fas fa-stop"></i> End
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Audio element for background music -->
+    <audio id="bg-music" src="bg.mp3" preload="auto" loop muted></audio>
+
+    <script src="script.js"></script>
+    <script>
+        // Attempt to play background music
+        const bgMusic = document.getElementById('bg-music');
+        bgMusic.volume = 0.3; // Set volume to 30%
+        
+        // Try to play music immediately
+        bgMusic.play().catch(err => console.log('Autoplay blocked:', err));
+        
+        // Also try playing on first user interaction
+        document.addEventListener('click', function initAudio() {
+            bgMusic.muted = false;
+            bgMusic.play().catch(err => console.log('Play failed:', err));
+            document.removeEventListener('click', initAudio);
+        }, { once: true });
+    </script>
+</body>
+</html>

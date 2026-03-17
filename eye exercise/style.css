@@ -1,0 +1,394 @@
+:root {
+    --bg-color: #0c0e14;
+    --panel-bg: rgba(255, 255, 255, 0.05);
+    --border-color: rgba(255, 255, 255, 0.1);
+    --text-color: #e0e0e0;
+    --accent-color: #3498db;
+    --accent-glow: #2980b9;
+    --dot-color: #fff;
+    --line-color: rgba(255, 255, 255, 0.2);
+    --transition-speed: 0.3s;
+}
+
+.light-theme {
+    --bg-color: #f0f7ff;
+    /* White-blue background */
+    --panel-bg: rgba(232, 245, 233, 0.6);
+    /* Mint green glassmorphism */
+    --border-color: rgba(0, 0, 0, 0.05);
+    --text-color: #2c3e50;
+    --accent-color: #27ae60;
+    /* Emerald green accent */
+    --accent-glow: #2ecc71;
+    --dot-color: #fff;
+    --line-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Light Theme Typography Overrides */
+.light-theme h1, 
+.light-theme .nav-brand {
+    background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    display: flex;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+/* Sidebar Navigation */
+.sidebar {
+    width: 280px;
+    background: rgba(255, 255, 255, 0.03);
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    padding: 2rem 1.5rem;
+    backdrop-filter: blur(20px);
+}
+
+.nav-brand {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 3rem;
+    color: #e0e0e0;
+}
+
+.nav-btn {
+    background: transparent;
+    border: 1px solid transparent;
+    color: #888;
+    padding: 1rem 1.5rem;
+    text-align: left;
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 0.5rem;
+    box-shadow: none;
+}
+
+.nav-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+    transform: none;
+}
+
+.nav-btn.active {
+    background: rgba(52, 152, 219, 0.1);
+    border-color: rgba(52, 152, 219, 0.3);
+    color: var(--accent-color);
+}
+
+.theme-toggle-container {
+    margin-top: auto;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.theme-btn {
+    width: 100%;
+    background: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    padding: 0.8rem;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.theme-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+.light-theme .theme-btn:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+/* Main Content Area */
+.main-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.exercise-section {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.container {
+    width: 95%;
+    max-width: 1000px;
+    height: 80vh;
+    background: var(--panel-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    position: relative;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: #e0e0e0;
+}
+
+p.subtitle {
+    font-size: 1rem;
+    color: #888;
+}
+
+.exercise-viewport {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+svg {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.3));
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1rem;
+    color: #666;
+}
+
+input[type="range"] {
+    appearance: none;
+    width: 150px;
+    height: 4px;
+    background: #333;
+    border-radius: 2px;
+    outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background: var(--accent-color);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 10px var(--accent-glow);
+}
+
+button {
+    padding: 0.8rem 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+    background: var(--accent-color);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+}
+
+button:hover {
+    background: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+button.secondary {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    box-shadow: none;
+}
+
+button.secondary:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.light-theme button.secondary {
+    background: var(--accent-color);
+    color: #fff;
+    border: none;
+    box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+}
+
+.light-theme button.secondary:hover {
+    background: #229954;
+    box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
+    transform: translateY(-2px);
+}
+
+body:not(.light-theme) button.secondary {
+    background: var(--accent-color);
+    color: #fff;
+    border: none;
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+}
+
+body:not(.light-theme) button.secondary:hover {
+    background: #2980b9;
+    box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+    transform: translateY(-2px);
+}
+
+/* Exercise Specific Styles */
+.node {
+    fill: #222;
+    stroke: var(--border-color);
+    stroke-width: 1;
+    transition: fill 0.3s ease;
+}
+
+.path-line {
+    stroke: var(--line-color);
+    stroke-width: 2;
+    stroke-dasharray: 4;
+}
+
+#active-dot {
+    fill: var(--accent-color);
+    filter: drop-shadow(0 0 15px var(--accent-glow));
+    transition: cx 0.5s ease-in-out, cy 0.5s ease-in-out;
+}
+
+.node.glow {
+    fill: var(--accent-color);
+    filter: drop-shadow(0 0 10px var(--accent-glow));
+}
+
+/* Exercise 2: Pop the Ball */
+.score-container {
+    position: absolute;
+    top: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--panel-bg);
+    padding: 0.8rem 2rem;
+    border-radius: 50px;
+    border: 1px solid var(--border-color);
+    backdrop-filter: blur(10px);
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    z-index: 10;
+}
+
+.score-label {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1rem;
+    color: #666;
+}
+
+#score-count {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--accent-color);
+}
+
+.game-area {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.target-ball {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    background: var(--accent-color);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 30px var(--accent-glow), inset 0 0 10px rgba(255, 255, 255, 0.5);
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    z-index: 5;
+}
+
+.target-ball:active {
+    transform: scale(0.8);
+}
+
+.instructions-overlay {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #666;
+    font-size: 1rem;
+    font-weight: 500;
+    text-align: center;
+    pointer-events: none;
+    z-index: 8;
+}
