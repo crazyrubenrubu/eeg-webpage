@@ -87,7 +87,148 @@
             font-size: 1.1rem;
             line-height: 1.6;
         }
-        
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+        .step {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--border-light);
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+        .step.active {
+            background: var(--accent);
+            color: white;
+            transform: scale(1.1);
+        }
+        .step.completed {
+            background: var(--good);
+            color: white;
+        }
+        .step-content {
+            display: none;
+            animation: slideIn 0.3s;
+        }
+        .step-content.active {
+            display: block;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem 1.2rem;
+            border-radius: 3rem;
+            border: 1px solid var(--border-light);
+            background: rgba(255,255,255,0.1);
+            font-size: 1rem;
+            color: var(--text-primary);
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(47,125,143,0.2);
+        }
+        .form-group input[type="number"] {
+            -moz-appearance: textfield;
+        }
+        .form-group input[type="number"]::-webkit-inner-spin-button,
+        .form-group input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .form-group select {
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="%232f7d8f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1.2rem;
+            padding-right: 2.5rem;
+            cursor: pointer;
+        }
+        body.dark-mode .form-group select {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="%23ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>');
+        }
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        .primary-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 3rem;
+            font-size: 1rem;
+            cursor: pointer;
+            flex: 1;
+            transition: 0.2s;
+        }
+        .primary-btn:hover {
+            background: var(--accent-light);
+        }
+        .secondary-btn {
+            background: transparent;
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            padding: 0.8rem 2rem;
+            border-radius: 3rem;
+            font-size: 1rem;
+            cursor: pointer;
+            flex: 1;
+            transition: 0.2s;
+        }
+        .secondary-btn:hover {
+            background: rgba(47,125,143,0.1);
+        }
+        .question-item {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: rgba(255,255,255,0.03);
+            border-radius: 1.2rem;
+            border: 1px solid var(--border-light);
+        }
+        .question-text {
+            font-weight: 500;
+            margin-bottom: 0.8rem;
+            color: var(--text-primary);
+        }
+        .question-select {
+            width: 100%;
+            padding: 0.6rem 1rem;
+            border-radius: 2rem;
+            border: 1px solid var(--border-light);
+            background: rgba(255,255,255,0.1);
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+        .question-select option {
+            background: var(--bg-solid);
+        }
         @media (max-width: 600px) {
             .questionnaire-container {
                 padding: 1.5rem;
@@ -126,11 +267,12 @@
                 <div class="step" id="step5">5</div>
             </div>
 
+            <!-- Step 1: Personal Info -->
             <div id="step1Content" class="step-content active">
                 <h2>Tell us about yourself</h2>
                 <div class="form-group">
                     <label>Your name</label>
-                    <input type="text" id="userName" placeholder="Please enter your full name" required>
+                    <input type="text" id="userName" placeholder="e.g., Alex Johnson" required>
                 </div>
                 <div class="form-group">
                     <label>Age *</label>
@@ -146,10 +288,11 @@
                     </select>
                 </div>
                 <div class="button-group" style="justify-content: flex-end;">
-    <button class="primary-btn" onclick="validateAndNext(1)">Next</button>
-</div>
+                    <button class="primary-btn" onclick="validateAndNext(1)">Next</button>
+                </div>
             </div>
 
+            <!-- Step 2: Occupation & Relationship (original with sub-options) -->
             <div id="step2Content" class="step-content">
                 <h2>Your occupation & status</h2>
                 <div class="form-group">
@@ -187,8 +330,36 @@
                 </div>
             </div>
 
+            <!-- Step 3: Habits (unchanged) -->
             <div id="step3Content" class="step-content">
                 <h2>Lifestyle & habits</h2>
+                <div class="form-group">
+                    <label>Average sleep per night</label>
+                    <select id="habitSleep">
+                        <option value="<5">Less than 5 hours</option>
+                        <option value="5-6">5–6 hours</option>
+                        <option value="7-8" selected>7–8 hours</option>
+                        <option value=">8">More than 8 hours</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Caffeine intake (cups per day)</label>
+                    <select id="habitCaffeine">
+                        <option value="0">0</option>
+                        <option value="1-2">1–2</option>
+                        <option value="3-4">3–4</option>
+                        <option value="5+">5+</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Exercise (per week)</label>
+                    <select id="habitExercise">
+                        <option value="none">Rarely / Never</option>
+                        <option value="1-2">1–2 times</option>
+                        <option value="3-4">3–4 times</option>
+                        <option value="5+">5+ times</option>
+                    </select>
+                </div>
                 <div class="form-group">
                     <label>Do you smoke?</label>
                     <select id="habitSmoking">
@@ -207,17 +378,8 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Gaming (hours per week)</label>
-                    <select id="habitGaming">
-                        <option value="0">0</option>
-                        <option value="1-5">1–5</option>
-                        <option value="6-10">6–10</option>
-                        <option value="10+">10+</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Other habits (e.g., caffeine, energy drinks, meditation)</label>
-                    <input type="text" id="habitOther" placeholder="e.g., 3 cups coffee, daily meditation">
+                    <label>Other habits (e.g., meditation, gaming)</label>
+                    <input type="text" id="habitOther" placeholder="e.g., daily meditation">
                 </div>
                 <div class="button-group">
                     <button class="secondary-btn" onclick="prevStep(3)">Back</button>
@@ -225,119 +387,131 @@
                 </div>
             </div>
 
+            <!-- Step 4: PSS-10 Questions -->
             <div id="step4Content" class="step-content">
-                <h2>How often do you experience...</h2>
-                <div class="form-group symptoms-grid">
-                    <div class="symptom-item">
-                        <label>Feeling overwhelmed at work or home?</label>
-                        <select id="qStressOverwhelmed">
-                            <option value="1">Rarely</option>
-                            <option value="2">Sometimes</option>
-                            <option value="3" selected>Often</option>
-                            <option value="4">Very Often</option>
-                            <option value="5">Constantly</option>
-                        </select>
-                    </div>
-                    <div class="symptom-item">
-                        <label>Irritability or quick temper?</label>
-                        <select id="qStressIrritability">
-                            <option value="1">Rarely</option>
-                            <option value="2">Sometimes</option>
-                            <option value="3">Often</option>
-                            <option value="4">Very Often</option>
-                            <option value="5">Constantly</option>
-                        </select>
-                    </div>
-                    <div class="symptom-item">
-                        <label>Racing thoughts or mental worry?</label>
-                        <select id="qAnxietyWorry">
-                            <option value="1">Rarely</option>
-                            <option value="2">Sometimes</option>
-                            <option value="3" selected>Often</option>
-                            <option value="4">Very Often</option>
-                            <option value="5">Constantly</option>
-                        </select>
-                    </div>
-                    <div class="symptom-item">
-                        <label>Physical symptoms (fast heart, shaky hands)?</label>
-                        <select id="qAnxietyPhysical">
-                            <option value="1">Rarely</option>
-                            <option value="2">Sometimes</option>
-                            <option value="3">Often</option>
-                            <option value="4">Very Often</option>
-                            <option value="5">Constantly</option>
-                        </select>
-                    </div>
-                    <div class="symptom-item">
-                        <label>Feeling down or hopeless?</label>
-                        <select id="qDepressionMood">
-                            <option value="1">Rarely</option>
-                            <option value="2">Sometimes</option>
-                            <option value="3" selected>Often</option>
-                            <option value="4">Very Often</option>
-                            <option value="5">Constantly</option>
-                        </select>
-                    </div>
-                    <div class="symptom-item">
-                        <label>Loss of interest in normal activities?</label>
-                        <select id="qDepressionInterest">
-                            <option value="1">Rarely</option>
-                            <option value="2">Sometimes</option>
-                            <option value="3">Often</option>
-                            <option value="4">Very Often</option>
-                            <option value="5">Constantly</option>
-                        </select>
-                    </div>
-                    <div class="symptom-item">
-                        <label>Trouble falling or staying asleep?</label>
-                        <select id="qSleepIssue">
-                            <option value="1">Rarely</option>
-                            <option value="2">Sometimes</option>
-                            <option value="3" selected>Often</option>
-                            <option value="4">Very Often</option>
-                            <option value="5">Constantly</option>
-                        </select>
-                    </div>
-                    <div class="symptom-item">
-                        <label>Feeling tired despite rest?</label>
-                        <select id="qSleepFatigue">
-                            <option value="1">Rarely</option>
-                            <option value="2">Sometimes</option>
-                            <option value="3">Often</option>
-                            <option value="4">Very Often</option>
-                            <option value="5">Constantly</option>
-                        </select>
-                    </div>
-                    <div class="symptom-item">
-                        <label>Difficulty focusing on one task?</label>
-                        <select id="qFocusTask">
-                            <option value="1">Rarely</option>
-                            <option value="2">Sometimes</option>
-                            <option value="3" selected>Often</option>
-                            <option value="4">Very Often</option>
-                            <option value="5">Constantly</option>
-                        </select>
-                    </div>
-                    <div class="symptom-item">
-                        <label>Mind wandering or daydreaming?</label>
-                        <select id="qFocusMind">
-                            <option value="1">Rarely</option>
-                            <option value="2">Sometimes</option>
-                            <option value="3">Often</option>
-                            <option value="4">Very Often</option>
-                            <option value="5">Constantly</option>
-                        </select>
-                    </div>
+                <h2>Perceived Stress Scale</h2>
+                <p style="color: var(--text-muted); margin-bottom: 1rem;">For each question, choose how often you felt this way in the last month.</p>
+
+                <div class="question-item">
+                    <div class="question-text">1. In the last month, how often have you been upset because of something that happened unexpectedly?</div>
+                    <select class="question-select" id="pss1">
+                        <option value="0">0 – Never</option>
+                        <option value="1">1 – Almost Never</option>
+                        <option value="2" selected>2 – Sometimes</option>
+                        <option value="3">3 – Fairly Often</option>
+                        <option value="4">4 – Very Often</option>
+                    </select>
                 </div>
+
+                <div class="question-item">
+                    <div class="question-text">2. In the last month, how often have you felt that you were unable to control the important things in your life?</div>
+                    <select class="question-select" id="pss2">
+                        <option value="0">0 – Never</option>
+                        <option value="1">1 – Almost Never</option>
+                        <option value="2" selected>2 – Sometimes</option>
+                        <option value="3">3 – Fairly Often</option>
+                        <option value="4">4 – Very Often</option>
+                    </select>
+                </div>
+
+                <div class="question-item">
+                    <div class="question-text">3. In the last month, how often have you felt nervous or stressed?</div>
+                    <select class="question-select" id="pss3">
+                        <option value="0">0 – Never</option>
+                        <option value="1">1 – Almost Never</option>
+                        <option value="2" selected>2 – Sometimes</option>
+                        <option value="3">3 – Fairly Often</option>
+                        <option value="4">4 – Very Often</option>
+                    </select>
+                </div>
+
+                <div class="question-item">
+                    <div class="question-text">4. In the last month, how often have you felt confident about your ability to handle your personal problems?</div>
+                    <select class="question-select" id="pss4">
+                        <option value="0">0 – Never</option>
+                        <option value="1">1 – Almost Never</option>
+                        <option value="2" selected>2 – Sometimes</option>
+                        <option value="3">3 – Fairly Often</option>
+                        <option value="4">4 – Very Often</option>
+                    </select>
+                </div>
+
+                <div class="question-item">
+                    <div class="question-text">5. In the last month, how often have you felt that things were going your way?</div>
+                    <select class="question-select" id="pss5">
+                        <option value="0">0 – Never</option>
+                        <option value="1">1 – Almost Never</option>
+                        <option value="2" selected>2 – Sometimes</option>
+                        <option value="3">3 – Fairly Often</option>
+                        <option value="4">4 – Very Often</option>
+                    </select>
+                </div>
+
+                <div class="question-item">
+                    <div class="question-text">6. In the last month, how often have you found that you could not cope with all the things that you had to do?</div>
+                    <select class="question-select" id="pss6">
+                        <option value="0">0 – Never</option>
+                        <option value="1">1 – Almost Never</option>
+                        <option value="2" selected>2 – Sometimes</option>
+                        <option value="3">3 – Fairly Often</option>
+                        <option value="4">4 – Very Often</option>
+                    </select>
+                </div>
+
+                <div class="question-item">
+                    <div class="question-text">7. In the last month, how often have you been able to control irritations in your life?</div>
+                    <select class="question-select" id="pss7">
+                        <option value="0">0 – Never</option>
+                        <option value="1">1 – Almost Never</option>
+                        <option value="2" selected>2 – Sometimes</option>
+                        <option value="3">3 – Fairly Often</option>
+                        <option value="4">4 – Very Often</option>
+                    </select>
+                </div>
+
+                <div class="question-item">
+                    <div class="question-text">8. In the last month, how often have you felt that you were on top of things?</div>
+                    <select class="question-select" id="pss8">
+                        <option value="0">0 – Never</option>
+                        <option value="1">1 – Almost Never</option>
+                        <option value="2" selected>2 – Sometimes</option>
+                        <option value="3">3 – Fairly Often</option>
+                        <option value="4">4 – Very Often</option>
+                    </select>
+                </div>
+
+                <div class="question-item">
+                    <div class="question-text">9. In the last month, how often have you been angered because of things that happened that were outside of your control?</div>
+                    <select class="question-select" id="pss9">
+                        <option value="0">0 – Never</option>
+                        <option value="1">1 – Almost Never</option>
+                        <option value="2" selected>2 – Sometimes</option>
+                        <option value="3">3 – Fairly Often</option>
+                        <option value="4">4 – Very Often</option>
+                    </select>
+                </div>
+
+                <div class="question-item">
+                    <div class="question-text">10. In the last month, how often have you felt difficulties were piling up so high that you could not overcome them?</div>
+                    <select class="question-select" id="pss10">
+                        <option value="0">0 – Never</option>
+                        <option value="1">1 – Almost Never</option>
+                        <option value="2" selected>2 – Sometimes</option>
+                        <option value="3">3 – Fairly Often</option>
+                        <option value="4">4 – Very Often</option>
+                    </select>
+                </div>
+
                 <div class="button-group">
                     <button class="secondary-btn" onclick="prevStep(4)">Back</button>
                     <button class="primary-btn" onclick="nextStep(4)">Next</button>
                 </div>
             </div>
 
+            <!-- Step 5: Submit -->
             <div id="step5Content" class="step-content">
                 <h2>Ready to see your results</h2>
-                <p class="completion-text">We'll analyze your answers using our adaptive model and provide personalized recommendations for your mental wellness.</p>
+                <p class="completion-text">We'll calculate your Perceived Stress Score based on your responses and provide personalized recommendations.</p>
                 <div class="button-group">
                     <button class="secondary-btn" onclick="prevStep(5)">Back</button>
                     <button class="primary-btn" onclick="submitQuestionnaire()">Get My Assessment</button>
@@ -356,9 +530,9 @@
             <i class="fas fa-times"></i>
         </button>
         <div class="overlay-header">
-            <h2>analysis complete</h2>
+            <h2>assessment complete</h2>
         </div>
-        <div class="result-message" id="overlayCondition">Stress detected</div>
+        <div class="result-message" id="overlayCondition">Stress level: Moderate</div>
         <div id="solutionsContent" class="solutions-content"></div>
         <div class="overlay-footer">
             <button class="solutions-btn" id="viewSolutionsOverlayBtn">View Solutions</button>
