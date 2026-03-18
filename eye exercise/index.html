@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EyeTrack - Modern Eye Exercise</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <audio id="bg-music" loop autoplay>
+        <source src="music.mp3" type="audio/mpeg">
+    </audio>
+    <nav class="sidebar">
+        <div class="nav-brand">EyeTrack</div>
+        <button id="nav-ex1" class="nav-btn active">Exercise 1</button>
+        <button id="nav-ex2" class="nav-btn">Exercise 2</button>
+        
+        <div class="theme-toggle-container">
+            <button id="music-toggle" class="theme-btn music-btn">
+                <span id="music-icon">🎵</span>
+                <span id="music-text">Music Off</span>
+            </button>
+            <button id="theme-toggle" class="theme-btn">
+                <span id="theme-icon">🌙</span>
+                <span id="theme-text">Dark Mode</span>
+            </button>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <!-- Exercise 1: Eye Tracking -->
+        <div id="exercise-1" class="exercise-section">
+            <div class="container">
+                <div class="header">
+                    <h1>Eye Tracking</h1>
+                    <p class="subtitle">Follow the glowing dot to strengthen your eye muscles</p>
+                </div>
+
+                <div class="exercise-viewport">
+                    <svg id="exercise-svg" width="900" height="450" viewBox="0 0 900 450" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Lines -->
+                        <g class="lines-group" stroke="currentColor" stroke-width="2" fill="none">
+                            <line class="path-line" x1="100" y1="80" x2="300" y2="80"/>
+                            <line class="path-line" x1="300" y1="80" x2="150" y2="180"/>
+                            <line class="path-line" x1="150" y1="180" x2="150" y2="330"/>
+                            <line class="path-line" x1="150" y1="330" x2="300" y2="200"/>
+                            <line class="path-line" x1="300" y1="200" x2="260" y2="350"/>
+                            <line class="path-line" x1="260" y1="350" x2="780" y2="350"/>
+                            <line class="path-line" x1="780" y1="350" x2="720" y2="80"/>
+                            <line class="path-line" x1="720" y1="80" x2="650" y2="250"/>
+                            <line class="path-line" x1="650" y1="250" x2="500" y2="300"/>
+                            <line class="path-line" x1="500" y1="300" x2="580" y2="80"/>
+                        </g>
+
+                        <!-- Points -->
+                        <g class="nodes-group">
+                            <circle class="node" id="node-0" cx="100" cy="80" r="15"/>
+                            <circle class="node" id="node-1" cx="300" cy="80" r="15"/>
+                            <circle class="node" id="node-2" cx="150" cy="180" r="15"/>
+                            <circle class="node" id="node-3" cx="150" cy="330" r="15"/>
+                            <circle class="node" id="node-4" cx="300" cy="200" r="15"/>
+                            <circle class="node" id="node-5" cx="260" cy="350" r="15"/>
+                            <circle class="node" id="node-6" cx="780" cy="350" r="15"/>
+                            <circle class="node" id="node-7" cx="720" cy="80" r="15"/>
+                            <circle class="node" id="node-8" cx="650" cy="250" r="15"/>
+                            <circle class="node" id="node-9" cx="500" cy="300" r="15"/>
+                            <circle class="node" id="node-10" cx="580" cy="80" r="15"/>
+                        </g>
+
+                        <!-- Starting blue dot (Moving) -->
+                        <circle id="active-dot" cx="100" cy="80" r="18" />
+                    </svg>
+                </div>
+
+                <div class="controls">
+                    <div class="control-group">
+                        <label for="speed-range">Animation Speed</label>
+                        <input type="range" id="speed-range" min="200" max="2000" value="800">
+                    </div>
+                    <div class="control-group">
+                        <label for="size-range">Dot Size</label>
+                        <input type="range" id="size-range" min="5" max="30" value="18">
+                    </div>
+                    <button id="start-btn">Start Exercise</button>
+                    <button id="reset-btn" class="secondary">Reset</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Exercise 2: Pop the Ball -->
+        <div id="exercise-2" class="exercise-section hidden">
+            <div class="score-container">
+                <span class="score-label">Balls Popped:</span>
+                <span id="score-count">0</span>
+            </div>
+            <div id="game-area" class="game-area">
+                <div id="target-ball" class="target-ball"></div>
+                <div class="instructions-overlay">
+                    Click the glowing ball as fast as you can!
+                </div>
+            </div>
+            <div class="controls">
+                <button id="ex2-start-btn">Start Exercise</button>
+                <button id="ex2-reset-btn" class="secondary">Reset</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="script.js"></script>
+</body>
+</html>

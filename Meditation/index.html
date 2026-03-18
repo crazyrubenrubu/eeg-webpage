@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Breathing App</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="main-layout">
+
+<div class="container">
+
+    <div class="circle-container">
+        <div class="ring ring-1"></div>
+        <div class="ring ring-2"></div>
+        <div class="ring ring-3"></div>
+        <img src="girl.png" alt="Meditating Girl" class="girl-img">
+    </div>
+
+    <p id="text">Breathe In</p>
+
+</div>
+
+<!-- RIGHT SIDE AFFIRMATIONS -->
+<div class="affirmations-container">
+    <p id="affirmation">I am calm and at peace.</p>
+</div>
+
+</div>
+
+<div class="stopwatch-container">
+    <div id="time-display">00:00</div>
+    <div class="controls">
+        <button id="start-stop-btn">Start</button>
+        <button id="reset-btn">Reset</button>
+    </div>
+</div>
+<audio id="music-music" loop>
+<source src="music.mp3" type="audio/mpeg">
+</audio>
+<script src="script.js"></script>
+
+</body>
+</html>

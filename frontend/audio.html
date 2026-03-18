@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindFlow · Audio Therapy</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(145deg, #d4e9f0 0%, #eaf3f7 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .detail-page {
+            max-width: 850px;
+            width: 100%;
+            margin: 1rem auto;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 2.5rem;
+            padding: 1rem;
+            box-shadow: 0 20px 40px -10px #1f4b57;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+
+        .page-header h1 {
+            font-weight: 400;
+            color: #1b4c5c;
+            font-size: 1.8rem;
+        }
+
+        .back-btn {
+            background: #2f7d8f;
+            color: white;
+            border: none;
+            padding: 0.4rem 1rem;
+            border-radius: 2.5rem;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .back-btn:hover {
+            background: #3e93a8;
+        }
+
+        .tab-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.2rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #cde3ea;
+            padding-bottom: 0.2rem;
+        }
+
+        .tab {
+            background: transparent;
+            border: none;
+            padding: 0.3rem 0.9rem;
+            border-radius: 2rem 2rem 0 0;
+            font-weight: 500;
+            color: #386e7c;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.8rem;
+        }
+
+        .tab.active {
+            background: #ffffffd0;
+            color: #1f5969;
+            box-shadow: 0 -4px 8px #b0d3de;
+        }
+
+        .tab:hover {
+            background: #e1f2f8;
+        }
+
+        .condition-content {
+            display: none;
+            animation: fade 0.3s;
+        }
+
+        .condition-content.active {
+            display: block;
+        }
+
+        @keyframes fade {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* ========== FIXED-SIZE CARDS – IDENTICAL EVERYWHERE ========== */
+        .block-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.7rem;
+            list-style: none;
+        }
+
+        .block-card {
+            background: white;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 4px 10px -4px rgba(31, 75, 87, 0.1);
+            transition: transform 0.15s, box-shadow 0.15s;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(255,255,255,0.6);
+            height: 260px;                     /* fixed card height */
+        }
+
+        .block-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px -6px #1f4b57;
+        }
+
+        .card-thumb {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            display: block;
+            background: #cde3ea;
+        }
+
+        .card-content {
+            padding: 0.7rem 0.6rem 0.8rem;
+            display: flex;
+            flex-direction: column;
+            flex: 1;                           /* takes remaining height */
+        }
+
+        .card-title {
+            font-weight: 600;
+            color: #1d4b56;
+            font-size: 0.9rem;
+            line-height: 1.3;
+            height: 2.4rem;                /* fixed height for 2 lines */
+            overflow: hidden;
+            display: -webkit-box;           /* required for line-clamp */
+            -webkit-box-orient: vertical;   /* required for line-clamp */
+            -webkit-line-clamp: 2;          /* limits to 2 lines */
+            line-clamp: 2;                  /* standard (experimental) */
+            margin-bottom: 0.2rem;
+        }
+
+        .card-desc {
+            font-size: 0.75rem;
+            color: #437682;
+            line-height: 1.4;
+            height: 3.2rem;                /* fixed height for 3 lines */
+            overflow: hidden;
+            display: -webkit-box;           /* required for line-clamp */
+            -webkit-box-orient: vertical;   /* required for line-clamp */
+            -webkit-line-clamp: 3;          /* limits to 3 lines */
+            line-clamp: 3;                  /* standard (experimental) */
+            margin-bottom: 0.4rem;
+        }
+
+        .card-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.3rem;
+            background: #e1f2f8;
+            padding: 0.3rem 0.7rem;
+            border-radius: 2rem;
+            color: #1f5a68;
+            text-decoration: none;
+            font-size: 0.7rem;
+            font-weight: 500;
+            transition: 0.2s;
+            align-self: flex-start;
+            border: none;
+            cursor: pointer;
+            margin-top: auto;                   /* pushes button to bottom */
+        }
+
+        .card-link i {
+            font-size: 0.8rem;
+            color: #c4302b;
+        }
+
+        .card-link:hover {
+            background: #c5e3ef;
+            color: #0d3b47;
+        }
+
+        /* Mobile: single column */
+        @media (max-width: 640px) {
+            .block-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="detail-page">
+        <div class="page-header">
+            <h1><i class="fas fa-headphones" style="color:#2f7d8f;"></i> Audio Therapy</h1>
+            <a href="solutions.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Remedies</a>
+        </div>
+
+        <div class="tab-container">
+            <button class="tab active" data-condition="stress">Stress</button>
+            <button class="tab" data-condition="anxiety">Anxiety</button>
+            <button class="tab" data-condition="depression">Depression</button>
+            <button class="tab" data-condition="sleep">Sleep Deprivation</button>
+            <button class="tab" data-condition="distraction">Distraction</button>
+        </div>
+
+        <div id="stress" class="condition-content active"></div>
+        <div id="anxiety" class="condition-content"></div>
+        <div id="depression" class="condition-content"></div>
+        <div id="sleep" class="condition-content"></div>
+        <div id="distraction" class="condition-content"></div>
+    </div>
+
+    <script>
+        function getYouTubeThumbnail(url) {
+            const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/);
+            return match ? `https://img.youtube.com/vi/${match[1]}/mqdefault.jpg` : '';
+        }
+
+        const audioData = {
+            stress: [
+                { title: "Blue Light Relaxation Therapy", desc: "Soft blue light visuals help calm the nervous system and reduce mental tension.", url: "https://www.youtube.com/watch?v=1ZYbU82GVz4" },
+                { title: "Nature Visual Therapy (Forest / Water Scenes)", desc: "Watching nature scenes reduces stress and lowers heart rate.", url: "https://www.youtube.com/watch?v=OdIJ2x3nxzQ" },
+                { title: "Color Therapy (Green Relaxation Screen)", desc: "Green color visuals are associated with balance and calmness.", url: "https://www.youtube.com/watch?v=8n9G9FQpH2Q" },
+                { title: "Slow Moving Mandala / Visual Meditation", desc: "Watching slow moving symmetrical patterns can calm the mind.", url: "https://www.youtube.com/watch?v=5X1h6D9s5nY" }
+            ],
+            anxiety: [
+                { title: "Calm Ocean Waves Visual Therapy", desc: "Slow ocean waves encourage the brain to enter a relaxed state.", url: "https://www.youtube.com/watch?v=V1RPi2MYptM" },
+                { title: "Soft Warm Light / Sunset Therapy", desc: "Warm tones create a comforting atmosphere.", url: "https://www.youtube.com/watch?v=V7yqW64Dx7c" },
+                { title: "Slow Breathing Visual Guide", desc: "Visual breathing animation helps synchronize breath.", url: "https://www.youtube.com/watch?v=tybOi4hjZFQ" },
+                { title: "Space / Starfield Relaxation Visual", desc: "Slow-moving stars help shift attention away from anxious thinking.", url: "https://www.youtube.com/watch?v=FjHGZj2IjBk" }
+            ],
+            depression: [
+                { title: "Morning Sunlight / Bright Light Therapy", desc: "Bright light stimulates serotonin production.", url: "https://www.youtube.com/watch?v=6H8E6k5V2qA" },
+                { title: "Nature Landscape Therapy (Mountains / Green Fields)", desc: "Peaceful landscapes improve mood.", url: "https://www.youtube.com/watch?v=1ZYbU82GVz4" },
+                { title: "Motivational Sunrise Visual", desc: "Sunrise imagery promotes optimism.", url: "https://www.youtube.com/watch?v=UfcAVejslrU" },
+                { title: "Flowing Water / River Visual Therapy", desc: "Continuous motion reduces rumination.", url: "https://www.youtube.com/watch?v=OdIJ2x3nxzQ" }
+            ],
+            sleep: [
+                { title: "Night Sky / Starfield Relaxation Visual", desc: "Calm night sky helps prepare the brain for rest.", url: "https://www.youtube.com/watch?v=6LT3gZt0e6o" },
+                { title: "Warm Light / Night Mode Therapy", desc: "Warm dim lighting supports natural circadian rhythms.", url: "https://www.youtube.com/watch?v=V7yqW64Dx7c" },
+                { title: "Slow Ocean Waves Visual", desc: "Gentle ocean waves create a relaxing rhythm.", url: "https://www.youtube.com/watch?v=V1RPi2MYptM" },
+                { title: "Candle Flame Relaxation Visual", desc: "Soft flickering light encourages relaxation.", url: "https://www.youtube.com/watch?v=LXb3EKWsInQ" }
+            ],
+            distraction: [
+                { title: "Focus Timer / Pomodoro Visual", desc: "Structured timer helps brain stay engaged.", url: "https://www.youtube.com/watch?v=3FjIuPMQzxo" },
+                { title: "Minimalist Focus Screen", desc: "Reduces visual clutter to lower cognitive overload.", url: "https://www.youtube.com/watch?v=DWcJFNfaw9c" },
+                { title: "Focus Animation / Breathing Dot", desc: "Following motion trains attention on a single stimulus.", url: "https://www.youtube.com/watch?v=bF_1ZiFta-E" },
+                { title: "Study Environment Visual (Library)", desc: "Environmental cues signal it's time to focus.", url: "https://www.youtube.com/watch?v=lFcSrYw-ARY" }
+            ]
+        };
+
+        function renderCondition(containerId, items) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            
+            let html = '<ul class="block-grid">';
+            items.forEach(item => {
+                const thumbUrl = getYouTubeThumbnail(item.url);
+                html += `
+                    <li class="block-card">
+                        <img class="card-thumb" src="${thumbUrl}" alt="${item.title}" loading="lazy">
+                        <div class="card-content">
+                            <div class="card-title">${item.title}</div>
+                            <div class="card-desc">${item.desc}</div>
+                            <a href="${item.url}" target="_blank" class="card-link"><i class="fab fa-youtube"></i> Listen</a>
+                        </div>
+                    </li>
+                `;
+            });
+            html += '</ul>';
+            container.innerHTML = html;
+        }
+
+        renderCondition('stress', audioData.stress);
+        renderCondition('anxiety', audioData.anxiety);
+        renderCondition('depression', audioData.depression);
+        renderCondition('sleep', audioData.sleep);
+        renderCondition('distraction', audioData.distraction);
+
+        const tabs = document.querySelectorAll('.tab');
+        const contents = document.querySelectorAll('.condition-content');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                contents.forEach(c => c.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.condition).classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
