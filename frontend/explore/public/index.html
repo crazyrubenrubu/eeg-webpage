@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mental Health Library | Evidence-Based Guide</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="description" content="Comprehensive, clinically-reviewed information on stress, anxiety, depression, and more.">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-brain"></i>
+                <span>Mental Health Library</span>
+            </div>
+            <div class="nav-right">
+                <ul class="nav-menu" id="navMenu">
+                    <li><button class="nav-link active" data-condition="stress">Stress</button></li>
+                    <li><button class="nav-link" data-condition="anxiety">Anxiety</button></li>
+                    <li><button class="nav-link" data-condition="depression">Depression</button></li>
+                    <li><button class="nav-link" data-condition="distraction">Distraction</button></li>
+                    <li><button class="nav-link" data-condition="sleepDeprivation">Sleep</button></li>
+                </ul>
+                <div class="nav-actions">
+                    <button class="theme-toggle" id="themeToggle" aria-label="Switch theme">
+                        <i class="fas fa-sun"></i>
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <button class="mobile-menu-btn" id="mobileMenuBtn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <article class="health-article" id="articleContent">
+            <!-- Dynamic content will be injected here -->
+        </article>
+    </main>
+
+    <footer class="article-footer">
+        <div class="footer-container">
+            <p><i class="fas fa-stethoscope"></i> All content is reviewed by medical professionals for clinical accuracy.</p>
+            <p class="copyright">© 2026 Mental Health Library • For educational purposes only</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -346,5 +346,149 @@
       "gamma": "2.8%"
     },
     "duration": 52
+  },
+  {
+    "timestamp": "2026-03-18T20:03:54.140Z",
+    "condition": "Distraction",
+    "bands": {
+      "delta": "16.5%",
+      "theta": "14.4%",
+      "alpha": "14.4%",
+      "beta": "43.3%",
+      "gamma": "11.3%"
+    },
+    "duration": 32
+  },
+  {
+    "timestamp": "2026-03-18T20:11:21.702Z",
+    "condition": "Stress",
+    "bands": {
+      "delta": "24.2%",
+      "theta": "9.5%",
+      "alpha": "5.6%",
+      "beta": "53.7%",
+      "gamma": "7.0%"
+    },
+    "duration": 69
+  },
+  {
+    "timestamp": "2026-03-18T20:16:44.123Z",
+    "condition": "Fatigue",
+    "bands": {
+      "delta": "28.3%",
+      "theta": "11.5%",
+      "alpha": "10.7%",
+      "beta": "39.3%",
+      "gamma": "10.2%"
+    },
+    "duration": 89
+  },
+  {
+    "timestamp": "2026-03-18T20:19:21.830Z",
+    "condition": "Focused",
+    "bands": {
+      "delta": "8.0%",
+      "theta": "41.3%",
+      "alpha": "7.2%",
+      "beta": "35.1%",
+      "gamma": "8.4%"
+    },
+    "duration": 41
+  },
+  {
+    "timestamp": "2026-03-18T20:21:51.111Z",
+    "condition": "Focused",
+    "bands": {
+      "delta": "13.6%",
+      "theta": "13.3%",
+      "alpha": "12.3%",
+      "beta": "49.4%",
+      "gamma": "11.4%"
+    },
+    "duration": 49
+  },
+  {
+    "timestamp": "2026-03-18T20:45:09.588Z",
+    "condition": "Distraction",
+    "bands": {
+      "delta": "36.9%",
+      "theta": "18.5%",
+      "alpha": "7.7%",
+      "beta": "26.2%",
+      "gamma": "10.8%"
+    },
+    "duration": 38
+  },
+  {
+    "timestamp": "2026-03-18T21:46:11.213Z",
+    "condition": "Stress",
+    "bands": {
+      "delta": "31.1%",
+      "theta": "20.7%",
+      "alpha": "11.9%",
+      "beta": "32.6%",
+      "gamma": "3.7%"
+    },
+    "duration": 33
+  },
+  {
+    "timestamp": "2026-03-18T21:47:54.383Z",
+    "condition": "Stress",
+    "bands": {
+      "delta": "32.4%",
+      "theta": "19.0%",
+      "alpha": "10.6%",
+      "beta": "34.5%",
+      "gamma": "3.5%"
+    },
+    "duration": 37
+  },
+  {
+    "timestamp": "2026-03-18T21:49:12.712Z",
+    "condition": "Low Energy",
+    "bands": {
+      "delta": "77.1%",
+      "theta": "11.4%",
+      "alpha": "5.7%",
+      "beta": "4.3%",
+      "gamma": "1.4%"
+    },
+    "duration": 33
+  },
+  {
+    "timestamp": "2026-03-18T21:51:08.624Z",
+    "condition": "Low Energy",
+    "bands": {
+      "delta": "43.8%",
+      "theta": "18.8%",
+      "alpha": "12.5%",
+      "beta": "25.0%",
+      "gamma": "0.0%"
+    },
+    "duration": 33
+  },
+  {
+    "timestamp": "2026-03-18T21:55:55.244Z",
+    "condition": "Low Energy",
+    "bands": {
+      "delta": "62.9%",
+      "theta": "17.1%",
+      "alpha": "11.4%",
+      "beta": "7.1%",
+      "gamma": "1.4%"
+    },
+    "duration": 179
+  },
+  {
+    "timestamp": "2026-03-18T21:57:44.248Z",
+    "condition": "Low Energy",
+    "bands": {
+      "delta": "61.2%",
+      "theta": "20.2%",
+      "alpha": "11.0%",
+      "beta": "6.1%",
+      "gamma": "1.5%"
+    },
+    "duration": 47
   }
 ]

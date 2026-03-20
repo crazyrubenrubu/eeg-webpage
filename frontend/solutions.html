@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MindFlow · Choose Your Remedy</title>
+    <title>MindFlow · Your Remedy</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* same styles as before */
         .gateway {
             max-width: 1200px;
             margin: 2rem auto;
-            background: rgba(255,255,255,0.7);
+            background: var(--card-bg);
             backdrop-filter: blur(10px);
             border-radius: 3rem;
             padding: 2.5rem;
-            box-shadow: 0 20px 40px -10px #1f4b57;
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.2);
+            border: 1px solid var(--card-border);
         }
         .gateway-header {
             text-align: center;
@@ -23,17 +23,42 @@
         }
         .gateway-header h1 {
             font-weight: 400;
-            color: #1b4c5c;
+            color: var(--text-primary);
             font-size: 2.5rem;
             margin-bottom: 0.5rem;
         }
+        .gateway-header h1 i {
+            color: var(--accent);
+            margin-right: 0.5rem;
+        }
         .gateway-header p {
-            color: #2d6575;
+            color: var(--text-secondary);
             font-size: 1.2rem;
         }
         .gateway-header small {
-            color: #56848f;
+            color: var(--text-muted);
             font-style: italic;
+        }
+        .header-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        .theme-toggle {
+            background: var(--pill-bg);
+            border: 1px solid var(--border-light);
+            color: var(--pill-text);
+            padding: 0.6rem 1.2rem;
+            border-radius: 3rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .theme-toggle:hover {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
         }
         .remedy-grid {
             display: grid;
@@ -42,13 +67,13 @@
             margin-top: 2rem;
         }
         .remedy-card {
-            background: rgba(255, 255, 255, 0.8);
+            background: var(--card-bg);
             backdrop-filter: blur(5px);
             border-radius: 2.5rem;
             padding: 2rem 1.5rem;
             text-align: center;
-            border: 1px solid white;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: 1px solid var(--card-border);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s;
             cursor: pointer;
             text-decoration: none;
             color: inherit;
@@ -56,100 +81,278 @@
         }
         .remedy-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 20px 30px -12px #2d6575;
+            box-shadow: 0 20px 30px -12px var(--accent);
+            border-color: var(--accent);
         }
         .remedy-card i {
             font-size: 3rem;
-            color: #2f7d8f;
+            color: var(--accent);
             margin-bottom: 1rem;
         }
         .remedy-card h2 {
-            font-weight: 500;
-            color: #194a56;
+            font-weight: 600;
+            color: var(--text-primary);
             margin-bottom: 0.5rem;
             font-size: 1.8rem;
         }
         .remedy-card p {
-            color: #437682;
+            color: var(--text-secondary);
             font-size: 0.95rem;
             margin-bottom: 1rem;
         }
         .remedy-card .badge {
-            background: #e1f2f8;
+            background: rgba(47,125,143,0.15);
             padding: 0.3rem 0.8rem;
             border-radius: 2rem;
             font-size: 0.8rem;
-            color: #1f5a68;
+            color: var(--accent);
             display: inline-block;
+            border: 1px solid var(--border-light);
+        }
+        .recommendation-banner {
+            background: rgba(47,125,143,0.1);
+            border-left: 6px solid var(--accent);
+            border-radius: 2rem;
+            padding: 1.5rem 2rem;
+            margin: 2rem 0;
+            font-size: 1.2rem;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+        .recommendation-banner strong {
+            color: var(--accent);
+        }
+        .btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 3rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .btn:hover {
+            background: var(--accent-light);
+            transform: translateY(-2px);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+        }
+        .btn-outline:hover {
+            background: var(--accent);
+            color: white;
         }
         .back-link {
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
             margin-top: 2rem;
-            color: #2f7d8f;
+            color: var(--accent);
             text-decoration: none;
             font-weight: 500;
         }
         .back-link:hover {
             text-decoration: underline;
         }
+
+        /* Smooth transitions for full grid */
+        .full-grid-container {
+            transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+            opacity: 0;
+            transform: translateY(-10px);
+            visibility: hidden;
+            height: 0;
+            overflow: hidden;
+            margin: 0;
+        }
+        .full-grid-container.visible {
+            opacity: 1;
+            transform: translateY(0);
+            visibility: visible;
+            height: auto;
+            overflow: visible;
+            margin-top: 2rem;
+        }
+        /* Button container */
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin: 1.5rem 0;
+        }
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
     <div class="gateway">
+        <div class="header-actions">
+            <button id="themeTogglePage" class="theme-toggle" onclick="toggleTheme()">🌓</button>
+        </div>
+
         <div class="gateway-header">
-            <h1><i class="fas fa-leaf" style="color:#2f7d8f;"></i> Choose Your Remedy</h1>
+            <h1><i class="fas fa-leaf"></i>Your Remedy</h1>
             <p>What type of support feels right for your current brain state?</p>
-            <small>Select a category to explore personalized recommendations.</small>
         </div>
 
-        <div class="remedy-grid">
-            <!-- Audio Therapy -->
-            <a href="audio.html" class="remedy-card">
-                <i class="fas fa-headphones"></i>
-                <h2>Audio Therapy</h2>
-                <p>Relaxing sounds, binaural beats and soundscapes to gently guide your brainwaves.</p>
-                <span class="badge">Best for: high Beta or low Alpha</span>
-            </a>
-
-            <!-- Visual Therapy -->
-            <a href="visual.html" class="remedy-card">
-                <i class="fas fa-eye"></i>
-                <h2>Visual Therapy</h2>
-                <p>Calming visual patterns, color therapy and slow animations to ease mental overload.</p>
-                <span class="badge">Best for: high Theta or stress</span>
-            </a>
-
-            <!-- Physical Activity -->
-            <a href="physical.html" class="remedy-card">
-                <i class="fas fa-heartbeat"></i>
-                <h2>Physical Activity</h2>
-                <p>Simple breathing, stretching and movement routines to rebalance your brain and body.</p>
-                <span class="badge">Best for: restless Beta or low energy</span>
-            </a>
-
-            <!-- Lifestyle Suggestions -->
-            <a href="lifestyle.html" class="remedy-card">
-                <i class="fas fa-sun"></i>
-                <h2>Lifestyle Suggestions</h2>
-                <p>Everyday habits that keep your nervous system stable over the long term.</p>
-                <span class="badge">Best for: chronic stress or fatigue</span>
-            </a>
+        <!-- Recommendation banner (shows the condition) -->
+        <div id="recommendationBanner" class="recommendation-banner hidden">
+            ✨ Based on your result <strong id="conditionDisplay"></strong> we recommend: <strong id="remedyTypeDisplay"></strong>
         </div>
 
-        <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Monitor</a>
+        <!-- Single recommended card -->
+        <div id="recommendedCard" class="remedy-grid hidden" style="grid-template-columns: 1fr;"></div>
+
+        <!-- Button container (only visible when condition exists) -->
+        <div id="buttonContainer" class="button-container hidden">
+            <button id="toggleFullGridBtn" class="btn btn-outline">Show all remedies <i class="fas fa-arrow-down"></i></button>
+        </div>
+
+        <!-- Full remedy grid (with smooth transition) -->
+        <div id="fullGridContainer" class="full-grid-container">
+            <div id="fullGrid" class="remedy-grid"></div>
+        </div>
+
+        <a href="dashboard.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
     </div>
 
     <script>
-        // Optional: if you want to auto-navigate based on a condition parameter, 
-        // you could redirect to a specific remedy page. For now, it's just a gateway.
-        // If you want to highlight a card based on condition, you could do that here.
+        // Theme toggle
+        window.toggleTheme = function() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+        };
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+        }
+
+        // All remedy definitions
+        const allRemedies = [
+            {
+                type: 'audio',
+                title: 'Audio Therapy',
+                description: 'Relaxing sounds, binaural beats and soundscapes to gently guide your brainwaves.',
+                badge: 'Best for: high Beta or low Alpha',
+                icon: 'fa-headphones',
+                link: 'audio.html'
+            },
+            {
+                type: 'visual',
+                title: 'Visual Therapy',
+                description: 'Calming visual patterns, color therapy and slow animations to ease mental overload.',
+                badge: 'Best for: high Theta or stress',
+                icon: 'fa-eye',
+                link: 'visual.html'
+            },
+            {
+                type: 'physical',
+                title: 'Physical Activity',
+                description: 'Simple breathing, stretching and movement routines to rebalance your brain and body.',
+                badge: 'Best for: restless Beta or low energy',
+                icon: 'fa-heartbeat',
+                link: 'physical.html'
+            },
+            {
+                type: 'lifestyle',
+                title: 'Lifestyle Suggestions',
+                description: 'Everyday habits that keep your nervous system stable over the long term.',
+                badge: 'Best for: chronic stress or fatigue',
+                icon: 'fa-sun',
+                link: 'lifestyle.html'
+            }
+        ];
+
+        // Mapping from condition to remedy type and display name
+        const conditionMap = {
+            // From EEG dashboard
+            'stress': { remedy: 'audio', display: 'Stress' },
+            'anxiety': { remedy: 'audio', display: 'Anxiety' },
+            'fatigue': { remedy: 'visual', display: 'Fatigue' },
+            'low-energy': { remedy: 'physical', display: 'Low Energy' },
+            'brain-overload': { remedy: 'visual', display: 'Brain Overload' },
+            'relaxation': { remedy: 'lifestyle', display: 'Relaxation' },
+            'distraction': { remedy: 'physical', display: 'Distraction' },
+            'mild depression': { remedy: 'lifestyle', display: 'Mild Depression' },
+            'focused': { remedy: 'lifestyle', display: 'Focused' },
+            'neutral': { remedy: 'lifestyle', display: 'Neutral' },
+            // From questionnaire (PSS-10)
+            'low-stress': { remedy: 'lifestyle', display: 'Low Stress' },
+            'moderate-stress': { remedy: 'audio', display: 'Moderate Stress' },
+            'high-stress': { remedy: 'audio', display: 'High Stress' }
+        };
+
+        // Helper to render a remedy card HTML
+        function renderRemedyCard(remedy) {
+            return `
+                <a href="${remedy.link}" class="remedy-card">
+                    <i class="fas ${remedy.icon}"></i>
+                    <h2>${remedy.title}</h2>
+                    <p>${remedy.description}</p>
+                    <span class="badge">${remedy.badge}</span>
+                </a>
+            `;
+        }
+
+        // Get condition from URL
         const urlParams = new URLSearchParams(window.location.search);
-        const condition = urlParams.get('condition');
-        if (condition) {
-            // For example, you could scroll to a specific card or show a message
-            console.log(`Suggested condition: ${condition}`);
+        const condition = urlParams.get('condition')?.toLowerCase();
+
+        const banner = document.getElementById('recommendationBanner');
+        const buttonContainer = document.getElementById('buttonContainer');
+        const fullGridContainer = document.getElementById('fullGridContainer');
+        const fullGrid = document.getElementById('fullGrid');
+        const recommendedCardDiv = document.getElementById('recommendedCard');
+        const conditionDisplay = document.getElementById('conditionDisplay');
+        const toggleBtn = document.getElementById('toggleFullGridBtn');
+
+        if (condition && conditionMap[condition]) {
+            const remedyType = conditionMap[condition].remedy;
+            const displayName = conditionMap[condition].display;
+
+            // Show banner, recommended card, and button container
+            banner.classList.remove('hidden');
+            recommendedCardDiv.classList.remove('hidden');
+            buttonContainer.classList.remove('hidden');
+            conditionDisplay.textContent = displayName;
+
+            // Find the recommended remedy object
+            const recommendedRemedy = allRemedies.find(r => r.type === remedyType);
+
+            // Render the recommended card (single)
+            if (recommendedRemedy) {
+                recommendedCardDiv.innerHTML = renderRemedyCard(recommendedRemedy);
+            }
+
+            // Filter out the recommended remedy for the full grid
+            const otherRemedies = allRemedies.filter(r => r.type !== remedyType);
+
+            // Render full grid with the other remedies
+            fullGrid.innerHTML = otherRemedies.map(renderRemedyCard).join('');
+
+            // Toggle full grid visibility with smooth transition
+            toggleBtn.addEventListener('click', () => {
+                if (fullGridContainer.classList.contains('visible')) {
+                    fullGridContainer.classList.remove('visible');
+                    toggleBtn.innerHTML = 'Show all remedies <i class="fas fa-arrow-down"></i>';
+                } else {
+                    fullGridContainer.classList.add('visible');
+                    toggleBtn.innerHTML = 'Hide all remedies <i class="fas fa-arrow-up"></i>';
+                }
+            });
+        } else {
+            // No condition: show full grid with all remedies
+            banner.classList.add('hidden');
+            recommendedCardDiv.classList.add('hidden');
+            buttonContainer.classList.add('hidden');
+            fullGridContainer.classList.add('visible'); // make it visible by default
+            fullGrid.innerHTML = allRemedies.map(renderRemedyCard).join('');
         }
     </script>
 </body>

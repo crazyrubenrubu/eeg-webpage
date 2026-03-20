@@ -1,6 +1,8 @@
 // chart.js – Optimized for smooth performance and no crashes
 let eegChart = null;
 let multiBandChart = null;
+let bwRadarChart = null;                // <-- ADDED
+let pendingRadarUpdate = false;         // <-- ADDED
 const MAX_DATA_POINTS = 100;
 const MAX_HISTORY = 40;
 
@@ -10,15 +12,15 @@ let pendingMultiUpdate = false;
 
 function getChartColors() {
     return document.body.classList.contains('dark-mode')
-        ? ['#ef4444', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6'] // dark mode
-        : ['#b91c1c', '#d97706', '#059669', '#2563eb', '#7c3aed']; // light mode
+        ? ['#ef4444', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6']
+        : ['#b91c1c', '#d97706', '#059669', '#2563eb', '#7c3aed'];
 }
 
 function initEegChart() {
     const ctx = document.getElementById('eegCanvas');
     if (!ctx) return;
-    // Destroy previous chart if it exists (prevents memory leaks)
     if (eegChart) eegChart.destroy();
+
     eegChart = new Chart(ctx.getContext('2d'), {
         type: 'line',
         data: {
@@ -37,10 +39,18 @@ function initEegChart() {
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            animation: false,          // No animation for waveform (smooth scrolling is handled by data shift)
+            animation: false,
             scales: {
-                y: { ticks: { display: false } },
-                x: { ticks: { display: false } }
+                y: {
+                    min: 0,
+                    max: 1,        // adjust to your signal range
+                    ticks: { display: false },
+                    grid: { display: false }
+                },
+                x: {
+                    ticks: { display: false },
+                    grid: { display: false }
+                }
             },
             plugins: { legend: { display: false } }
         }
@@ -51,9 +61,10 @@ function initMultiBandChart() {
     const ctx = document.getElementById('dominantChart');
     if (!ctx) return;
     if (multiBandChart) multiBandChart.destroy();
+
     const colors = getChartColors();
-    const textColor = getComputedStyle(document.body).getPropertyValue('--text-primary').trim() || 
-                      (document.body.classList.contains('dark-mode') ? '#fff' : '#000');
+    const textColor = document.body.classList.contains('dark-mode') ? '#fff' : '#000';
+
     multiBandChart = new Chart(ctx.getContext('2d'), {
         type: 'line',
         data: {
@@ -71,9 +82,12 @@ function initMultiBandChart() {
             maintainAspectRatio: false,
             animation: false,
             scales: {
-                y: { beginAtZero: true, max: 100, grid: { color: 'rgba(148,163,184,0.15)' } },
-                x: { 
-                    reverse: true,          // <-- this reverses the direction
+                y: {
+                    beginAtZero: true,
+                    max: 100,
+                    grid: { color: 'rgba(148,163,184,0.15)' }
+                },
+                x: {
                     ticks: { display: false }
                 }
             },
@@ -93,21 +107,39 @@ function initMultiBandChart() {
     });
 }
 
+// ========== RADAR CHART FUNCTIONS ==========
+window.setRadarChart = function(chart) {
+    bwRadarChart = chart;
+};
+
+window.updateRadarChart = function(data) {
+    if (!bwRadarChart) return;
+    if (!pendingRadarUpdate) {
+        pendingRadarUpdate = true;
+        requestAnimationFrame(() => {
+            if (bwRadarChart) {
+                bwRadarChart.data.datasets[0].data = data;
+                bwRadarChart.update({ duration: 0 });
+            }
+            pendingRadarUpdate = false;
+        });
+    }
+};
+
 window.updateMergedWaveform = function(sample) {
     if (!eegChart) return;
     const value = parseFloat(sample);
-    if (isNaN(value)) return;  // ignore invalid data
+    if (isNaN(value)) return;
 
     const dataArr = eegChart.data.datasets[0].data;
     dataArr.push(value);
     if (dataArr.length > MAX_DATA_POINTS) dataArr.shift();
 
-    // Batch updates: only redraw once per frame
     if (!pendingEegUpdate) {
         pendingEegUpdate = true;
         requestAnimationFrame(() => {
             if (eegChart) {
-                eegChart.update({ duration: 0 }); // no animation
+                eegChart.update({ duration: 0 });
             }
             pendingEegUpdate = false;
         });
@@ -120,19 +152,16 @@ window.updateMultiBandChart = function(delta, theta, alpha, beta, gamma) {
     const toNum = (val) => isNaN(parseFloat(val)) ? 0 : parseFloat(val);
     const datasets = multiBandChart.data.datasets;
 
-    // Insert new values at the beginning (left side)
-    datasets[0].data.unshift(toNum(delta));
-    datasets[1].data.unshift(toNum(theta));
-    datasets[2].data.unshift(toNum(alpha));
-    datasets[3].data.unshift(toNum(beta));
-    datasets[4].data.unshift(toNum(gamma));
+    datasets[0].data.push(toNum(delta));
+    datasets[1].data.push(toNum(theta));
+    datasets[2].data.push(toNum(alpha));
+    datasets[3].data.push(toNum(beta));
+    datasets[4].data.push(toNum(gamma));
 
-    // Keep array length within MAX_HISTORY by removing from the end
     if (datasets[0].data.length > MAX_HISTORY) {
-        datasets.forEach(ds => ds.data.pop());
+        datasets.forEach(ds => ds.data.shift());
     }
 
-    // Batch update (same as before)
     if (!pendingMultiUpdate) {
         pendingMultiUpdate = true;
         requestAnimationFrame(() => {
@@ -168,8 +197,7 @@ const observer = new MutationObserver(() => {
             ds.pointBorderColor = colors[i];
         });
 
-        const newTextColor = getComputedStyle(document.body).getPropertyValue('--text-primary').trim() || 
-                             (document.body.classList.contains('dark-mode') ? '#fff' : '#000');
+        const newTextColor = document.body.classList.contains('dark-mode') ? '#fff' : '#000';
         if (multiBandChart.config.options.plugins.legend.labels) {
             multiBandChart.config.options.plugins.legend.labels.color = newTextColor;
         }
@@ -179,7 +207,6 @@ const observer = new MutationObserver(() => {
 });
 observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
 
-// Initialize charts when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     initEegChart();
     initMultiBandChart();

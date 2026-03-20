@@ -7,14 +7,16 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        /* Page specific styles – using CSS variables for theme compatibility */
         .detail-page {
             max-width: 1200px;
             margin: 2rem auto;
-            background: rgba(255,255,255,0.7);
+            background: var(--card-bg);
             backdrop-filter: blur(10px);
             border-radius: 3rem;
             padding: 2rem;
-            box-shadow: 0 20px 40px -10px #1f4b57;
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.2);
+            border: 1px solid var(--card-border);
         }
         .page-header {
             display: flex;
@@ -22,14 +24,25 @@
             align-items: center;
             margin-bottom: 2rem;
             flex-wrap: wrap;
+            gap: 1rem;
         }
         .page-header h1 {
             font-weight: 400;
-            color: #1b4c5c;
+            color: var(--text-primary);
             font-size: 2.2rem;
+            margin: 0;
+        }
+        .page-header h1 i {
+            color: var(--accent);
+            margin-right: 0.5rem;
+        }
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
         }
         .back-btn {
-            background: #2f7d8f;
+            background: var(--accent);
             color: white;
             border: none;
             padding: 0.8rem 2rem;
@@ -43,105 +56,90 @@
             gap: 0.5rem;
         }
         .back-btn:hover {
-            background: #3e93a8;
+            background: var(--accent-light);
+            transform: translateY(-2px);
         }
-        .tab-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-bottom: 2rem;
-            border-bottom: 2px solid #cde3ea;
-            padding-bottom: 0.5rem;
-        }
-        .tab {
-            background: transparent;
-            border: none;
-            padding: 0.8rem 1.8rem;
-            border-radius: 3rem 3rem 0 0;
-            font-weight: 500;
-            color: #386e7c;
+        .theme-toggle {
+            background: var(--pill-bg);
+            border: 1px solid var(--border-light);
+            color: var(--pill-text);
+            padding: 0.6rem 1.2rem;
+            border-radius: 3rem;
+            font-size: 1rem;
             cursor: pointer;
             transition: 0.2s;
-            font-size: 1rem;
         }
-        .tab.active {
-            background: #ffffffd0;
-            color: #1f5969;
-            box-shadow: 0 -4px 8px #b0d3de;
-        }
-        .tab:hover {
-            background: #e1f2f8;
-        }
-        .condition-content {
-            display: none;
-            animation: fade 0.3s;
-        }
-        .condition-content.active {
-            display: block;
-        }
-        @keyframes fade {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        .theme-toggle:hover {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
         }
         .activity-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.2rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
             margin-top: 1rem;
         }
         .activity-card {
-            background: rgba(255, 255, 255, 0.8);
+            background: var(--card-bg);
             backdrop-filter: blur(4px);
             border-radius: 2rem;
             padding: 1.5rem;
-            border: 1px solid white;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: 1px solid var(--card-border);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s;
             cursor: pointer;
             text-decoration: none;
             color: inherit;
             display: block;
         }
         .activity-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 20px -10px #2d6575;
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px -10px var(--accent);
+            border-color: var(--accent);
         }
         .activity-card h3 {
-            font-weight: 500;
-            color: #194a56;
+            font-weight: 600;
+            color: var(--text-primary);
             margin-bottom: 0.5rem;
             font-size: 1.3rem;
         }
         .activity-card p {
-            color: #437682;
-            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin: 0;
+        }
+        /* Ensure dark mode text contrasts */
+        body.dark-mode .activity-card {
+            background: rgba(30, 41, 59, 0.8);
+        }
+        body.dark-mode .activity-card h3 {
+            color: #f1f5f9;
+        }
+        body.dark-mode .activity-card p {
+            color: #cbd5e1;
         }
     </style>
 </head>
 <body>
     <div class="detail-page">
         <div class="page-header">
-            <h1><i class="fas fa-heartbeat" style="color:#2f7d8f;"></i> Physical Activity</h1>
-            <a href="solutions.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Remedies</a>
+            <h1><i class="fas fa-heartbeat"></i> Physical Activity</h1>
+            <div class="header-actions">
+                <button id="themeTogglePage" class="theme-toggle" onclick="toggleTheme()">🌓</button>
+                <a href="solutions.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Remedies</a>
+            </div>
         </div>
 
-        <!-- Tabs for conditions -->
-        <div class="tab-container" id="tabContainer">
-            <button class="tab active" data-condition="stress">Stress</button>
-            <button class="tab" data-condition="anxiety">Anxiety</button>
-            <button class="tab" data-condition="depression">Depression</button>
-            <button class="tab" data-condition="sleep">Sleep Deprivation</button>
-            <button class="tab" data-condition="distraction">Distraction</button>
-        </div>
+        <!-- Single grid with all activities (no tabs) -->
+        <div id="allActivities" class="activity-grid"></div>
 
-        <!-- Content containers -->
-        <div id="stress" class="condition-content active"></div>
-        <div id="anxiety" class="condition-content"></div>
-        <div id="depression" class="condition-content"></div>
-        <div id="sleep" class="condition-content"></div>
-        <div id="distraction" class="condition-content"></div>
     </div>
 
-    <div class="chat-icon" id="chatIcon"><i class="fas fa-comment-dots"></i></div>
+    <!-- Chatbot -->
+    <div class="chat-icon" id="chatIcon">
+        <img src="custom-brain.png" alt="Chat" class="chat-custom-img">
+    </div>
     <div class="chat-window" id="chatWindow">
         <div class="chat-header">AI assistant <i class="fas fa-robot"></i></div>
         <div class="chat-messages" id="chatMessages"></div>
@@ -150,55 +148,46 @@
             <button id="sendChat"><i class="fas fa-paper-plane"></i></button>
         </div>
     </div>
+
     <script src="chatbot.js"></script>
     <script>
+        // Theme toggle function (same as in other pages)
         window.toggleTheme = function() {
             document.body.classList.toggle('dark-mode');
             localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
         };
-        if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode');
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+        }
 
-        // Physical activity data updated with all FOUR custom modules!
-        const physicalData = {
-            stress: [
-                { title: "Guided Meditation", desc: "Calm your mind and lower stress levels with guided meditation.", customUrl: "Meditation/index.html" },
-                { title: "Neck & Shoulder Stretch", desc: "Relieve physical tension built up from stress.", customUrl: "neck_shoulder/index.html" },
-                { title: "Eye Relaxation", desc: "Rest your eyes to reduce visual strain and headaches.", customUrl: "eye_exercise/index.html" },
-                { title: "Walk & Stretch", desc: "Take a short walk and stretch to reset your body.", customUrl: "walk_and_stretch/index.html" }
-            ],
-            anxiety: [
-                { title: "Guided Meditation", desc: "Center your thoughts and slow your racing mind.", customUrl: "Meditation/index.html" },
-                { title: "Neck & Shoulder Stretch", desc: "Release the physical anxiety held in your upper body.", customUrl: "neck shoulder/index.html" },
-                { title: "Walk & Stretch", desc: "Focus on breathing and your surroundings while moving.", customUrl: "walk_and_stretch/index.html" },
-                { title: "Grounding (5-4-3-2-1)", desc: "Identify 5 things you see, 4 touch, 3 hear, 2 smell, 1 taste.", slug: "grounding-54321" }
-            ],
-            depression: [
-                { title: "Guided Meditation", desc: "Find a moment of peace and gentle reflection.", customUrl: "Meditation/index.html" },
-                { title: "Neck & Shoulder Stretch", desc: "Release tension and open up your posture.", customUrl: "neck_shoulder/index.html" },
-                { title: "Walk & Stretch", desc: "Light movement and walking to improve mood and energy.", customUrl: "walk_and_stretch/index.html" },
-                { title: "Smile Exercise", desc: "Hold a gentle smile for 30–60 seconds.", slug: "smile-exercise" }
-            ],
-            sleep: [
-                { title: "Eye Relaxation", desc: "Prepare your eyes and mind for rest.", customUrl: "eye_exercise/index.html" },
-                { title: "Gentle Neck Stretch", desc: "Release the day's tension before getting into bed.", customUrl: "neck_shoulder/index.html" },
-                { title: "Guided Meditation", desc: "Drift off with a soothing guided session.", customUrl: "Meditation/index.html" },
-                { title: "Walk & Stretch", desc: "Light body stretch to physically wind down.", customUrl: "walk_and_stretch/index.html" }
-            ],
-            distraction: [
-                { title: "Eye Focus Exercise", desc: "Refocus your vision to refocus your mind.", customUrl: "eye_exercise/index.html" },
-                { title: "Neck & Shoulder Stretch", desc: "Relieve desk-posture stiffness to improve focus.", customUrl: "neck_shoulder/index.html" },
-                { title: "Guided Meditation", desc: "Clear the mental clutter and regain your focus.", customUrl: "Meditation/index.html" },
-                { title: "Walk & Stretch", desc: "A quick walk away from your desk to reset your attention.", customUrl: "walk_and_stretch/index.html" }
-            ]
-        };
+        // Physical activity data (combined from all conditions)
+        const physicalData = [
+            // Stress
+            { title: "Guided Meditation", desc: "Calm your mind and lower stress levels with guided meditation.", customUrl: "Meditation/index.html" },
+            { title: "Neck & Shoulder Stretch", desc: "Relieve physical tension built up from stress.", customUrl: "neck_shoulder/index.html" },
+            { title: "Eye Relaxation", desc: "Rest your eyes to reduce visual strain and headaches.", customUrl: "eye_exercise/index.html" },
+            { title: "Walk & Stretch", desc: "Take a short walk and stretch to reset your body.", customUrl: "walk_and_stretch/index.html" },
+            // Anxiety
+            { title: "Grounding (5-4-3-2-1)", desc: "Identify 5 things you see, 4 touch, 3 hear, 2 smell, 1 taste.", slug: "grounding-54321" },
+            // Depression
+            { title: "Smile Exercise", desc: "Hold a gentle smile for 30–60 seconds.", slug: "smile-exercise" }
+        ];
 
-        function renderCondition(containerId, items) {
-            const container = document.getElementById(containerId);
+        // Deduplicate by title (case‑insensitive)
+        const seen = new Set();
+        const uniqueActivities = physicalData.filter(item => {
+            const key = item.title.toLowerCase();
+            if (seen.has(key)) return false;
+            seen.add(key);
+            return true;
+        });
+
+        function renderAllActivities() {
+            const container = document.getElementById('allActivities');
             if (!container) return;
-            let html = '<div class="activity-grid">';
-            items.forEach(item => {
-                // Magic routing: Checks for customUrl first, falls back to standard slug
-                const targetUrl = item.customUrl ? item.customUrl : `activity.html?activity=${item.slug}`;
+            let html = '';
+            uniqueActivities.forEach(item => {
+                const targetUrl = item.customUrl || `activity.html?activity=${item.slug}`;
                 html += `
                     <a href="${targetUrl}" class="activity-card">
                         <h3>${item.title}</h3>
@@ -206,26 +195,10 @@
                     </a>
                 `;
             });
-            html += '</div>';
             container.innerHTML = html;
         }
 
-        renderCondition('stress', physicalData.stress);
-        renderCondition('anxiety', physicalData.anxiety);
-        renderCondition('depression', physicalData.depression);
-        renderCondition('sleep', physicalData.sleep);
-        renderCondition('distraction', physicalData.distraction);
-
-        const tabs = document.querySelectorAll('.tab');
-        const contents = document.querySelectorAll('.condition-content');
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                tabs.forEach(t => t.classList.remove('active'));
-                contents.forEach(c => c.classList.remove('active'));
-                tab.classList.add('active');
-                document.getElementById(tab.dataset.condition).classList.add('active');
-            });
-        });
+        renderAllActivities();
     </script>
 
 </body>

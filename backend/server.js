@@ -3,6 +3,7 @@ const { ReadlineParser } = require('@serialport/parser-readline');
 const { WebSocketServer } = require('ws');
 const { processEEG } = require('./eegProcessor');
 const { detectMentalState } = require('./mentalState');
+const { calculateMentalStateParams } = require('./mentalStateParams');
 const fs = require('fs');
 const path = require('path');
 
@@ -12,6 +13,7 @@ const SAMPLES_PER_WINDOW = 256;
 
 let rawBuffer = [];
 let latestBands = { delta: 0, theta: 0, alpha: 0, beta: 0, gamma: 0 };
+let latestParams = { stress: 0, fatigue: 0, lowEnergy: 0, brainOverload: 0, relaxation: 0, dominant: 'none' };
 let latestState = 'Unknown';
 let sessions = [];
 let port = null;
@@ -35,7 +37,7 @@ function saveSessions() {
 const http = require('http');
 const server = http.createServer((req, res) => {
   let filePath = path.join(__dirname, '..', 'frontend', req.url === '/' ? 'dashboard.html' : req.url);
-  
+
   // Basic static file serving
   fs.readFile(filePath, (err, content) => {
     if (err) {
@@ -66,7 +68,7 @@ function broadcast(data) {
 async function findArduinoPort() {
   const ports = await SerialPort.list();
   // Look for typical Arduino vendor IDs or manufacturer name
-  const arduinoPort = ports.find(p => 
+  const arduinoPort = ports.find(p =>
     (p.vendorId && p.vendorId.toLowerCase().includes('2341')) || // Arduino
     (p.vendorId && p.vendorId.toLowerCase().includes('1a86')) || // CH340
     (p.manufacturer && p.manufacturer.toLowerCase().includes('arduino'))
@@ -76,7 +78,7 @@ async function findArduinoPort() {
 
 async function connectToArduino() {
   if (port) {
-    try { port.close(); } catch (e) {}
+    try { port.close(); } catch (e) { }
   }
   const comPath = await findArduinoPort();
   if (!comPath) {
@@ -110,11 +112,13 @@ async function connectToArduino() {
         const bands = processEEG(rawBuffer, SAMPLE_RATE);
         latestBands = bands;
         latestState = detectMentalState(bands);
+        latestParams = calculateMentalStateParams(bands);
         rawBuffer = rawBuffer.slice(-SAMPLES_PER_WINDOW / 2);
 
         broadcast({
           type: 'eeg',
           bands: latestBands,
+          params: latestParams,
           state: latestState,
           rawSample: value
         });

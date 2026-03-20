@@ -4,211 +4,199 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MindFlow · Audio Therapy</title>
+    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(145deg, #d4e9f0 0%, #eaf3f7 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-        }
-
         .detail-page {
             max-width: 850px;
             width: 100%;
-            margin: 1rem auto;
-            background: rgba(255,255,255,0.7);
+            margin: 2rem auto;
+            background: var(--card-bg);
             backdrop-filter: blur(10px);
             border-radius: 2.5rem;
-            padding: 1rem;
-            box-shadow: 0 20px 40px -10px #1f4b57;
+            padding: 1.5rem;
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.2);
+            border: 1px solid var(--card-border);
         }
-
         .page-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
             flex-wrap: wrap;
-            gap: 0.8rem;
+            gap: 1rem;
         }
-
         .page-header h1 {
             font-weight: 400;
-            color: #1b4c5c;
+            color: var(--text-primary);
             font-size: 1.8rem;
+            margin: 0;
         }
-
+        .page-header h1 i {
+            color: var(--accent);
+            margin-right: 0.5rem;
+        }
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
         .back-btn {
-            background: #2f7d8f;
+            background: var(--accent);
             color: white;
             border: none;
-            padding: 0.4rem 1rem;
-            border-radius: 2.5rem;
-            font-size: 0.8rem;
+            padding: 0.6rem 1.5rem;
+            border-radius: 3rem;
+            font-size: 0.9rem;
             cursor: pointer;
             transition: 0.2s;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
-            gap: 0.4rem;
+            gap: 0.5rem;
         }
-
         .back-btn:hover {
-            background: #3e93a8;
+            background: var(--accent-light);
+            transform: translateY(-2px);
         }
-
+        .theme-toggle {
+            background: var(--pill-bg);
+            border: 1px solid var(--border-light);
+            color: var(--pill-text);
+            padding: 0.6rem 1.2rem;
+            border-radius: 3rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .theme-toggle:hover {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
         .tab-container {
             display: flex;
             flex-wrap: wrap;
             gap: 0.2rem;
-            margin-bottom: 1rem;
-            border-bottom: 2px solid #cde3ea;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--border-light);
             padding-bottom: 0.2rem;
         }
-
         .tab {
             background: transparent;
             border: none;
-            padding: 0.3rem 0.9rem;
+            padding: 0.5rem 1rem;
             border-radius: 2rem 2rem 0 0;
             font-weight: 500;
-            color: #386e7c;
+            color: var(--text-secondary);
             cursor: pointer;
             transition: 0.2s;
-            font-size: 0.8rem;
+            font-size: 0.9rem;
         }
-
         .tab.active {
-            background: #ffffffd0;
-            color: #1f5969;
-            box-shadow: 0 -4px 8px #b0d3de;
+            background: var(--card-bg);
+            color: var(--accent);
+            box-shadow: 0 -4px 8px var(--border-light);
         }
-
         .tab:hover {
-            background: #e1f2f8;
+            background: rgba(128,128,128,0.1);
         }
-
         .condition-content {
             display: none;
             animation: fade 0.3s;
         }
-
         .condition-content.active {
             display: block;
         }
-
         @keyframes fade {
             from { opacity: 0; }
             to { opacity: 1; }
         }
-
-        /* ========== FIXED-SIZE CARDS – IDENTICAL EVERYWHERE ========== */
         .block-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 0.7rem;
+            gap: 1rem;
             list-style: none;
         }
-
         .block-card {
-            background: white;
-            border-radius: 1rem;
+            background: var(--card-bg);
+            border-radius: 1.5rem;
             overflow: hidden;
-            box-shadow: 0 4px 10px -4px rgba(31, 75, 87, 0.1);
-            transition: transform 0.15s, box-shadow 0.15s;
+            box-shadow: 0 4px 10px -4px rgba(0,0,0,0.1);
+            transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
             display: flex;
             flex-direction: column;
-            border: 1px solid rgba(255,255,255,0.6);
-            height: 260px;                     /* fixed card height */
+            border: 1px solid var(--card-border);
+            height: 280px;
         }
-
         .block-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 16px -6px #1f4b57;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 20px -8px var(--accent);
+            border-color: var(--accent);
         }
-
         .card-thumb {
             width: 100%;
-            height: 100px;
+            height: 110px;
             object-fit: cover;
             display: block;
-            background: #cde3ea;
+            background: var(--border-light);
         }
-
         .card-content {
-            padding: 0.7rem 0.6rem 0.8rem;
+            padding: 0.8rem 0.8rem 1rem;
             display: flex;
             flex-direction: column;
-            flex: 1;                           /* takes remaining height */
+            flex: 1;
         }
-
         .card-title {
             font-weight: 600;
-            color: #1d4b56;
-            font-size: 0.9rem;
+            color: var(--text-primary);
+            font-size: 1rem;
             line-height: 1.3;
-            height: 2.4rem;                /* fixed height for 2 lines */
+            height: 2.6rem;
             overflow: hidden;
-            display: -webkit-box;           /* required for line-clamp */
-            -webkit-box-orient: vertical;   /* required for line-clamp */
-            -webkit-line-clamp: 2;          /* limits to 2 lines */
-            line-clamp: 2;                  /* standard (experimental) */
-            margin-bottom: 0.2rem;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            margin-bottom: 0.3rem;
         }
-
         .card-desc {
-            font-size: 0.75rem;
-            color: #437682;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
             line-height: 1.4;
-            height: 3.2rem;                /* fixed height for 3 lines */
+            height: 3.4rem;
             overflow: hidden;
-            display: -webkit-box;           /* required for line-clamp */
-            -webkit-box-orient: vertical;   /* required for line-clamp */
-            -webkit-line-clamp: 3;          /* limits to 3 lines */
-            line-clamp: 3;                  /* standard (experimental) */
-            margin-bottom: 0.4rem;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 3;
+            line-clamp: 3;
+            margin-bottom: 0.5rem;
         }
-
         .card-link {
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 0.3rem;
-            background: #e1f2f8;
-            padding: 0.3rem 0.7rem;
+            background: rgba(128,128,128,0.1);
+            padding: 0.4rem 0.8rem;
             border-radius: 2rem;
-            color: #1f5a68;
+            color: var(--accent);
             text-decoration: none;
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             font-weight: 500;
             transition: 0.2s;
             align-self: flex-start;
-            border: none;
-            cursor: pointer;
-            margin-top: auto;                   /* pushes button to bottom */
+            border: 1px solid var(--border-light);
+            margin-top: auto;
         }
-
         .card-link i {
             font-size: 0.8rem;
             color: #c4302b;
         }
-
         .card-link:hover {
-            background: #c5e3ef;
-            color: #0d3b47;
+            background: var(--accent);
+            color: white;
         }
-
-        /* Mobile: single column */
         @media (max-width: 640px) {
             .block-grid {
                 grid-template-columns: 1fr;
@@ -219,15 +207,18 @@
 <body>
     <div class="detail-page">
         <div class="page-header">
-            <h1><i class="fas fa-headphones" style="color:#2f7d8f;"></i> Audio Therapy</h1>
-            <a href="solutions.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Remedies</a>
+            <h1><i class="fas fa-headphones"></i> Audio Therapy</h1>
+            <div class="header-actions">
+                <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+                <a href="solutions.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back</a>
+            </div>
         </div>
 
         <div class="tab-container">
             <button class="tab active" data-condition="stress">Stress</button>
             <button class="tab" data-condition="anxiety">Anxiety</button>
             <button class="tab" data-condition="depression">Depression</button>
-            <button class="tab" data-condition="sleep">Sleep Deprivation</button>
+            <button class="tab" data-condition="sleep">Sleep</button>
             <button class="tab" data-condition="distraction">Distraction</button>
         </div>
 
@@ -239,6 +230,14 @@
     </div>
 
     <script>
+        window.toggleTheme = function() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+        };
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+        }
+
         function getYouTubeThumbnail(url) {
             const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/);
             return match ? `https://img.youtube.com/vi/${match[1]}/mqdefault.jpg` : '';
@@ -280,7 +279,6 @@
         function renderCondition(containerId, items) {
             const container = document.getElementById(containerId);
             if (!container) return;
-            
             let html = '<ul class="block-grid">';
             items.forEach(item => {
                 const thumbUrl = getYouTubeThumbnail(item.url);

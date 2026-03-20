@@ -7,213 +7,196 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(145deg, #d4e9f0 0%, #eaf3f7 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-        }
-
         .detail-page {
             max-width: 850px;
             width: 100%;
-            margin: 1rem auto;
-            background: rgba(255,255,255,0.7);
+            margin: 2rem auto;
+            background: var(--card-bg);
             backdrop-filter: blur(10px);
             border-radius: 2.5rem;
-            padding: 1rem;
-            box-shadow: 0 20px 40px -10px #1f4b57;
+            padding: 1.5rem;
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.2);
+            border: 1px solid var(--card-border);
         }
-
         .page-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
             flex-wrap: wrap;
-            gap: 0.8rem;
+            gap: 1rem;
         }
-
         .page-header h1 {
             font-weight: 400;
-            color: #1b4c5c;
+            color: var(--text-primary);
             font-size: 1.8rem;
+            margin: 0;
         }
-
+        .page-header h1 i {
+            color: var(--accent);
+            margin-right: 0.5rem;
+        }
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
         .back-btn {
-            background: #2f7d8f;
+            background: var(--accent);
             color: white;
             border: none;
-            padding: 0.4rem 1rem;
-            border-radius: 2.5rem;
-            font-size: 0.8rem;
+            padding: 0.6rem 1.5rem;
+            border-radius: 3rem;
+            font-size: 0.9rem;
             cursor: pointer;
             transition: 0.2s;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
-            gap: 0.4rem;
+            gap: 0.5rem;
         }
-
         .back-btn:hover {
-            background: #3e93a8;
+            background: var(--accent-light);
+            transform: translateY(-2px);
         }
-
+        .theme-toggle {
+            background: var(--pill-bg);
+            border: 1px solid var(--border-light);
+            color: var(--pill-text);
+            padding: 0.6rem 1.2rem;
+            border-radius: 3rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .theme-toggle:hover {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
         .tab-container {
             display: flex;
             flex-wrap: wrap;
             gap: 0.2rem;
-            margin-bottom: 1rem;
-            border-bottom: 2px solid #cde3ea;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--border-light);
             padding-bottom: 0.2rem;
         }
-
         .tab {
             background: transparent;
             border: none;
-            padding: 0.3rem 0.9rem;
+            padding: 0.5rem 1rem;
             border-radius: 2rem 2rem 0 0;
             font-weight: 500;
-            color: #386e7c;
+            color: var(--text-secondary);
             cursor: pointer;
             transition: 0.2s;
-            font-size: 0.8rem;
+            font-size: 0.9rem;
         }
-
         .tab.active {
-            background: #ffffffd0;
-            color: #1f5969;
-            box-shadow: 0 -4px 8px #b0d3de;
+            background: var(--card-bg);
+            color: var(--accent);
+            box-shadow: 0 -4px 8px var(--border-light);
         }
-
         .tab:hover {
-            background: #e1f2f8;
+            background: rgba(128,128,128,0.1);
         }
-
         .condition-content {
             display: none;
             animation: fade 0.3s;
         }
-
         .condition-content.active {
             display: block;
         }
-
         @keyframes fade {
             from { opacity: 0; }
             to { opacity: 1; }
         }
-
-        /* ========== CARD GRID – EXACT MATCH TO AUDIO THERAPY ========== */
         .block-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 0.7rem;
+            gap: 1rem;
             list-style: none;
         }
-
         .block-card {
-            background: white;
-            border-radius: 1rem;
+            background: var(--card-bg);
+            border-radius: 1.5rem;
             overflow: hidden;
-            box-shadow: 0 4px 10px -4px rgba(31, 75, 87, 0.1);
-            transition: transform 0.15s, box-shadow 0.15s;
+            box-shadow: 0 4px 10px -4px rgba(0,0,0,0.1);
+            transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
             display: flex;
             flex-direction: column;
-            border: 1px solid rgba(255,255,255,0.6);
-            height: 260px;                     /* fixed card height */
+            border: 1px solid var(--card-border);
+            height: 280px;
         }
-
         .block-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 16px -6px #1f4b57;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 20px -8px var(--accent);
+            border-color: var(--accent);
         }
-
         .card-thumb {
             width: 100%;
-            height: 100px;
+            height: 110px;
             object-fit: cover;
             display: block;
-            background: #cde3ea;
+            background: var(--border-light);
         }
-
         .card-content {
-            padding: 0.7rem 0.6rem 0.8rem;
+            padding: 0.8rem 0.8rem 1rem;
             display: flex;
             flex-direction: column;
             flex: 1;
         }
-
-   .card-title {
-        font-weight: 600;
-        color: #1d4b56;
-        font-size: 0.9rem;
-        line-height: 1.3;
-        height: 2.4rem;                         /* fallback for 2 lines */
-        overflow: hidden;
-        /* stylelint-disable-next-line property-no-vendor-prefix */
-        display: -webkit-box;                    /* required for line-clamp */
-        /* stylelint-disable-next-line property-no-vendor-prefix */
-        -webkit-box-orient: vertical;            /* required for line-clamp */
-        -webkit-line-clamp: 2;                   /* limits to 2 lines */
-        line-clamp: 2;                           /* standard (experimental) */
-        margin-bottom: 0.2rem;
-    }
-
-    .card-desc {
-        font-size: 0.75rem;
-        color: #437682;
-        line-height: 1.4;
-        height: 3.2rem;                         /* fallback for 3 lines */
-        overflow: hidden;
-        /* stylelint-disable-next-line property-no-vendor-prefix */
-        display: -webkit-box;                    /* required for line-clamp */
-        /* stylelint-disable-next-line property-no-vendor-prefix */
-        -webkit-box-orient: vertical;            /* required for line-clamp */
-        -webkit-line-clamp: 3;                   /* limits to 3 lines */
-        line-clamp: 3;                           /* standard (experimental) */
-        margin-bottom: 0.4rem;
-    }
-
+        .card-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 1rem;
+            line-height: 1.3;
+            height: 2.6rem;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            margin-bottom: 0.3rem;
+        }
+        .card-desc {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+            height: 3.4rem;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 3;
+            line-clamp: 3;
+            margin-bottom: 0.5rem;
+        }
         .card-link {
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 0.3rem;
-            background: #e1f2f8;
-            padding: 0.3rem 0.7rem;
+            background: rgba(128,128,128,0.1);
+            padding: 0.4rem 0.8rem;
             border-radius: 2rem;
-            color: #1f5a68;
+            color: var(--accent);
             text-decoration: none;
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             font-weight: 500;
             transition: 0.2s;
             align-self: flex-start;
-            border: none;
-            cursor: pointer;
-            margin-top: auto;                   /* pushes button to bottom */
+            border: 1px solid var(--border-light);
+            margin-top: auto;
         }
-
         .card-link i {
             font-size: 0.8rem;
             color: #c4302b;
         }
-
         .card-link:hover {
-            background: #c5e3ef;
-            color: #0d3b47;
+            background: var(--accent);
+            color: white;
         }
-
-        /* Mobile: single column */
         @media (max-width: 640px) {
             .block-grid {
                 grid-template-columns: 1fr;
@@ -224,20 +207,21 @@
 <body>
     <div class="detail-page">
         <div class="page-header">
-            <h1><i class="fas fa-eye" style="color:#2f7d8f;"></i> Visual Therapy</h1>
-            <a href="solutions.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Remedies</a>
+            <h1><i class="fas fa-eye"></i> Visual Therapy</h1>
+            <div class="header-actions">
+                <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+                <a href="solutions.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back</a>
+            </div>
         </div>
 
-        <!-- Tabs for conditions -->
-        <div class="tab-container" id="tabContainer">
+        <div class="tab-container">
             <button class="tab active" data-condition="stress">Stress</button>
             <button class="tab" data-condition="anxiety">Anxiety</button>
             <button class="tab" data-condition="depression">Depression</button>
-            <button class="tab" data-condition="sleep">Sleep Deprivation</button>
+            <button class="tab" data-condition="sleep">Sleep</button>
             <button class="tab" data-condition="distraction">Distraction</button>
         </div>
 
-        <!-- Content containers -->
         <div id="stress" class="condition-content active"></div>
         <div id="anxiety" class="condition-content"></div>
         <div id="depression" class="condition-content"></div>
@@ -246,13 +230,19 @@
     </div>
 
     <script>
-        // Helper to extract YouTube video ID and return thumbnail URL
+        window.toggleTheme = function() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+        };
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+        }
+
         function getYouTubeThumbnail(url) {
             const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/);
             return match ? `https://img.youtube.com/vi/${match[1]}/mqdefault.jpg` : '';
         }
 
-        // Visual therapy data (unchanged)
         const visualData = {
             stress: [
                 { 
@@ -272,95 +262,95 @@
                 },
                 { 
                     title: "Slow Moving Mandala / Visual Meditation", 
-                    desc: "Watching slow moving symmetrical patterns can calm the mind. Helps the brain shift into a relaxed Alpha wave state often seen in Electroencephalography (EEG) recordings.", 
+                    desc: "Watching slow moving symmetrical patterns can calm the mind. Helps the brain shift into a relaxed Alpha wave state.", 
                     url: "https://www.youtube.com/watch?v=5X1h6D9s5nY" 
                 }
             ],
             anxiety: [
                 { 
                     title: "Calm Ocean Waves Visual Therapy", 
-                    desc: "Watching slow ocean waves and water movement helps calm the brain and reduce anxious thoughts. The repetitive movement of waves encourages the brain to enter a relaxed state.", 
+                    desc: "Watching slow ocean waves and water movement helps calm the brain and reduce anxious thoughts. The repetitive movement encourages relaxation.", 
                     url: "https://www.youtube.com/watch?v=V1RPi2MYptM" 
                 },
                 { 
                     title: "Soft Warm Light / Sunset Therapy", 
-                    desc: "Warm sunset lighting visuals create a calm and comforting atmosphere. Warm tones such as orange and yellow reduce visual stimulation and help the brain feel safe.", 
+                    desc: "Warm sunset lighting visuals create a calm and comforting atmosphere. Warm tones reduce visual stimulation and help the brain feel safe.", 
                     url: "https://www.youtube.com/watch?v=V7yqW64Dx7c" 
                 },
                 { 
                     title: "Slow Breathing Visual Guide", 
-                    desc: "A visual breathing animation helps users follow a slow breathing rhythm. Synchronizing breathing with the visual guide reduces anxiety and stabilizes the nervous system.", 
+                    desc: "A visual breathing animation helps users follow a slow breathing rhythm. Synchronizing breath reduces anxiety and stabilizes the nervous system.", 
                     url: "https://www.youtube.com/watch?v=tybOi4hjZFQ" 
                 },
                 { 
                     title: "Space / Starfield Relaxation Visual", 
-                    desc: "Watching slow-moving stars or space visuals helps clear racing thoughts. The vast and slow movement visuals help the brain shift attention away from anxious thinking.", 
+                    desc: "Watching slow-moving stars or space visuals helps clear racing thoughts. The vast, slow movement helps shift attention away from anxious thinking.", 
                     url: "https://www.youtube.com/watch?v=FjHGZj2IjBk" 
                 }
             ],
             depression: [
                 { 
                     title: "Morning Sunlight / Bright Light Therapy", 
-                    desc: "Exposure to bright light visuals that simulate natural sunlight. Bright light stimulates serotonin production and helps regulate mood and the body’s circadian rhythm.", 
+                    desc: "Exposure to bright light visuals that simulate natural sunlight. Bright light stimulates serotonin production and helps regulate mood and circadian rhythm.", 
                     url: "https://www.youtube.com/watch?v=6H8E6k5V2qA" 
                 },
                 { 
                     title: "Nature Landscape Therapy (Mountains / Green Fields)", 
-                    desc: "Viewing peaceful landscapes like mountains, meadows, and open nature. Nature visuals can improve mood, reduce negative thinking, and create a sense of openness.", 
+                    desc: "Viewing peaceful landscapes like mountains and meadows improves mood and reduces negative thinking.", 
                     url: "https://www.youtube.com/watch?v=1ZYbU82GVz4" 
                 },
                 { 
                     title: "Motivational Sunrise Visual", 
-                    desc: "Watching sunrise visuals that symbolize a fresh start and positive energy. Warm light colors and sunrise imagery help promote optimism and emotional upliftment.", 
+                    desc: "Watching sunrise visuals that symbolize a fresh start and positive energy. Warm light colors help promote optimism.", 
                     url: "https://www.youtube.com/watch?v=UfcAVejslrU" 
                 },
                 { 
                     title: "Flowing Water / River Visual Therapy", 
-                    desc: "Watching slow moving rivers or waterfalls. Continuous natural motion helps reduce rumination and creates a calming mental rhythm.", 
+                    desc: "Watching slow moving rivers or waterfalls reduces rumination and creates a calming mental rhythm.", 
                     url: "https://www.youtube.com/watch?v=OdIJ2x3nxzQ" 
                 }
             ],
             sleep: [
                 { 
                     title: "Night Sky / Starfield Relaxation Visual", 
-                    desc: "Watching calm night sky visuals helps prepare the brain for rest. Slow-moving stars and dark tones reduce visual stimulation and encourage relaxation before sleep.", 
+                    desc: "Watching calm night sky visuals helps prepare the brain for rest. Slow-moving stars and dark tones reduce stimulation before sleep.", 
                     url: "https://www.youtube.com/watch?v=6LT3gZt0e6o" 
                 },
                 { 
                     title: "Warm Light / Night Mode Therapy", 
-                    desc: "Warm dim lighting visuals simulate evening light conditions. Warm tones reduce blue light exposure and help the brain prepare for sleep by supporting natural circadian rhythms.", 
+                    desc: "Warm dim lighting visuals simulate evening light conditions, reducing blue light exposure and supporting natural circadian rhythms.", 
                     url: "https://www.youtube.com/watch?v=V7yqW64Dx7c" 
                 },
                 { 
                     title: "Slow Ocean Waves Visual", 
-                    desc: "Watching gentle ocean waves helps calm the mind and prepare the body for rest. The repetitive motion creates a relaxing rhythm that reduces mental stimulation.", 
+                    desc: "Watching gentle ocean waves calms the mind and prepares the body for rest. The repetitive motion creates a relaxing rhythm.", 
                     url: "https://www.youtube.com/watch?v=V1RPi2MYptM" 
                 },
                 { 
                     title: "Candle Flame Relaxation Visual", 
-                    desc: "Watching a slow candle flame creates a calming and meditative environment. Soft flickering light encourages relaxation and reduces mental activity before sleep.", 
+                    desc: "Watching a slow candle flame creates a calming, meditative environment. Soft flickering light encourages relaxation before sleep.", 
                     url: "https://www.youtube.com/watch?v=LXb3EKWsInQ" 
                 }
             ],
             distraction: [
                 { 
                     title: "Focus Timer / Pomodoro Visual", 
-                    desc: "A visual timer that divides work into focused intervals (usually 25 minutes). The structured timer helps the brain stay engaged in a task and reduces distractions.", 
+                    desc: "A visual timer that divides work into focused intervals (usually 25 minutes). The structured timer helps the brain stay engaged.", 
                     url: "https://www.youtube.com/watch?v=3FjIuPMQzxo" 
                 },
                 { 
-                    title: "Minimalist Focus Screen (Dark Background with Subtle Motion)", 
-                    desc: "A simple, clutter-free screen with minimal visual elements. Reducing visual clutter lowers cognitive overload and helps maintain concentration.", 
+                    title: "Minimalist Focus Screen", 
+                    desc: "A simple, clutter-free screen with minimal visual elements reduces cognitive overload and helps maintain concentration.", 
                     url: "https://www.youtube.com/watch?v=DWcJFNfaw9c" 
                 },
                 { 
                     title: "Focus Animation / Breathing Dot", 
-                    desc: "A moving dot or small animation that guides breathing and attention. Following the motion helps train the brain to stay focused on a single stimulus.", 
+                    desc: "A moving dot or small animation that guides breathing and attention. Following the motion trains the brain to focus on a single stimulus.", 
                     url: "https://www.youtube.com/watch?v=bF_1ZiFta-E" 
                 },
                 { 
-                    title: "Study Environment Visual (Library / Workspace)", 
-                    desc: "Watching calm study environments creates a productive atmosphere. Environmental cues signal the brain that it is time to focus and work.", 
+                    title: "Study Environment Visual (Library)", 
+                    desc: "Watching calm study environments creates a productive atmosphere. Environmental cues signal the brain that it is time to focus.", 
                     url: "https://www.youtube.com/watch?v=lFcSrYw-ARY" 
                 }
             ]
@@ -369,7 +359,6 @@
         function renderCondition(containerId, items) {
             const container = document.getElementById(containerId);
             if (!container) return;
-            
             let html = '<ul class="block-grid">';
             items.forEach(item => {
                 const thumbUrl = getYouTubeThumbnail(item.url);
@@ -388,14 +377,12 @@
             container.innerHTML = html;
         }
 
-        // Render all conditions
         renderCondition('stress', visualData.stress);
         renderCondition('anxiety', visualData.anxiety);
         renderCondition('depression', visualData.depression);
         renderCondition('sleep', visualData.sleep);
         renderCondition('distraction', visualData.distraction);
 
-        // Tab switching
         const tabs = document.querySelectorAll('.tab');
         const contents = document.querySelectorAll('.condition-content');
         tabs.forEach(tab => {

@@ -150,7 +150,7 @@
                 <button id="liveBtn" class="pill toggle-btn active">Live</button>
                 <button id="simBtn" class="pill toggle-btn">Simulated</button>
                 <button id="themeToggle" class="pill theme-toggle" onclick="toggleTheme()">🌓</button>
-                <div class="pill" id="connectionStatus">Disconnected</div>
+                <div class="pill" id="connectionStatus">No Server</div>
                 <div class="pill" id="wsUrlBox">No device connected</div>
             </div>
         </header>
@@ -183,7 +183,7 @@
 
             <!-- Brainwave Signature -->
             <section class="card">
-                <div class="card-head"><h2>Brainwave Signature</h2><div class="small">Radar View</div></div>
+                <div class="card-head"><h2>Brainwave Signature</h2></div>
                 <div class="bw-list">
                     <div class="bw-item"><span>Delta</span><span id="bwDelta">0%</span></div>
                     <div class="bw-item"><span>Theta</span><span id="bwTheta">0%</span></div>
@@ -215,11 +215,11 @@
                 <div class="card-head"><h2>Brain State Parameters</h2><div class="small">Live band percentages</div></div>
                 <div id="brainStateParams">
                     <div class="param-grid">
-                        <div class="param-card" id="cardDelta"><div class="param-title">Delta</div><div class="param-sub">1–4 Hz</div><div class="param-circle"><span class="param-pct" id="paramDeltaPct">0%</span></div><div class="param-bar"><div class="param-bar-fill" id="paramDeltaBar"></div></div></div>
-                        <div class="param-card" id="cardTheta"><div class="param-title">Theta</div><div class="param-sub">4–8 Hz</div><div class="param-circle"><span class="param-pct" id="paramThetaPct">0%</span></div><div class="param-bar"><div class="param-bar-fill" id="paramThetaBar"></div></div></div>
-                        <div class="param-card" id="cardAlpha"><div class="param-title">Alpha</div><div class="param-sub">8–13 Hz</div><div class="param-circle"><span class="param-pct" id="paramAlphaPct">0%</span></div><div class="param-bar"><div class="param-bar-fill" id="paramAlphaBar"></div></div></div>
-                        <div class="param-card" id="cardBeta"><div class="param-title">Beta</div><div class="param-sub">13–30 Hz</div><div class="param-circle"><span class="param-pct" id="paramBetaPct">0%</span></div><div class="param-bar"><div class="param-bar-fill" id="paramBetaBar"></div></div></div>
-                        <div class="param-card" id="cardGamma"><div class="param-title">Gamma</div><div class="param-sub">30–100 Hz</div><div class="param-circle"><span class="param-pct" id="paramGammaPct">0%</span></div><div class="param-bar"><div class="param-bar-fill" id="paramGammaBar"></div></div></div>
+                        <div class="param-card" id="cardDelta"><div class="param-title">Stress</div><div class="param-sub">Audio Therapy</div><div class="param-circle"><span class="param-pct" id="paramDeltaPct">0%</span></div><div class="param-bar"><div class="param-bar-fill" id="paramDeltaBar"></div></div></div>
+                        <div class="param-card" id="cardTheta"><div class="param-title">Fatigue</div><div class="param-sub">Visual Therapy</div><div class="param-circle"><span class="param-pct" id="paramThetaPct">0%</span></div><div class="param-bar"><div class="param-bar-fill" id="paramThetaBar"></div></div></div>
+                        <div class="param-card" id="cardAlpha"><div class="param-title">Low Energy</div><div class="param-sub">Physical Activity</div><div class="param-circle"><span class="param-pct" id="paramAlphaPct">0%</span></div><div class="param-bar"><div class="param-bar-fill" id="paramAlphaBar"></div></div></div>
+                        <div class="param-card" id="cardBeta"><div class="param-title">Brain Overload</div><div class="param-sub">Visual Therapy</div><div class="param-circle"><span class="param-pct" id="paramBetaPct">0%</span></div><div class="param-bar"><div class="param-bar-fill" id="paramBetaBar"></div></div></div>
+                        <div class="param-card" id="cardGamma"><div class="param-title">Relaxation</div><div class="param-sub">Lifestyle Suggestions</div><div class="param-circle"><span class="param-pct" id="paramGammaPct">0%</span></div><div class="param-bar"><div class="param-bar-fill" id="paramGammaBar"></div></div></div>
                     </div>
                 </div>
                 <div class="param-summary small">
@@ -235,21 +235,45 @@
             </section>
 
             <!-- Personalized Recommendations -->
-            <section class="card span-2">
-                <div class="card-head"><h2>Personalized Recommendations</h2><div class="small">Click to see suggestions</div></div>
-                <div class="mental-state-selector" id="mentalStateSelector">
-                    <div class="mental-state-card" data-state="Stress" onclick="selectMentalState('Stress', this)"><div class="ms-title">Stress</div><div class="ms-indicator">High Beta</div></div>
-                    <div class="mental-state-card" data-state="Anxiety" onclick="selectMentalState('Anxiety', this)"><div class="ms-title">Anxiety</div><div class="ms-indicator">High Beta+Alpha</div></div>
-                    <div class="mental-state-card" data-state="Mild Depression" onclick="selectMentalState('Mild Depression', this)"><div class="ms-title">Mild Depression</div><div class="ms-indicator">Low Alpha</div></div>
-                    <div class="mental-state-card" data-state="Fatigue" onclick="selectMentalState('Fatigue', this)"><div class="ms-title">Fatigue</div><div class="ms-indicator">High Theta</div></div>
-                    <div class="mental-state-card" data-state="Distraction" onclick="selectMentalState('Distraction', this)"><div class="ms-title">Distraction</div><div class="ms-indicator">Low Beta+Theta</div></div>
+            <section class="card span-2" style="display: flex; flex-direction: column; min-height: 280px;">
+                <div class="card-head" style="align-items: center;">
+                    <div>
+                        <h2>Personalized Recommendations</h2>
+                        <div class="small">Direct Therapy Links</div>
+                    </div>
+                    <button class="primary-btn" onclick="window.location.href='solutions.html'">View Full Remedies</button>
                 </div>
-                <ul class="recs" id="recs"><li>Select a condition to view recommendations…</li></ul>
-                <div class="recs-foot"><button class="secondary-btn" id="viewRemediesBtn" onclick="viewRemediesForState()">View Full Remedies</button></div>
+                <div class="mental-state-selector" id="mentalStateSelector" style="flex: 1; align-items: stretch; margin-bottom: 0px; margin-top: 8px;">
+                    <div class="mental-state-card big-card">
+                        <div class="ms-title">Stress</div>
+                        <div class="ms-indicator">Audio Therapy</div>
+                        <a href="solutions.html?condition=stress" class="card-action-btn">Explore</a>
+                    </div>
+                    <div class="mental-state-card big-card">
+                        <div class="ms-title">Fatigue</div>
+                        <div class="ms-indicator">Visual Therapy</div>
+                        <a href="solutions.html?condition=fatigue" class="card-action-btn">Explore</a>
+                    </div>
+                    <div class="mental-state-card big-card">
+                        <div class="ms-title">Low Energy</div>
+                        <div class="ms-indicator">Physical Activity</div>
+                        <a href="solutions.html?condition=low-energy" class="card-action-btn">Explore</a>
+                    </div>
+                    <div class="mental-state-card big-card">
+                        <div class="ms-title">Brain Overload</div>
+                        <div class="ms-indicator">Visual Therapy</div>
+                        <a href="solutions.html?condition=brain-overload" class="card-action-btn">Explore</a>
+                    </div>
+                    <div class="mental-state-card big-card">
+                        <div class="ms-title">Relaxation</div>
+                        <div class="ms-indicator">Lifestyle Suggestions</div>
+                        <a href="solutions.html?condition=relaxation" class="card-action-btn">Explore</a>
+                    </div>
+                </div>
             </section>
 
             <!-- Recent Sessions (clickable) -->
-            <section class="card">
+            <section class="card" style="min-height: 280px;">
                 <div class="card-head"><h2>Recent Sessions</h2><div class="small">Click to review</div></div>
                 <ul class="recent-list" id="recentSessionsList">
                     <li style="color: var(--text-muted);">No sessions yet</li>
@@ -271,12 +295,12 @@
                     </div>
                 </div>
                 <div class="card-foot" style="border-top: none;">
-                    <a href="explore.html" style="text-decoration: none;"><button class="explore-btn">Explore Dashboard <i class="fas fa-arrow-right"></i></button></a>
+                    <a href="explore/public/index.html" style="text-decoration: none;"><button class="explore-btn">Explore Dashboard <i class="fas fa-arrow-right"></i></button></a>
                 </div>
             </section>
         </main>
 
-        <footer class="footer small">Ensure device connected and backend running.</footer>
+        <footer class="footer small">Made with ❣️ by TeamStack-4</footer>
     </div>
 
     <!-- Result Overlay -->

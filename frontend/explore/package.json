@@ -1,0 +1,16 @@
+{
+  "name": "mental-health-explorer",
+  "version": "1.0.0",
+  "description": "An interactive website exploring mental health conditions worldwide",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.22.1"
+  },
+  "author": "",
+  "license": "ISC",
+  "keywords": [],
+  "type": "commonjs"
+}
